@@ -83,11 +83,7 @@ namespace sHierarchy
 
             static float GetStartX(Rect originalRect, int nestLevel)
             {
-                return 37 + (originalRect.height - 2) * nestLevel;
-                //return originalRect.x                //aligned start position (9 is the magic number here)
-                //    - originalRect.height * 2 //GameObject icon offset
-                //    + 9
-                //    - nestLevel * (originalRect.height - 2);       
+                return 37 + (originalRect.height - 2) * nestLevel;    
             }
 
             static Color GetNestColor(int nestLevel)
@@ -126,7 +122,7 @@ namespace sHierarchy
             {
                 if (currentBranch.colors.Length <= 0) return;
 
-                //Vertical rect, starts from the very left and then proceeds to te right
+                // Vertical rect, starts from the very left and then proceeds to te right
                 EditorGUI.DrawRect(
                     new Rect(
                         GetStartX(originalRect, nestLevel),
@@ -165,66 +161,37 @@ namespace sHierarchy
         #endregion
 
         private static bool initialized = false;
-        private static HierarchyData data;
+        private static HierarchyData data { get { return HierarchyPreferences.data; } }
         private static int firstInstanceID = 0;
         private static List<int> iconsPositions = new List<int>();
         private static Dictionary<int, InstanceInfo> sceneGameObjects = new Dictionary<int, InstanceInfo>();
         private static Dictionary<int, Color> prefabColors = new Dictionary<int, Color>();
 
+
         #region Menu Items
 
         #region Internal
 
-        [MenuItem("Tools/Febucci/Custom Hierarchy/Initialize or Create", priority = 1)]
+        [MenuItem("sHierarchy/Preferences", priority = 1)]
         public static void InitializeOrCreate()
         {
-            if (Load()) //file exists
-            {
-                Initialize();
-                SelectData();
-            }
-            else
-            {
-                //file does not exist; asks the user if they want to create it
-                if (EditorUtility.DisplayDialog("Custom Hierarchy", "Do you want to create an Hierarchy Icon Data?", "Yes", "No"))
-                {
-                    CreateAsset();
-                }
-                else
-                {
-                    Debug.Log("Hierarchy Icon: Data creation was canceled.");
-                }
-            }
-        }
-
-        static bool SelectData()
-        {
-            var loaded = Load();
-            if (loaded != null)
-            {
-                //EditorUtility.FocusProjectWindow();
-                Selection.activeObject = loaded;
-
-                return true;
-            }
-
-            return false;
+            SettingsService.OpenUserPreferences("Preferences/sHierarchy");
         }
 
         #endregion
 
-        #region Blog
+        #region Links
 
-        [MenuItem("Tools/Febucci/📝 Blog", priority = 50)]
+        [MenuItem("sHierarchy/📝 Repository", priority = 50)]
         static void m_OpenBlog()
         {
-            Application.OpenURL("https://www.febucci.com/blog");
+            Application.OpenURL("https://github.com/jcs090218/sHierarchy");
         }
 
-        [MenuItem("Tools/Febucci/🐦 Twitter", priority = 51)]
+        [MenuItem("sHierarchy/🐦 Twitter", priority = 51)]
         static void m_OpenTwitter()
         {
-            Application.OpenURL("https://twitter.com/febucci");
+            Application.OpenURL("https://twitter.com/jenchieh94");
         }
 
         #endregion
@@ -232,54 +199,6 @@ namespace sHierarchy
         #endregion
 
         #region Initialization/Helpers
-
-        private const string fileName = "HierarchyData";
-        static HierarchyData Load()
-        {
-            return EditorGUIUtility.Load($"Febucci/{fileName}.asset") as HierarchyData;
-        }
-
-        /// <summary>
-        /// Creates the Hierarchy Asset File
-        /// </summary>
-        static void CreateAsset()
-        {
-            if (Load())
-            {
-                Debug.LogWarning("HierarchyIcons: Data already exists, won't create a new one.");
-                return;
-            }
-
-            //Creates folder
-            if (!AssetDatabase.IsValidFolder("Assets/Editor Default Resources"))
-                AssetDatabase.CreateFolder("Assets", "Editor Default Resources");
-
-            string path = "Assets/Editor Default Resources/Febucci";
-            if (!AssetDatabase.IsValidFolder("Assets/Editor Default Resources/Febucci"))
-            {
-                string guid = AssetDatabase.CreateFolder("Assets/Editor Default Resources", "Febucci");
-                path = AssetDatabase.GUIDToAssetPath(guid);
-            }
-
-            try
-            {
-                //Creates asset
-                var asset = ScriptableObject.CreateInstance<HierarchyData>();
-                AssetDatabase.CreateAsset(asset, path + $"/{fileName}.asset");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-
-            AssetDatabase.SaveAssets();
-
-            Initialize();
-            //Focusses new asset
-            SelectData();
-            Debug.Log("Hierarchy Data asset was created in the 'Assets/Editor Default Resources'Febucci' folder.");
-        }
 
         /// <summary>
         /// Initializes the script at the beginning. 
@@ -298,9 +217,6 @@ namespace sHierarchy
             #endregion
 
             initialized = false;
-            data = Load();
-
-            if (!data) return; //no data found
 
             initialized = true;
 
@@ -339,7 +255,8 @@ namespace sHierarchy
         /// </summary>
         static void RetrieveDataFromScene()
         {
-            if (!data.updateInPlayMode && Application.isPlaying) //temp. fix for performance reasons while in play mode
+            // TEMPORARY: fix for performance reasons while in play mode
+            if (!data.updateInPlayMode && Application.isPlaying)
                 return;
 
             sceneGameObjects.Clear();

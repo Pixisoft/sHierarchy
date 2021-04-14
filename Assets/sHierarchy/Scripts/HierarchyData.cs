@@ -27,7 +27,7 @@ namespace sHierarchy
     /// <summary>
     /// 
     /// </summary>
-    public class HierarchyData : ScriptableObject
+    public class HierarchyData
     {
         public bool enabled = true;
 
@@ -50,7 +50,7 @@ namespace sHierarchy
             public HierarchyElement[] pairs = new HierarchyElement[0];
         }
 
-        public IconsData icons;
+        public IconsData icons = new IconsData();
 
         #endregion
 
@@ -71,7 +71,7 @@ namespace sHierarchy
             public Prefab[] prefabs = new Prefab[0];
         }
 
-        public PrefabsData prefabsData;
+        public PrefabsData prefabsData = new PrefabsData();
 
 
         #endregion
@@ -85,7 +85,7 @@ namespace sHierarchy
             public Color color = new Color(0, 0, 0, .08f);
         }
 
-        public AlternatingBGData alternatingBackground;
+        public AlternatingBGData alternatingBackground = new AlternatingBGData();
 
         #endregion
 
@@ -99,7 +99,7 @@ namespace sHierarchy
             public Color color = new Color(0, 1, 1, .15f);
         }
 
-        public SeparatorData separator;
+        public SeparatorData separator = new SeparatorData();
 
         #endregion
 
@@ -149,15 +149,9 @@ namespace sHierarchy
             };
         }
 
-        public TreeData tree;
-
+        public TreeData tree = new TreeData();
 
         #endregion
-
-        private void OnValidate()
-        {
-            HierarchyDrawer.Initialize();
-        }
     }
 }
 #endif
