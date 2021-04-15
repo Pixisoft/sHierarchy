@@ -1,6 +1,5 @@
 #if UNITY_EDITOR
 /**
- * Copyright (c) 2020 Federico Bellucci - febucci.com
  * Copyright (c) 2021 Jen-Chieh Shen
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software/algorithm and associated

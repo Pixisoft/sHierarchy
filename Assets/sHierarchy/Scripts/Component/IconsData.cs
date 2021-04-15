@@ -1,6 +1,5 @@
 #if UNITY_EDITOR
 /**
- * Copyright (c) 2020 Federico Bellucci - febucci.com
  * Copyright (c) 2021 Jen-Chieh Shen
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software/algorithm and associated
@@ -25,40 +24,53 @@ using UnityEngine;
 namespace sHierarchy
 {
     [System.Serializable]
+    public class HierarchyElement
+    {
+        [SerializeField] public Texture2D iconToDraw;
+        [SerializeField] public MonoScript[] targetClasses;
+    }
+
+    [System.Serializable]
     public class IconsData : HierarchyComponent
     {
+        /* Variables */
+
         public bool foldout = false;
 
         public bool enabled = true;
-
-        [System.Serializable]
-        public class HierarchyElement
-        {
-            [SerializeField] public Texture2D iconToDraw;
-            [SerializeField] public MonoScript[] targetClasses;
-        }
-
         public bool aligned = false;
         public HierarchyElement[] pairs = new HierarchyElement[0];
 
+        /* Setter & Getters */
+
+        /* Functions */
+
+        public string FormKey(string name) { return HierarchyUtil.FormKey("icons.") + name; }
+
         public void Init()
         {
-            this.enabled = EditorPrefs.GetBool(HierarchyUtil.FormKey("icons.enabled"), false);
+            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
+            this.aligned = EditorPrefs.GetBool(FormKey("aligned"), false);
         }
 
         public void Draw()
         {
             foldout = EditorGUILayout.Foldout(foldout, "Icons");
 
-            if (foldout)
+            if (!foldout)
+                return;
+
+            HierarchyUtil.CreateGroup(() =>
             {
                 this.enabled = EditorGUILayout.Toggle("Enabeld: ", this.enabled);
-            }
+                this.aligned = EditorGUILayout.Toggle("Aligned: ", this.aligned);
+            });
         }
 
         public void SavePref()
         {
-            EditorPrefs.SetBool(HierarchyUtil.FormKey("icons.enabled"), this.enabled);
+            EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
+            EditorPrefs.SetBool(FormKey("aligned"), this.aligned);
         }
     }
 }

@@ -1,6 +1,5 @@
 #if UNITY_EDITOR
 /**
- * Copyright (c) 2020 Federico Bellucci - febucci.com
  * Copyright (c) 2021 Jen-Chieh Shen
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software/algorithm and associated
@@ -19,9 +18,7 @@
  * 
  * For any other use, please ask for permission by contacting the author.
  */
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using UnityEditor;
 
 namespace sHierarchy
 {

@@ -1,6 +1,5 @@
 #if UNITY_EDITOR
 /**
- * Copyright (c) 2020 Federico Bellucci - febucci.com
  * Copyright (c) 2021 Jen-Chieh Shen
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software/algorithm and associated
@@ -19,14 +18,52 @@
  * 
  * For any other use, please ask for permission by contacting the author.
  */
+using UnityEditor;
+using UnityEngine;
 
 namespace sHierarchy
 {
+    public delegate void EmptyFunction();
+
     public static class HierarchyUtil
     {
         public static string FormKey(string name)
         {
             return "sHierarchy." + name;
+        }
+
+        public static void CreateGroup(EmptyFunction func)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.BeginVertical("box");
+            Indent(func);
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+        }
+
+        public static void Indent(EmptyFunction func)
+        {
+            EditorGUI.indentLevel++;
+            func.Invoke();
+            EditorGUI.indentLevel--;
+        }
+
+        public static Color GetColor(string key, Color defaultValue)
+        {
+            Color color = defaultValue;
+            color.r = EditorPrefs.GetFloat(key + ".r", defaultValue.r);
+            color.g = EditorPrefs.GetFloat(key + ".g", defaultValue.g);
+            color.b = EditorPrefs.GetFloat(key + ".b", defaultValue.b);
+            color.a = EditorPrefs.GetFloat(key + ".a", defaultValue.a);
+            return color;
+        }
+
+        public static void SetColor(string key, Color value)
+        {
+            EditorPrefs.SetFloat(key + ".r", value.r);
+            EditorPrefs.SetFloat(key + ".g", value.g);
+            EditorPrefs.SetFloat(key + ".b", value.b);
+            EditorPrefs.SetFloat(key + ".a", value.a);
         }
     }
 }

@@ -1,6 +1,5 @@
 #if UNITY_EDITOR
 /**
- * Copyright (c) 2020 Federico Bellucci - febucci.com
  * Copyright (c) 2021 Jen-Chieh Shen
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software/algorithm and associated
@@ -25,20 +24,25 @@ using UnityEngine;
 namespace sHierarchy
 {
     [System.Serializable]
+    public class Prefab
+    {
+        public GameObject gameObject;
+        public Color color;
+    }
+
+    [System.Serializable]
     public class PrefabsData : HierarchyComponent
     {
+        /* Variables */
+
         public bool foldout = false;
 
         public bool enabled;
-
-        [System.Serializable]
-        public class Prefab
-        {
-            public GameObject gameObject;
-            public Color color;
-        }
-
         public Prefab[] prefabs = new Prefab[0];
+
+        /* Setter & Getters */
+
+        /* Functions */
 
         public string FormKey(string name) { return HierarchyUtil.FormKey("prefabs.") + name; }
 
@@ -51,10 +55,13 @@ namespace sHierarchy
         {
             foldout = EditorGUILayout.Foldout(foldout, "Prefabs Data");
 
-            if (foldout)
+            if (!foldout)
+                return;
+
+            HierarchyUtil.CreateGroup(() =>
             {
                 this.enabled = EditorGUILayout.Toggle("Enabeld: ", this.enabled);
-            }
+            });
         }
 
         public void SavePref()

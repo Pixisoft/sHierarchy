@@ -1,6 +1,5 @@
 #if UNITY_EDITOR
 /**
- * Copyright (c) 2020 Federico Bellucci - febucci.com
  * Copyright (c) 2021 Jen-Chieh Shen
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software/algorithm and associated
@@ -25,20 +24,27 @@ using UnityEngine;
 namespace sHierarchy
 {
     [System.Serializable]
+    public class BranchGroup
+    {
+        public Color overlayColor;
+        public Color[] colors = new Color[0];
+    }
+
+    [System.Serializable]
     public class TreeData : HierarchyComponent
     {
+        /* Variables */
+
         public bool foldout = false;
+
         public bool enabled = true;
         public bool drawOverlayOnColoredPrefabs = true;
-        [Range(0, 3)] public float dividerHeigth = 1;
+        [Range(0, 3)] public float dividerHeight = 1;
         public Color baseLevelColor = Color.gray;
 
-        [System.Serializable]
-        public class BranchGroup
-        {
-            public Color overlayColor;
-            public Color[] colors = new Color[0];
-        }
+        /* Setter & Getters */
+
+        /* Functions */
 
         public BranchGroup[] branches = new[]
         {
@@ -71,22 +77,34 @@ namespace sHierarchy
 
         public void Init()
         {
-            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), false);
+            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
+            this.drawOverlayOnColoredPrefabs = EditorPrefs.GetBool(FormKey("drawOverlayOnColoredPrefabs"), false);
+            this.dividerHeight = EditorPrefs.GetFloat(FormKey("dividerHeight"), 1);
+            this.baseLevelColor = HierarchyUtil.GetColor(FormKey("baseLevelColor"), this.baseLevelColor);
         }
 
         public void Draw()
         {
             foldout = EditorGUILayout.Foldout(foldout, "Tree");
 
-            if (foldout)
+            if (!foldout)
+                return;
+
+            HierarchyUtil.CreateGroup(() =>
             {
                 this.enabled = EditorGUILayout.Toggle("Enabeld: ", this.enabled);
-            }
+                this.drawOverlayOnColoredPrefabs = EditorGUILayout.Toggle("Draw Overlay On Colored Prefabs: ", this.drawOverlayOnColoredPrefabs);
+                this.dividerHeight = EditorGUILayout.Slider("Divider Height: ", this.dividerHeight, 0, 3);
+                this.baseLevelColor = EditorGUILayout.ColorField("Base Level Color: ", this.baseLevelColor);
+            });
         }
 
         public void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
+            EditorPrefs.SetBool(FormKey("drawOverlayOnColoredPrefabs"), this.drawOverlayOnColoredPrefabs);
+            EditorPrefs.SetFloat(FormKey("dividerHeight"), this.dividerHeight);
+            HierarchyUtil.SetColor(FormKey("baseLevelColor"), this.baseLevelColor);
         }
     }
 }

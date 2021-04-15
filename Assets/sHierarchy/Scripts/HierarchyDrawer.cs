@@ -27,9 +27,6 @@ using UnityEngine.SceneManagement;
 
 namespace sHierarchy
 {
-    /// <summary>
-    /// 
-    /// </summary>
     [InitializeOnLoad]
     public static class HierarchyDrawer
     {
@@ -46,10 +43,10 @@ namespace sHierarchy
 
         static class HierarchyRenderer
         {
-            static private TreeData.BranchGroup currentBranch;
+            static private BranchGroup currentBranch;
 
-            private static readonly TreeData.BranchGroup fallbackGroup =
-                new TreeData.BranchGroup()
+            private static readonly BranchGroup fallbackGroup =
+                new BranchGroup()
                 {
                     overlayColor = new Color(1f, 0.44f, 0.97f, .04f),
                     colors = new[]
@@ -100,13 +97,12 @@ namespace sHierarchy
             public static void DrawHalfVerticalLineFrom(Rect originalRect, bool startsOnTop, int nestLevel)
             {
                 if (currentBranch.colors.Length <= 0) return;
-
                 DrawHalfVerticalLineFrom(originalRect, startsOnTop, nestLevel, GetNestColor(nestLevel));
             }
 
             public static void DrawHalfVerticalLineFrom(Rect originalRect, bool startsOnTop, int nestLevel, Color color)
             {
-                //Vertical rect, starts from the very left and then proceeds to te right
+                // Vertical rect, starts from the very left and then proceeds to te right
                 EditorGUI.DrawRect(
                     new Rect(
                         GetStartX(originalRect, nestLevel),
@@ -209,7 +205,7 @@ namespace sHierarchy
 
             if (initialized)
             {
-                //Prevents registering events multiple times
+                // Prevents registering events multiple times
                 EditorApplication.hierarchyWindowItemOnGUI -= DrawCore;
                 EditorApplication.hierarchyChanged -= RetrieveDataFromScene;
             }
@@ -442,14 +438,14 @@ namespace sHierarchy
 
             #region Drawing Tree
 
-            if (data.tree.enabled
-                && currentItem.nestingLevel >= 0)
+            if (data.tree.enabled && currentItem.nestingLevel >= 0)
             {
-                if (selectionRect.x >= 60) //prevents drawing when the hierarchy search mode is enabled 
+                // prevents drawing when the hierarchy search mode is enabled
+                if (selectionRect.x >= 60) 
                 {
                     HierarchyRenderer.SwitchBranchesColors(currentItem.nestingGroup);
 
-                    //Group
+                    // Group
                     if ((data.tree.drawOverlayOnColoredPrefabs || !drawedPrefabOverlay) && currentItem.topParentHasChild)
                     {
                         HierarchyRenderer.DrawNestGroupOverlay(selectionRect);
@@ -463,7 +459,7 @@ namespace sHierarchy
                     }
                     else
                     {
-                        //Draws a vertical line for each previous nesting level
+                        // Draws a vertical line for each previous nesting level
                         for (int i = 0; i <= currentItem.nestingLevel; i++)
                         {
                             HierarchyRenderer.DrawVerticalLineFrom(selectionRect, i);
@@ -472,34 +468,30 @@ namespace sHierarchy
                         HierarchyRenderer.DrawHorizontalLineFrom(
                             selectionRect, currentItem.nestingLevel, currentItem.hasChilds
                             );
-
                     }
-
                 }
 
-                //draws a super small divider between different groups
-                if (currentItem.nestingLevel == 0 && data.tree.dividerHeigth > 0)
+                // draws a super small divider between different groups
+                if (currentItem.nestingLevel == 0 && data.tree.dividerHeight > 0)
                 {
                     Rect boldGroupRect = new Rect(
-                        32, selectionRect.y - data.tree.dividerHeigth / 2f,
+                        32, selectionRect.y - data.tree.dividerHeight / 2f,
                         selectionRect.width + (selectionRect.x - 32),
-                        data.tree.dividerHeigth
+                        data.tree.dividerHeight
                         );
                     EditorGUI.DrawRect(boldGroupRect, Color.black * .3f);
                 }
-
-
             }
 
             #endregion
 
             #region Drawing Separators
 
-            //EditorOnly objects are only removed from build if they're not childrens
+            // EditorOnly objects are only removed from build if they're not childrens
             if (data.separator.enabled && data.separator.color.a > 0
-                                       && currentItem.isSeparator && currentItem.nestingLevel == 0)
+                && currentItem.isSeparator && currentItem.nestingLevel == 0)
             {
-                //Adds color on top of the label
+                // Adds color on top of the label
                 EditorGUI.DrawRect(selectionRect, data.separator.color);
             }
 
@@ -512,13 +504,13 @@ namespace sHierarchy
                 temp_iconsDrawedCount = -1;
                 #region Local Method
 
-                //Draws each component icon
+                // Draws each component icon
                 void DrawIcon(int textureIndex)
                 {
                     //---Icon Alignment---
                     if (data.icons.aligned)
                     {
-                        //Aligns icon based on texture's position on the array
+                        // Aligns icon based on texture's position on the array
                         int CalculateIconPosition()
                         {
                             for (int i = 0; i < iconsPositions.Count; i++)

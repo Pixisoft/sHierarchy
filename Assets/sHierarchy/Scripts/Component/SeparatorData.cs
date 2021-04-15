@@ -1,6 +1,5 @@
 #if UNITY_EDITOR
 /**
- * Copyright (c) 2020 Federico Bellucci - febucci.com
  * Copyright (c) 2021 Jen-Chieh Shen
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software/algorithm and associated
@@ -27,31 +26,47 @@ namespace sHierarchy
     [System.Serializable]
     public class SeparatorData : HierarchyComponent
     {
+        /* Variables */
+
         public bool foldout = false;
+
         public bool enabled = true;
         public string startString = ">";
         public Color color = new Color(0, 1, 1, .15f);
+
+        /* Setter & Getters */
+
+        /* Functions */
 
         public string FormKey(string name) { return HierarchyUtil.FormKey("separator.") + name; }
 
         public void Init()
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), false);
+            this.startString = EditorPrefs.GetString(FormKey("startString"), ">");
+            this.color = HierarchyUtil.GetColor(FormKey("color"), this.color);
         }
 
         public void Draw()
         {
             foldout = EditorGUILayout.Foldout(foldout, "Separator");
 
-            if (foldout)
+            if (!foldout)
+                return;
+
+            HierarchyUtil.CreateGroup(() =>
             {
                 this.enabled = EditorGUILayout.Toggle("Enabeld: ", this.enabled);
-            }
+                this.startString = EditorGUILayout.TextField("Start String: ", this.startString);
+                this.color = EditorGUILayout.ColorField("Color: ", this.color);
+            });
         }
 
         public void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
+            EditorPrefs.SetString(FormKey("startString"), this.startString);
+            HierarchyUtil.SetColor(FormKey("color"), this.color);
         }
     }
 }
