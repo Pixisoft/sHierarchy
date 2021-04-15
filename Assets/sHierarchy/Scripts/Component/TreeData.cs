@@ -18,22 +18,25 @@
  * 
  * For any other use, please ask for permission by contacting the author.
  */
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 namespace sHierarchy
 {
-    [System.Serializable]
-    public class BranchGroup
+    public class Container_TreeData : ScriptableObject
     {
-        public Color overlayColor;
-        public Color[] colors = new Color[0];
+        public Color[] branches = new Color[0];
     }
 
     [System.Serializable]
     public class TreeData : HierarchyComponent
     {
         /* Variables */
+
+        private static Container_TreeData instance = ScriptableObject.CreateInstance<Container_TreeData>();
+        private static SerializedObject so = null;
+        private static SerializedProperty sp = null;
 
         public bool foldout = false;
 
@@ -43,35 +46,11 @@ namespace sHierarchy
         public float dividerHeight = 1;
         public Color baseLevelColor = Color.gray;
         public bool drawFill = false;
-
-        public BranchGroup[] branches = new[]
-{
-            new BranchGroup()
-            {
-                overlayColor =  new Color(1f, 0.44f, 0.97f, .04f),
-                colors = new []
-                {
-                    new Color(1f, 0.44f, 0.97f),
-                    new Color(0.56f, 0.44f, 1f),
-                    new Color(0.44f, 0.71f, 1f),
-                    new Color(0.19f, 0.53f, 0.78f)
-                }
-            },
-
-            new BranchGroup()
-            {
-                overlayColor =  new Color(0.93f, 1f, 0.42f, .04f),
-                colors = new []
-                {
-                    new Color(0.93f, 1f, 0.42f),
-                    new Color(1f, 0.75f, 0.42f),
-                    new Color(1f, 0.46f, 0.31f),
-                    new Color(1f, 0.35f, 0.34f)
-                }
-            }
-        };
+        public float overlayAlpha = 0.12f;
 
         /* Setter & Getters */
+
+        public Color[] branches { get { return instance.branches; } }
 
         /* Functions */
 
@@ -85,6 +64,20 @@ namespace sHierarchy
             this.dividerHeight = EditorPrefs.GetFloat(FormKey("dividerHeight"), this.dividerHeight);
             this.baseLevelColor = HierarchyUtil.GetColor(FormKey("baseLevelColor"), this.baseLevelColor);
             this.drawFill = EditorPrefs.GetBool(FormKey("drawFill"), this.drawFill);
+            this.overlayAlpha = EditorPrefs.GetFloat(FormKey("overlayAlpha"), this.overlayAlpha);
+
+            #region Branches Color
+            {
+                var branchesLen = EditorPrefs.GetInt(FormKey("branches.Length"), branches.Length);
+                instance.branches = new Color[branchesLen];
+
+                for (int index = 0; index < branchesLen; ++index)
+                    instance.branches[index] = HierarchyUtil.GetColor(FormKey("branches" + index), instance.branches[index]);
+            }
+            #endregion
+
+            so = new SerializedObject(instance);
+            sp = so.FindProperty("branches");
         }
 
         public void Draw()
@@ -102,6 +95,13 @@ namespace sHierarchy
                 this.dividerHeight = EditorGUILayout.Slider("Divider Height", this.dividerHeight, 0, 3);
                 this.baseLevelColor = EditorGUILayout.ColorField("Base Level Color", this.baseLevelColor);
                 this.drawFill = EditorGUILayout.Toggle("Draw Fill", this.drawFill);
+
+
+                so.Update();
+                EditorGUILayout.PropertyField(sp);
+                so.ApplyModifiedProperties();
+
+                this.overlayAlpha = EditorGUILayout.Slider("Overlay Alpha", this.overlayAlpha, 0, 0.8f);
             });
         }
 
@@ -113,6 +113,12 @@ namespace sHierarchy
             EditorPrefs.SetFloat(FormKey("dividerHeight"), this.dividerHeight);
             HierarchyUtil.SetColor(FormKey("baseLevelColor"), this.baseLevelColor);
             EditorPrefs.SetBool(FormKey("drawFill"), this.drawFill);
+            EditorPrefs.SetFloat(FormKey("overlayAlpha"), this.overlayAlpha);
+            {
+                EditorPrefs.SetInt(FormKey("branches.Length"), this.branches.Length);
+                for (int index = 0; index < branches.Length; ++index)
+                    HierarchyUtil.SetColor(FormKey("branches" + index), instance.branches[index]);
+            }
         }
     }
 }

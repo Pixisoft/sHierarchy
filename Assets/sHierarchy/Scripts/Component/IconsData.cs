@@ -26,8 +26,13 @@ namespace sHierarchy
     [System.Serializable]
     public class HierarchyElement
     {
-        [SerializeField] public Texture2D iconToDraw;
-        [SerializeField] public MonoScript[] targetClasses;
+        public Texture2D iconToDraw;
+        public MonoScript[] targetClasses;
+    }
+
+    public class HE_Container : ScriptableObject
+    {
+        public HierarchyElement[] pairs;
     }
 
     [System.Serializable]
@@ -35,11 +40,17 @@ namespace sHierarchy
     {
         /* Variables */
 
+        private static HE_Container instance = getInstance();
+        private static SerializedObject so = null;
+        private static SerializedProperty sp = null;
+
         public bool foldout = false;
 
         public bool enabled = true;
         public bool aligned = false;
-        public HierarchyElement[] pairs = new HierarchyElement[0];
+        private HierarchyElement[] mPairs = null;
+
+        public HierarchyElement[] pairs { get { return instance.pairs; } }
 
         /* Setter & Getters */
 
@@ -47,10 +58,20 @@ namespace sHierarchy
 
         public string FormKey(string name) { return HierarchyUtil.FormKey("icons.") + name; }
 
+        static HE_Container getInstance()
+        {
+            if (instance == null)
+                instance = ScriptableObject.CreateInstance<HE_Container>();
+            return instance;
+        }
+
         public void Init()
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
             this.aligned = EditorPrefs.GetBool(FormKey("aligned"), false);
+
+            so = new SerializedObject(instance);
+            sp = so.FindProperty("pairs");
         }
 
         public void Draw()
@@ -64,6 +85,10 @@ namespace sHierarchy
             {
                 this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
                 this.aligned = EditorGUILayout.Toggle("Aligned", this.aligned);
+
+                so.Update();
+                EditorGUILayout.PropertyField(sp);
+                so.ApplyModifiedProperties();
             });
         }
 
@@ -71,6 +96,7 @@ namespace sHierarchy
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
             EditorPrefs.SetBool(FormKey("aligned"), this.aligned);
+            mPairs = pairs;
         }
     }
 }

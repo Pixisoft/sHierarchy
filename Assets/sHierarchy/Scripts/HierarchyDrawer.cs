@@ -44,44 +44,25 @@ namespace sHierarchy
 
         static class HierarchyRenderer
         {
-            static private BranchGroup currentBranch;
+            static private Color[] currentBranch;
 
-            private static readonly BranchGroup fallbackGroup =
-                new BranchGroup()
-                {
-                    overlayColor = new Color(1f, 0.44f, 0.97f, .04f),
-                    colors = new[]
-                    {
-                        new Color(1f, 0.44f, 0.97f), new Color(0.56f, 0.44f, 1f), new Color(0.44f, 0.71f, 1f),
-                        new Color(0.19f, 0.53f, 0.78f)
-                    }
-                };
-
-            public static void SwitchBranchesColors(int hierarchyIndex)
+            public static void SwitchBranchesColors()
             {
-                int targetIndex = hierarchyIndex % data.tree.branches.Length;
-                if (data.tree.branches.Length == 0 || data.tree.branches[targetIndex].colors.Length <= 0)
-                {
-                    currentBranch = fallbackGroup;
-                    return;
-                }
-
-                currentBranch = data.tree.branches[targetIndex];
+                currentBranch = data.tree.branches;
             }
 
             private const float barWidth = 2;
             private const int barOffsetX = 15;
             private const float dotDivider = 11.0f;
 
-            public static void DrawNestGroupOverlay(Rect originalRect)
+            public static void DrawNestGroupOverlay(Rect originalRect, int nestlevel)
             {
-                if (currentBranch.overlayColor.a <= 0)
-                    return;
-
+                Color color = GetNestColor(nestlevel);
+                color.a = (FoundBranchColor(nestlevel))? 0 : data.tree.overlayAlpha;
                 if (data.tree.drawFill)
-                    DrawFullItem(originalRect, currentBranch.overlayColor);
+                    DrawFullItem(originalRect, color);
                 else
-                    DrawSelection(originalRect, currentBranch.overlayColor);
+                    DrawSelection(originalRect, color);
             }
 
             public static void DrawFullItem(Rect originalRect, Color color)
@@ -100,9 +81,16 @@ namespace sHierarchy
                 return 37 + (originalRect.height - 2) * nestLevel;
             }
 
+            static bool FoundBranchColor(int nestLevel)
+            {
+                return (nestLevel == 0 || (nestLevel - 1) >= currentBranch.Length);
+            }
+
             static Color GetNestColor(int nestLevel)
             {
-                return currentBranch.colors[nestLevel % currentBranch.colors.Length];
+                if (FoundBranchColor(nestLevel))
+                    return data.tree.baseLevelColor;
+                return currentBranch[nestLevel - 1];
             }
 
             public static void DrawVerticalLineFrom(Rect originalRect, int nestLevel)
@@ -113,7 +101,7 @@ namespace sHierarchy
 
             public static void DrawHalfVerticalLineFrom(Rect originalRect, bool startsOnTop, int nestLevel)
             {
-                if (currentBranch.colors.Length <= 0) return;
+                if (currentBranch.Length <= 0) return;
                 DrawHalfVerticalLineFrom(originalRect, startsOnTop, nestLevel, GetNestColor(nestLevel));
             }
 
@@ -133,7 +121,7 @@ namespace sHierarchy
 
             public static void DrawHorizontalLineFrom(Rect originalRect, int nestLevel, bool hasChilds)
             {
-                if (currentBranch.colors.Length <= 0)
+                if (currentBranch.Length <= 0)
                     return;
 
                 // Vertical rect, starts from the very left and then proceeds to te right
@@ -150,7 +138,7 @@ namespace sHierarchy
 
             public static void DrawDottedLine(Rect originalRect, int nestLevel, float offsetX = barOffsetX)
             {
-                if (currentBranch.colors.Length <= 0)
+                if (currentBranch.Length <= 0)
                     return;
 
                 Color color = (data.tree.colorizedLine) ? GetNestColor(nestLevel) : data.tree.baseLevelColor;
@@ -380,7 +368,7 @@ namespace sHierarchy
                         {
                             if (!data.icons.pairs[elementIndex].iconToDraw) continue;
 
-                            //Class inherithance
+                            // Class inherithance
                             foreach (var classReference in data.icons.pairs[elementIndex].targetClasses)
                             {
                                 if (!classReference) continue;
@@ -389,13 +377,13 @@ namespace sHierarchy
 
                                 if (!classReferenceType.IsClass) continue;
 
-                                //class ineriths 
+                                // class ineriths 
                                 if (componentType.IsAssignableFrom(classReferenceType) || componentType.IsSubclassOf(classReferenceType))
                                 {
-                                    //Adds the icon index to the "positions" list, to draw all of them in order later [if enabled] 
+                                    // Adds the icon index to the "positions" list, to draw all of them in order later [if enabled] 
                                     if (!iconsPositions.Contains(elementIndex)) iconsPositions.Add(elementIndex);
 
-                                    //Adds the icon index to draw, only if it's not present already
+                                    // Adds the icon index to draw, only if it's not present already
                                     if (!newInfo.iconIndexes.Contains(elementIndex))
                                         newInfo.iconIndexes.Add(elementIndex);
 
@@ -495,12 +483,12 @@ namespace sHierarchy
                 // prevents drawing when the hierarchy search mode is enabled
                 if (selectionRect.x >= 60)
                 {
-                    HierarchyRenderer.SwitchBranchesColors(currentItem.nestingGroup);
+                    HierarchyRenderer.SwitchBranchesColors();
 
                     // Group
                     if (data.tree.colorizedItem && !drawedPrefabOverlay && currentItem.topParentHasChild)
                     {
-                        HierarchyRenderer.DrawNestGroupOverlay(selectionRect);
+                        HierarchyRenderer.DrawNestGroupOverlay(selectionRect, currentItem.nestingLevel);
                     }
 
                     HierarchyRenderer.DrawDottedLine(selectionRect, 0, 0);
