@@ -48,7 +48,7 @@ namespace sHierarchy
 
         public void Init()
         {
-            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), false);
+            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
         }
 
         public void Draw()
@@ -60,7 +60,7 @@ namespace sHierarchy
 
             HierarchyUtil.CreateGroup(() =>
             {
-                this.enabled = EditorGUILayout.Toggle("Enabeld: ", this.enabled);
+                this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
             });
         }
 

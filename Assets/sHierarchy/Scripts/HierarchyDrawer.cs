@@ -102,33 +102,34 @@ namespace sHierarchy
 
             public static void DrawHalfVerticalLineFrom(Rect originalRect, bool startsOnTop, int nestLevel, Color color)
             {
-                // Vertical rect, starts from the very left and then proceeds to te right
-                EditorGUI.DrawRect(
-                    new Rect(
+                Rect rect = new Rect(
                         GetStartX(originalRect, nestLevel),
                         startsOnTop ? originalRect.y : (originalRect.y + originalRect.height / 2f),
                         barWidth,
-                        originalRect.height / 2f
-                        ),
-                    color
-                    );
+                        originalRect.height / 2f);
+
+                color = (data.tree.colorizedLine) ? color : data.tree.baseLevelColor;
+
+                // Vertical rect, starts from the very left and then proceeds to te right
+                EditorGUI.DrawRect(rect, color);
             }
 
             public static void DrawHorizontalLineFrom(Rect originalRect, int nestLevel, bool hasChilds)
             {
-                if (currentBranch.colors.Length <= 0) return;
+                if (currentBranch.colors.Length <= 0)
+                    return;
 
                 // Vertical rect, starts from the very left and then proceeds to te right
-                EditorGUI.DrawRect(
-                    new Rect(
+                Rect rect = new Rect(
                         GetStartX(originalRect, nestLevel),
                         originalRect.y + originalRect.height / 2f,
                         originalRect.height + (hasChilds ? -5 : 2),
                         //originalRect.height - 5, 
-                        barWidth
-                        ),
-                    GetNestColor(nestLevel)
-                    );
+                        barWidth);
+
+                Color color = (data.tree.colorizedLine) ? GetNestColor(nestLevel) : data.tree.baseLevelColor;
+
+                EditorGUI.DrawRect(rect, color);
             }
         }
 
@@ -446,11 +447,12 @@ namespace sHierarchy
                     HierarchyRenderer.SwitchBranchesColors(currentItem.nestingGroup);
 
                     // Group
-                    if ((data.tree.drawOverlayOnColoredPrefabs || !drawedPrefabOverlay) && currentItem.topParentHasChild)
+                    if (data.tree.colorizedItem && 
+                        !drawedPrefabOverlay && 
+                        currentItem.topParentHasChild)
                     {
                         HierarchyRenderer.DrawNestGroupOverlay(selectionRect);
                     }
-
 
                     if (currentItem.nestingLevel == 0 && !currentItem.hasChilds)
                     {
@@ -477,8 +479,7 @@ namespace sHierarchy
                     Rect boldGroupRect = new Rect(
                         32, selectionRect.y - data.tree.dividerHeight / 2f,
                         selectionRect.width + (selectionRect.x - 32),
-                        data.tree.dividerHeight
-                        );
+                        data.tree.dividerHeight);
                     EditorGUI.DrawRect(boldGroupRect, Color.black * .3f);
                 }
             }

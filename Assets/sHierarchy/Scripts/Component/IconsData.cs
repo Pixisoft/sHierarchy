@@ -62,8 +62,8 @@ namespace sHierarchy
 
             HierarchyUtil.CreateGroup(() =>
             {
-                this.enabled = EditorGUILayout.Toggle("Enabeld: ", this.enabled);
-                this.aligned = EditorGUILayout.Toggle("Aligned: ", this.aligned);
+                this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
+                this.aligned = EditorGUILayout.Toggle("Aligned", this.aligned);
             });
         }
 

@@ -38,16 +38,13 @@ namespace sHierarchy
         public bool foldout = false;
 
         public bool enabled = true;
-        public bool drawOverlayOnColoredPrefabs = true;
-        [Range(0, 3)] public float dividerHeight = 1;
+        public bool colorizedLine = false;
+        public bool colorizedItem = true;
+        public float dividerHeight = 1;
         public Color baseLevelColor = Color.gray;
 
-        /* Setter & Getters */
-
-        /* Functions */
-
         public BranchGroup[] branches = new[]
-        {
+{
             new BranchGroup()
             {
                 overlayColor =  new Color(1f, 0.44f, 0.97f, .04f),
@@ -73,13 +70,18 @@ namespace sHierarchy
             }
         };
 
+        /* Setter & Getters */
+
+        /* Functions */
+
         public string FormKey(string name) { return HierarchyUtil.FormKey("tree.") + name; }
 
         public void Init()
         {
-            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
-            this.drawOverlayOnColoredPrefabs = EditorPrefs.GetBool(FormKey("drawOverlayOnColoredPrefabs"), false);
-            this.dividerHeight = EditorPrefs.GetFloat(FormKey("dividerHeight"), 1);
+            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
+            this.colorizedLine = EditorPrefs.GetBool(FormKey("colorizedLine"), this.colorizedLine);
+            this.colorizedItem = EditorPrefs.GetBool(FormKey("colorizedItem"), this.colorizedItem);
+            this.dividerHeight = EditorPrefs.GetFloat(FormKey("dividerHeight"), this.dividerHeight);
             this.baseLevelColor = HierarchyUtil.GetColor(FormKey("baseLevelColor"), this.baseLevelColor);
         }
 
@@ -92,17 +94,19 @@ namespace sHierarchy
 
             HierarchyUtil.CreateGroup(() =>
             {
-                this.enabled = EditorGUILayout.Toggle("Enabeld: ", this.enabled);
-                this.drawOverlayOnColoredPrefabs = EditorGUILayout.Toggle("Draw Overlay On Colored Prefabs: ", this.drawOverlayOnColoredPrefabs);
-                this.dividerHeight = EditorGUILayout.Slider("Divider Height: ", this.dividerHeight, 0, 3);
-                this.baseLevelColor = EditorGUILayout.ColorField("Base Level Color: ", this.baseLevelColor);
+                this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
+                this.colorizedLine = EditorGUILayout.Toggle("Colorized Line", this.colorizedLine);
+                this.colorizedItem = EditorGUILayout.Toggle("Coloried Item", this.colorizedItem);
+                this.dividerHeight = EditorGUILayout.Slider("Divider Height", this.dividerHeight, 0, 3);
+                this.baseLevelColor = EditorGUILayout.ColorField("Base Level Color", this.baseLevelColor);
             });
         }
 
         public void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
-            EditorPrefs.SetBool(FormKey("drawOverlayOnColoredPrefabs"), this.drawOverlayOnColoredPrefabs);
+            EditorPrefs.SetBool(FormKey("colorizedLine"), this.colorizedLine);
+            EditorPrefs.SetBool(FormKey("colorizedItem"), this.colorizedItem);
             EditorPrefs.SetFloat(FormKey("dividerHeight"), this.dividerHeight);
             HierarchyUtil.SetColor(FormKey("baseLevelColor"), this.baseLevelColor);
         }

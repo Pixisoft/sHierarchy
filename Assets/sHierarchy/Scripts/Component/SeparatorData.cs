@@ -42,7 +42,7 @@ namespace sHierarchy
 
         public void Init()
         {
-            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), false);
+            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
             this.startString = EditorPrefs.GetString(FormKey("startString"), ">");
             this.color = HierarchyUtil.GetColor(FormKey("color"), this.color);
         }
@@ -56,9 +56,9 @@ namespace sHierarchy
 
             HierarchyUtil.CreateGroup(() =>
             {
-                this.enabled = EditorGUILayout.Toggle("Enabeld: ", this.enabled);
-                this.startString = EditorGUILayout.TextField("Start String: ", this.startString);
-                this.color = EditorGUILayout.ColorField("Color: ", this.color);
+                this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
+                this.startString = EditorGUILayout.TextField("Start String", this.startString);
+                this.color = EditorGUILayout.ColorField("Color", this.color);
             });
         }
 
