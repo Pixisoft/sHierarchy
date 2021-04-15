@@ -19,46 +19,38 @@
  * 
  * For any other use, please ask for permission by contacting the author.
  */
+using UnityEditor;
 using UnityEngine;
 
 namespace sHierarchy
 {
-    public class HierarchyData : HierarchyComponent
+    [System.Serializable]
+    public class AlternatingBGData : HierarchyComponent
     {
+        public bool foldout = false;
         public bool enabled = true;
-        public bool updateInPlayMode = true;
+        public Color color = new Color(0, 0, 0, .08f);
 
-        public IconsData icons = new IconsData();
-        public PrefabsData prefabsData = new PrefabsData();
-        public AlternatingBGData alternatingBackground = new AlternatingBGData();
-        public SeparatorData separator = new SeparatorData();
-        public TreeData tree = new TreeData();
+        public string FormKey(string name) { return HierarchyUtil.FormKey("alterBG.") + name; }
 
         public void Init()
         {
-            icons.Init();
-            prefabsData.Init();
-            alternatingBackground.Init();
-            separator.Init();
-            tree.Init();
+            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), false);
         }
 
         public void Draw()
         {
-            icons.Draw();
-            prefabsData.Draw();
-            alternatingBackground.Draw();
-            separator.Draw();
-            tree.Draw();
+            foldout = EditorGUILayout.Foldout(foldout, "Alternating Background");
+
+            if (foldout)
+            {
+                this.enabled = EditorGUILayout.Toggle("Enabeld: ", this.enabled);
+            }
         }
 
         public void SavePref()
         {
-            icons.SavePref();
-            prefabsData.SavePref();
-            alternatingBackground.SavePref();
-            separator.SavePref();
-            tree.SavePref();
+            EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
         }
     }
 }

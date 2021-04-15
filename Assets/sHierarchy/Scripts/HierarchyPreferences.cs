@@ -41,59 +41,68 @@ namespace sHierarchy
 
         /* Functions */
 
-        [PreferenceItem("sHierarchy")]
-        private static void CustomPreferencesGUI()
+#if UNITY_2018_3_OR_NEWER
+        private class HP_SettingsProvider : SettingsProvider
         {
-            InitGUI();
-            UpdateLogic();
-            UpdateGUI();
+            public HP_SettingsProvider(string path, SettingsScope scopes = SettingsScope.User)
+                : base(path, scopes)
+            { }
+
+            public override void OnGUI(string searchContext)
+            {
+                CustomPreferencesGUI();
+            }
         }
 
-        private static void InitGUI()
+        [SettingsProvider]
+        static SettingsProvider HP_PrefCode()
+        {
+            return new HP_SettingsProvider("Preferences/sHierarchy");
+        }
+#else
+        [PreferenceItem("sHierarchy")]
+#endif
+        private static void CustomPreferencesGUI()
+        {
+            Init();
+            Draw();
+            SavePref();
+        }
+
+        private static void Init()
         {
             if (prefsLoaded)
                 return;
 
             mData = new HierarchyData();
 
-            mData.enabled = EditorPrefs.GetBool("enabled", true);
-            mData.updateInPlayMode = EditorPrefs.GetBool("updateInPlayMode", true);
+            mData.enabled = EditorPrefs.GetBool(HierarchyUtil.FormKey("enabled"), true);
+            mData.updateInPlayMode = EditorPrefs.GetBool(HierarchyUtil.FormKey("updateInPlayMode"), true);
+
+            mData.Init();
 
             prefsLoaded = true;
         }
 
-        private static void UpdateLogic()
+        private static void Draw()
         {
             mData.enabled = EditorGUILayout.Toggle("Enabeld: ", mData.enabled);
             mData.updateInPlayMode = EditorGUILayout.Toggle("Update In Play Mode: ", mData.updateInPlayMode);
 
-            #region Foldout
-            {
-                //fo_icons = EditorGUILayout.Foldout(fo_icons, "Icons");
-                //fo_prefabsData = EditorGUILayout.Foldout(fo_prefabsData, "Prefabs Data");
-                //fo_alternatingBackground = EditorGUILayout.Foldout(fo_alternatingBackground, "Alternating Background");
-                //fo_separator = EditorGUILayout.Foldout(fo_separator, "Separator");
-                //fo_tree = EditorGUILayout.Foldout(fo_tree, "Tree");
-            }
-            #endregion
-
-            //if (fo_icons) DrawIcons();
+            mData.Draw();
         }
 
-        private static void UpdateGUI()
+        private static void SavePref()
         {
             if (!GUI.changed)
                 return;
 
-            EditorPrefs.SetBool("enabled", mData.enabled);
-            EditorPrefs.SetBool("updateInPlayMode", mData.updateInPlayMode);
+            EditorPrefs.SetBool(HierarchyUtil.FormKey("enabled"), mData.enabled);
+            EditorPrefs.SetBool(HierarchyUtil.FormKey("updateInPlayMode"), mData.updateInPlayMode);
+
+            mData.SavePref();
 
             HierarchyDrawer.Initialize();
-        }
-
-        private static void DrawIcons()
-        {
-            mData.enabled = EditorGUILayout.Toggle("Enabeld: ", mData.enabled);
         }
     }
 }

@@ -46,10 +46,10 @@ namespace sHierarchy
 
         static class HierarchyRenderer
         {
-            static private HierarchyData.TreeData.BranchGroup currentBranch;
+            static private TreeData.BranchGroup currentBranch;
 
-            private static readonly HierarchyData.TreeData.BranchGroup fallbackGroup =
-                new HierarchyData.TreeData.BranchGroup()
+            private static readonly TreeData.BranchGroup fallbackGroup =
+                new TreeData.BranchGroup()
                 {
                     overlayColor = new Color(1f, 0.44f, 0.97f, .04f),
                     colors = new[]

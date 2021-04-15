@@ -19,46 +19,14 @@
  * 
  * For any other use, please ask for permission by contacting the author.
  */
-using UnityEngine;
 
 namespace sHierarchy
 {
-    public class HierarchyData : HierarchyComponent
+    public static class HierarchyUtil
     {
-        public bool enabled = true;
-        public bool updateInPlayMode = true;
-
-        public IconsData icons = new IconsData();
-        public PrefabsData prefabsData = new PrefabsData();
-        public AlternatingBGData alternatingBackground = new AlternatingBGData();
-        public SeparatorData separator = new SeparatorData();
-        public TreeData tree = new TreeData();
-
-        public void Init()
+        public static string FormKey(string name)
         {
-            icons.Init();
-            prefabsData.Init();
-            alternatingBackground.Init();
-            separator.Init();
-            tree.Init();
-        }
-
-        public void Draw()
-        {
-            icons.Draw();
-            prefabsData.Draw();
-            alternatingBackground.Draw();
-            separator.Draw();
-            tree.Draw();
-        }
-
-        public void SavePref()
-        {
-            icons.SavePref();
-            prefabsData.SavePref();
-            alternatingBackground.SavePref();
-            separator.SavePref();
-            tree.SavePref();
+            return "sHierarchy." + name;
         }
     }
 }

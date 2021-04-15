@@ -19,46 +19,46 @@
  * 
  * For any other use, please ask for permission by contacting the author.
  */
+using UnityEditor;
 using UnityEngine;
 
 namespace sHierarchy
 {
-    public class HierarchyData : HierarchyComponent
+    [System.Serializable]
+    public class IconsData : HierarchyComponent
     {
-        public bool enabled = true;
-        public bool updateInPlayMode = true;
+        public bool foldout = false;
 
-        public IconsData icons = new IconsData();
-        public PrefabsData prefabsData = new PrefabsData();
-        public AlternatingBGData alternatingBackground = new AlternatingBGData();
-        public SeparatorData separator = new SeparatorData();
-        public TreeData tree = new TreeData();
+        public bool enabled = true;
+
+        [System.Serializable]
+        public class HierarchyElement
+        {
+            [SerializeField] public Texture2D iconToDraw;
+            [SerializeField] public MonoScript[] targetClasses;
+        }
+
+        public bool aligned = false;
+        public HierarchyElement[] pairs = new HierarchyElement[0];
 
         public void Init()
         {
-            icons.Init();
-            prefabsData.Init();
-            alternatingBackground.Init();
-            separator.Init();
-            tree.Init();
+            this.enabled = EditorPrefs.GetBool(HierarchyUtil.FormKey("icons.enabled"), false);
         }
 
         public void Draw()
         {
-            icons.Draw();
-            prefabsData.Draw();
-            alternatingBackground.Draw();
-            separator.Draw();
-            tree.Draw();
+            foldout = EditorGUILayout.Foldout(foldout, "Icons");
+
+            if (foldout)
+            {
+                this.enabled = EditorGUILayout.Toggle("Enabeld: ", this.enabled);
+            }
         }
 
         public void SavePref()
         {
-            icons.SavePref();
-            prefabsData.SavePref();
-            alternatingBackground.SavePref();
-            separator.SavePref();
-            tree.SavePref();
+            EditorPrefs.SetBool(HierarchyUtil.FormKey("icons.enabled"), this.enabled);
         }
     }
 }
