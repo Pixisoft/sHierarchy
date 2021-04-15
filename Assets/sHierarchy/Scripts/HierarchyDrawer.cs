@@ -21,6 +21,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -69,10 +70,12 @@ namespace sHierarchy
             }
 
             private const float barWidth = 2;
+            private const int barOffsetX = 15;
+            private const float dotDivider = 11.0f;
 
             public static void DrawNestGroupOverlay(Rect originalRect)
             {
-                if (currentBranch.overlayColor.a <= 0) 
+                if (currentBranch.overlayColor.a <= 0)
                     return;
 
                 if (data.tree.drawFill)
@@ -94,7 +97,7 @@ namespace sHierarchy
 
             static float GetStartX(Rect originalRect, int nestLevel)
             {
-                return 37 + (originalRect.height - 2) * nestLevel;    
+                return 37 + (originalRect.height - 2) * nestLevel;
             }
 
             static Color GetNestColor(int nestLevel)
@@ -117,7 +120,7 @@ namespace sHierarchy
             public static void DrawHalfVerticalLineFrom(Rect originalRect, bool startsOnTop, int nestLevel, Color color)
             {
                 Rect rect = new Rect(
-                        GetStartX(originalRect, nestLevel),
+                        GetStartX(originalRect, nestLevel) + barOffsetX,
                         startsOnTop ? originalRect.y : (originalRect.y + originalRect.height / 2f),
                         barWidth,
                         originalRect.height / 2f);
@@ -135,15 +138,39 @@ namespace sHierarchy
 
                 // Vertical rect, starts from the very left and then proceeds to te right
                 Rect rect = new Rect(
-                        GetStartX(originalRect, nestLevel),
+                        GetStartX(originalRect, nestLevel) + barOffsetX,
                         originalRect.y + originalRect.height / 2f,
-                        originalRect.height + (hasChilds ? -5 : 2),
-                        //originalRect.height - 5, 
+                        originalRect.height + (hasChilds ? -5 : 2 - 12),
                         barWidth);
 
                 Color color = (data.tree.colorizedLine) ? GetNestColor(nestLevel) : data.tree.baseLevelColor;
 
                 EditorGUI.DrawRect(rect, color);
+            }
+
+            public static void DrawDottedLine(Rect originalRect, int nestLevel, float offsetX = barOffsetX)
+            {
+                if (currentBranch.colors.Length <= 0)
+                    return;
+
+                Color color = (data.tree.colorizedLine) ? GetNestColor(nestLevel) : data.tree.baseLevelColor;
+
+                float x = GetStartX(originalRect, nestLevel) + offsetX;
+                float y = originalRect.y;
+                float height = originalRect.height / dotDivider;
+                float centerY = y + originalRect.height / 2f;
+
+                // startsOnTop? originalRect.y: (originalRect.y + originalRect.height / 2f),
+
+                Rect dot1 = new Rect(x, y, barWidth, height);
+                Rect dot2 = new Rect(x, (y + centerY) / 2.0f, barWidth, height);
+                Rect dot3 = new Rect(x, centerY, barWidth, height);
+                Rect dot4 = new Rect(x, (centerY + y + originalRect.height) / 2.0f, barWidth, height);
+
+                EditorGUI.DrawRect(dot1, color);
+                EditorGUI.DrawRect(dot2, color);
+                EditorGUI.DrawRect(dot3, color);
+                EditorGUI.DrawRect(dot4, color);
             }
         }
 
@@ -277,26 +304,33 @@ namespace sHierarchy
             Scene tempScene;
             firstInstanceID = -1;
 
-            for (int i = 0; i < SceneManager.sceneCount; i++)
+            for (int i = 0; i < SceneManager.sceneCount; ++i)
             {
                 tempScene = SceneManager.GetSceneAt(i);
-                if (tempScene.isLoaded)
-                {
-                    sceneRoots = tempScene.GetRootGameObjects();
-                    //Analyzes all scene's gameObjects
-                    for (int j = 0; j < sceneRoots.Length; j++)
-                    {
-                        AnalyzeGoWithChildren(
-                            go: sceneRoots[j],
-                            nestingLevel: 0,
-                            sceneRoots[j].transform.childCount > 0,
-                            nestingGroup: j,
-                            isLastChild: j == sceneRoots.Length - 1
-                            );
-                    }
 
-                    if (firstInstanceID == -1 && sceneRoots.Length > 0) firstInstanceID = sceneRoots[0].GetInstanceID();
+                if (!tempScene.isLoaded)
+                    continue;
+
+                sceneRoots = tempScene.GetRootGameObjects();
+
+                // TODO: Find hierarchy sorting type...
+                bool alpha = false;
+                if (alpha)
+                    sceneRoots = sceneRoots.OrderBy(go => go.name).ToArray();
+
+                // Analyzes all scene's gameObjects
+                for (int j = 0; j < sceneRoots.Length; ++j)
+                {
+                    AnalyzeGoWithChildren(
+                        go: sceneRoots[j],
+                        nestingLevel: 0,
+                        sceneRoots[j].transform.childCount > 0,
+                        nestingGroup: j,
+                        isLastChild: j == (sceneRoots.Length - 1));
                 }
+
+                if (firstInstanceID == -1 && sceneRoots.Length > 0)
+                    firstInstanceID = sceneRoots[0].GetInstanceID();
             }
         }
 
@@ -308,7 +342,7 @@ namespace sHierarchy
             {
                 InstanceInfo newInfo = new InstanceInfo();
                 newInfo.iconIndexes = new List<int>();
-                newInfo.isLastElement = isLastChild && go.transform.childCount == 0;
+                newInfo.isLastElement = isLastChild;
                 newInfo.nestingLevel = nestingLevel;
                 newInfo.nestingGroup = nestingGroup;
                 newInfo.hasChilds = go.transform.childCount > 0;
@@ -325,7 +359,7 @@ namespace sHierarchy
                     }
                 }
 
-                newInfo.isSeparator = String.Compare(go.tag, "EditorOnly", StringComparison.Ordinal) == 0 //gameobject has EditorOnly tag
+                newInfo.isSeparator = String.Compare(go.tag, "EditorOnly", StringComparison.Ordinal) == 0 // gameobject has EditorOnly tag
                                       && (!string.IsNullOrEmpty(go.name) && !string.IsNullOrEmpty(data.separator.startString) && go.name.StartsWith(data.separator.startString)); //and also starts with '>'
 
                 if (data.icons.enabled && data.icons.pairs != null && data.icons.pairs.Length > 0)
@@ -408,7 +442,7 @@ namespace sHierarchy
 
         static void DrawCore(int instanceID, Rect selectionRect)
         {
-            //skips early if item is not registered or not valid
+            // skips early if item is not registered or not valid
             if (!sceneGameObjects.ContainsKey(instanceID)) return;
 
             currentItem = sceneGameObjects[instanceID];
@@ -459,7 +493,7 @@ namespace sHierarchy
             if (data.tree.enabled && currentItem.nestingLevel >= 0)
             {
                 // prevents drawing when the hierarchy search mode is enabled
-                if (selectionRect.x >= 60) 
+                if (selectionRect.x >= 60)
                 {
                     HierarchyRenderer.SwitchBranchesColors(currentItem.nestingGroup);
 
@@ -469,23 +503,39 @@ namespace sHierarchy
                         HierarchyRenderer.DrawNestGroupOverlay(selectionRect);
                     }
 
+                    HierarchyRenderer.DrawDottedLine(selectionRect, 0, 0);
+
                     if (currentItem.nestingLevel == 0 && !currentItem.hasChilds)
                     {
                         HierarchyRenderer.DrawHalfVerticalLineFrom(selectionRect, true, 0, data.tree.baseLevelColor);
-                        HierarchyRenderer.DrawHalfVerticalLineFrom(selectionRect, false, 0, data.tree.baseLevelColor);
+                        if (!currentItem.isLastElement)
+                            HierarchyRenderer.DrawHalfVerticalLineFrom(selectionRect, false, 0, data.tree.baseLevelColor);
                     }
                     else
                     {
                         // Draws a vertical line for each previous nesting level
-                        for (int i = 0; i <= currentItem.nestingLevel; i++)
+                        for (int i = 0; i <= currentItem.nestingLevel; ++i)
                         {
-                            HierarchyRenderer.DrawVerticalLineFrom(selectionRect, i);
-                        }
+                            bool currentLevel = (currentItem.nestingLevel == i);
 
-                        HierarchyRenderer.DrawHorizontalLineFrom(
-                            selectionRect, currentItem.nestingLevel, currentItem.hasChilds
-                            );
+                            if (currentLevel && currentItem.hasChilds)
+                                continue;
+
+                            if (currentLevel && !currentItem.hasChilds)
+                            {
+                                HierarchyRenderer.DrawHalfVerticalLineFrom(selectionRect, true, i);
+                                if (!currentItem.isLastElement)
+                                    HierarchyRenderer.DrawHalfVerticalLineFrom(selectionRect, false, i);
+                            }
+                            else
+                            {
+                                HierarchyRenderer.DrawDottedLine(selectionRect, i);
+                            }
+                        }
                     }
+
+                    if (!currentItem.hasChilds)
+                        HierarchyRenderer.DrawHorizontalLineFrom(selectionRect, currentItem.nestingLevel, currentItem.hasChilds);
                 }
 
                 // draws a super small divider between different groups
