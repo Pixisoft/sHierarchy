@@ -72,10 +72,24 @@ namespace sHierarchy
 
             public static void DrawNestGroupOverlay(Rect originalRect)
             {
-                if (currentBranch.overlayColor.a <= 0) return;
+                if (currentBranch.overlayColor.a <= 0) 
+                    return;
 
+                if (data.tree.drawFill)
+                    DrawFullItem(originalRect, currentBranch.overlayColor);
+                else
+                    DrawSelection(originalRect, currentBranch.overlayColor);
+            }
+
+            public static void DrawFullItem(Rect originalRect, Color color)
+            {
                 originalRect = new Rect(32, originalRect.y, originalRect.width + (originalRect.x - 32), originalRect.height);
-                EditorGUI.DrawRect(originalRect, currentBranch.overlayColor);
+                EditorGUI.DrawRect(originalRect, color);
+            }
+
+            public static void DrawSelection(Rect originalRect, Color color)
+            {
+                EditorGUI.DrawRect(originalRect, color);
             }
 
             static float GetStartX(Rect originalRect, int nestLevel)
@@ -410,7 +424,10 @@ namespace sHierarchy
             {
                 if (temp_alternatingDrawed)
                 {
-                    EditorGUI.DrawRect(selectionRect, data.alternatingBackground.color);
+                    if (data.alternatingBackground.drawFill)
+                        HierarchyRenderer.DrawFullItem(selectionRect, data.alternatingBackground.color);
+                    else
+                        HierarchyRenderer.DrawSelection(selectionRect, data.alternatingBackground.color);
                     temp_alternatingDrawed = false;
                 }
                 else
@@ -447,9 +464,7 @@ namespace sHierarchy
                     HierarchyRenderer.SwitchBranchesColors(currentItem.nestingGroup);
 
                     // Group
-                    if (data.tree.colorizedItem && 
-                        !drawedPrefabOverlay && 
-                        currentItem.topParentHasChild)
+                    if (data.tree.colorizedItem && !drawedPrefabOverlay && currentItem.topParentHasChild)
                     {
                         HierarchyRenderer.DrawNestGroupOverlay(selectionRect);
                     }

@@ -32,6 +32,7 @@ namespace sHierarchy
 
         public bool enabled = true;
         public Color color = new Color(0, 0, 0, .08f);
+        public bool drawFill = true;
 
         /* Setter & Getters */
 
@@ -41,8 +42,9 @@ namespace sHierarchy
 
         public void Init()
         {
-            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
+            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
             this.color = HierarchyUtil.GetColor(FormKey("color"), this.color);
+            this.drawFill = EditorPrefs.GetBool(FormKey("drawFill"), this.drawFill);
         }
 
         public void Draw()
@@ -56,6 +58,7 @@ namespace sHierarchy
             {
                 this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
                 this.color = EditorGUILayout.ColorField("Color", this.color);
+                this.drawFill = EditorGUILayout.Toggle("Draw Fill", this.drawFill);
             });
         }
 
@@ -63,6 +66,7 @@ namespace sHierarchy
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
             HierarchyUtil.SetColor(FormKey("color"), this.color);
+            EditorPrefs.SetBool(FormKey("drawFill"), this.drawFill);
         }
     }
 }

@@ -42,6 +42,7 @@ namespace sHierarchy
         public bool colorizedItem = true;
         public float dividerHeight = 1;
         public Color baseLevelColor = Color.gray;
+        public bool drawFill = false;
 
         public BranchGroup[] branches = new[]
 {
@@ -83,6 +84,7 @@ namespace sHierarchy
             this.colorizedItem = EditorPrefs.GetBool(FormKey("colorizedItem"), this.colorizedItem);
             this.dividerHeight = EditorPrefs.GetFloat(FormKey("dividerHeight"), this.dividerHeight);
             this.baseLevelColor = HierarchyUtil.GetColor(FormKey("baseLevelColor"), this.baseLevelColor);
+            this.drawFill = EditorPrefs.GetBool(FormKey("drawFill"), this.drawFill);
         }
 
         public void Draw()
@@ -99,6 +101,7 @@ namespace sHierarchy
                 this.colorizedItem = EditorGUILayout.Toggle("Coloried Item", this.colorizedItem);
                 this.dividerHeight = EditorGUILayout.Slider("Divider Height", this.dividerHeight, 0, 3);
                 this.baseLevelColor = EditorGUILayout.ColorField("Base Level Color", this.baseLevelColor);
+                this.drawFill = EditorGUILayout.Toggle("Draw Fill", this.drawFill);
             });
         }
 
@@ -109,6 +112,7 @@ namespace sHierarchy
             EditorPrefs.SetBool(FormKey("colorizedItem"), this.colorizedItem);
             EditorPrefs.SetFloat(FormKey("dividerHeight"), this.dividerHeight);
             HierarchyUtil.SetColor(FormKey("baseLevelColor"), this.baseLevelColor);
+            EditorPrefs.SetBool(FormKey("drawFill"), this.drawFill);
         }
     }
 }
