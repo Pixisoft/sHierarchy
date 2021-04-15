@@ -120,7 +120,6 @@ namespace sHierarchy
                 public Color[] colors = new Color[0];
             }
 
-            [Space]
             public BranchGroup[] branches = new[]
             {
                 new BranchGroup()
