@@ -35,8 +35,8 @@ namespace sHierarchy
         /* Variables */
 
         private static Container_TreeData instance = ScriptableObject.CreateInstance<Container_TreeData>();
-        private static SerializedObject so = null;
-        private static SerializedProperty sp = null;
+        private static SerializedObject serializedObject = null;
+        private static SerializedProperty propBranches = null;
 
         public bool foldout = false;
 
@@ -47,6 +47,8 @@ namespace sHierarchy
         public Color baseLevelColor = Color.gray;
         public bool drawFill = false;
         public float overlayAlpha = 0.12f;
+        public float lineAlpa = 0.8f;
+        private int branchesLen = 0;
 
         /* Setter & Getters */
 
@@ -63,21 +65,12 @@ namespace sHierarchy
             this.colorizedItem = EditorPrefs.GetBool(FormKey("colorizedItem"), this.colorizedItem);
             this.dividerHeight = EditorPrefs.GetFloat(FormKey("dividerHeight"), this.dividerHeight);
             this.baseLevelColor = HierarchyUtil.GetColor(FormKey("baseLevelColor"), this.baseLevelColor);
-            this.drawFill = EditorPrefs.GetBool(FormKey("drawFill"), this.drawFill);
+            this.branchesLen = EditorPrefs.GetInt(FormKey("branches.Length"), this.branchesLen);
             this.overlayAlpha = EditorPrefs.GetFloat(FormKey("overlayAlpha"), this.overlayAlpha);
+            this.lineAlpa = EditorPrefs.GetFloat(FormKey("lineAlpa"), this.lineAlpa);
+            this.drawFill = EditorPrefs.GetBool(FormKey("drawFill"), this.drawFill);
 
-            #region Branches Color
-            {
-                var branchesLen = EditorPrefs.GetInt(FormKey("branches.Length"), branches.Length);
-                instance.branches = new Color[branchesLen];
-
-                for (int index = 0; index < branchesLen; ++index)
-                    instance.branches[index] = HierarchyUtil.GetColor(FormKey("branches" + index), instance.branches[index]);
-            }
-            #endregion
-
-            so = new SerializedObject(instance);
-            sp = so.FindProperty("branches");
+            DynamicRefresh();
         }
 
         public void Draw()
@@ -93,15 +86,34 @@ namespace sHierarchy
                 this.colorizedLine = EditorGUILayout.Toggle("Colorized Line", this.colorizedLine);
                 this.colorizedItem = EditorGUILayout.Toggle("Coloried Item", this.colorizedItem);
                 this.dividerHeight = EditorGUILayout.Slider("Divider Height", this.dividerHeight, 0, 3);
-                this.baseLevelColor = EditorGUILayout.ColorField("Base Level Color", this.baseLevelColor);
-                this.drawFill = EditorGUILayout.Toggle("Draw Fill", this.drawFill);
 
+                HierarchyUtil.BeginHorizontal(() =>
+                {
+                    this.baseLevelColor = EditorGUILayout.ColorField("Base Level Color", this.baseLevelColor);
 
-                so.Update();
-                EditorGUILayout.PropertyField(sp);
-                so.ApplyModifiedProperties();
+                    if (GUILayout.Button("Reset", GUILayout.Width(50)))
+                        ResetBaseLevelColor();
+                });
+
+                HierarchyUtil.BeginHorizontal(() =>
+                {
+                    instance = ScriptableObject.CreateInstance<Container_TreeData>();
+                    serializedObject = new SerializedObject(instance);
+                    propBranches = serializedObject.FindProperty("branches");
+
+                    DynamicRefresh();
+
+                    serializedObject.Update();
+                    EditorGUILayout.PropertyField(propBranches);
+                    serializedObject.ApplyModifiedProperties();
+
+                    if (GUILayout.Button("Reset", GUILayout.Width(50)))
+                        ResetBranchesColor();
+                });
 
                 this.overlayAlpha = EditorGUILayout.Slider("Overlay Alpha", this.overlayAlpha, 0, 0.8f);
+                this.lineAlpa = EditorGUILayout.Slider("Line Alpha", this.lineAlpa, 0, 1.0f);
+                this.drawFill = EditorGUILayout.Toggle("Draw Fill", this.drawFill);
             });
         }
 
@@ -112,13 +124,48 @@ namespace sHierarchy
             EditorPrefs.SetBool(FormKey("colorizedItem"), this.colorizedItem);
             EditorPrefs.SetFloat(FormKey("dividerHeight"), this.dividerHeight);
             HierarchyUtil.SetColor(FormKey("baseLevelColor"), this.baseLevelColor);
-            EditorPrefs.SetBool(FormKey("drawFill"), this.drawFill);
-            EditorPrefs.SetFloat(FormKey("overlayAlpha"), this.overlayAlpha);
             {
-                EditorPrefs.SetInt(FormKey("branches.Length"), this.branches.Length);
+                this.branchesLen = this.branches.Length;
+                EditorPrefs.SetInt(FormKey("branches.Length"), this.branchesLen);
+
                 for (int index = 0; index < branches.Length; ++index)
                     HierarchyUtil.SetColor(FormKey("branches" + index), instance.branches[index]);
             }
+            EditorPrefs.SetFloat(FormKey("overlayAlpha"), this.overlayAlpha);
+            EditorPrefs.SetFloat(FormKey("lineAlpa"), this.lineAlpa);
+            EditorPrefs.SetBool(FormKey("drawFill"), this.drawFill);
+        }
+
+        private void DynamicRefresh()
+        {
+            if (branchesLen > 0)
+            {
+                instance.branches = new Color[branchesLen];
+                for (int index = 0; index < branchesLen; ++index)
+                    instance.branches[index] = HierarchyUtil.GetColor(FormKey("branches" + index), instance.branches[index]);
+            }
+        }
+
+        private void ResetBaseLevelColor()
+        {
+            baseLevelColor = Color.grey;
+            SavePref();
+        }
+
+        private void ResetBranchesColor()
+        {
+            instance.branches = new Color[]
+            {
+                new Color(1, 0, 0, lineAlpa),
+                new Color(1, 0.5f, 0, lineAlpa),
+                new Color(1, 1, 0, lineAlpa),
+                new Color(0, 1, 0, lineAlpa),
+                new Color(0, 0, 1, lineAlpa),
+                new Color(0.5f, 0, 1, lineAlpa),
+                new Color(1, 0, 1, lineAlpa),
+            };
+            branchesLen = instance.branches.Length;
+            SavePref();
         }
     }
 }

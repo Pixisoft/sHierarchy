@@ -44,12 +44,7 @@ namespace sHierarchy
 
         static class HierarchyRenderer
         {
-            static private Color[] currentBranch;
-
-            public static void SwitchBranchesColors()
-            {
-                currentBranch = data.tree.branches;
-            }
+            static private Color[] currentBranch { get { return data.tree.branches; } }
 
             private const float barWidth = 2;
             private const int barOffsetX = 15;
@@ -101,19 +96,19 @@ namespace sHierarchy
 
             public static void DrawHalfVerticalLineFrom(Rect originalRect, bool startsOnTop, int nestLevel)
             {
-                if (currentBranch.Length <= 0) return;
                 DrawHalfVerticalLineFrom(originalRect, startsOnTop, nestLevel, GetNestColor(nestLevel));
             }
 
             public static void DrawHalfVerticalLineFrom(Rect originalRect, bool startsOnTop, int nestLevel, Color color)
             {
+                color = (data.tree.colorizedLine) ? color : data.tree.baseLevelColor;
+                color.a = data.tree.lineAlpa;
+
                 Rect rect = new Rect(
                         GetStartX(originalRect, nestLevel) + barOffsetX,
                         startsOnTop ? originalRect.y : (originalRect.y + originalRect.height / 2f),
                         barWidth,
                         originalRect.height / 2f);
-
-                color = (data.tree.colorizedLine) ? color : data.tree.baseLevelColor;
 
                 // Vertical rect, starts from the very left and then proceeds to te right
                 EditorGUI.DrawRect(rect, color);
@@ -121,8 +116,8 @@ namespace sHierarchy
 
             public static void DrawHorizontalLineFrom(Rect originalRect, int nestLevel, bool hasChilds)
             {
-                if (currentBranch.Length <= 0)
-                    return;
+                Color color = (data.tree.colorizedLine) ? GetNestColor(nestLevel) : data.tree.baseLevelColor;
+                color.a = data.tree.lineAlpa;
 
                 // Vertical rect, starts from the very left and then proceeds to te right
                 Rect rect = new Rect(
@@ -131,17 +126,13 @@ namespace sHierarchy
                         originalRect.height + (hasChilds ? -5 : 2 - 12),
                         barWidth);
 
-                Color color = (data.tree.colorizedLine) ? GetNestColor(nestLevel) : data.tree.baseLevelColor;
-
                 EditorGUI.DrawRect(rect, color);
             }
 
             public static void DrawDottedLine(Rect originalRect, int nestLevel, float offsetX = barOffsetX)
             {
-                if (currentBranch.Length <= 0)
-                    return;
-
                 Color color = (data.tree.colorizedLine) ? GetNestColor(nestLevel) : data.tree.baseLevelColor;
+                color.a = data.tree.lineAlpa;
 
                 float x = GetStartX(originalRect, nestLevel) + offsetX;
                 float y = originalRect.y;
@@ -348,11 +339,11 @@ namespace sHierarchy
                 }
 
                 newInfo.isSeparator = String.Compare(go.tag, "EditorOnly", StringComparison.Ordinal) == 0 // gameobject has EditorOnly tag
-                                      && (!string.IsNullOrEmpty(go.name) && !string.IsNullOrEmpty(data.separator.startString) && go.name.StartsWith(data.separator.startString)); //and also starts with '>'
+                                      && (!string.IsNullOrEmpty(go.name) && !string.IsNullOrEmpty(data.separator.startString) 
+                                      && go.name.StartsWith(data.separator.startString)); // and also starts with '>'
 
                 if (data.icons.enabled && data.icons.pairs != null && data.icons.pairs.Length > 0)
                 {
-
                     #region Components Information (icons)
 
                     Type classReferenceType; //todo opt
@@ -364,7 +355,7 @@ namespace sHierarchy
 
                         componentType = c.GetType();
 
-                        for (int elementIndex = 0; elementIndex < data.icons.pairs.Length; elementIndex++)
+                        for (int elementIndex = 0; elementIndex < data.icons.pairs.Length; ++elementIndex)
                         {
                             if (!data.icons.pairs[elementIndex].iconToDraw) continue;
 
@@ -386,7 +377,6 @@ namespace sHierarchy
                                     // Adds the icon index to draw, only if it's not present already
                                     if (!newInfo.iconIndexes.Contains(elementIndex))
                                         newInfo.iconIndexes.Add(elementIndex);
-
 
                                     break;
                                 }
@@ -458,7 +448,6 @@ namespace sHierarchy
                 }
             }
 
-
             #endregion
 
             #region DrawingPrefabsBackground
@@ -483,8 +472,6 @@ namespace sHierarchy
                 // prevents drawing when the hierarchy search mode is enabled
                 if (selectionRect.x >= 60)
                 {
-                    HierarchyRenderer.SwitchBranchesColors();
-
                     // Group
                     if (data.tree.colorizedItem && !drawedPrefabOverlay && currentItem.topParentHasChild)
                     {
@@ -502,22 +489,22 @@ namespace sHierarchy
                     else
                     {
                         // Draws a vertical line for each previous nesting level
-                        for (int i = 0; i <= currentItem.nestingLevel; ++i)
+                        for (int level = 0; level <= currentItem.nestingLevel; ++level)
                         {
-                            bool currentLevel = (currentItem.nestingLevel == i);
+                            bool currentLevel = (currentItem.nestingLevel == level);
 
                             if (currentLevel && currentItem.hasChilds)
                                 continue;
 
                             if (currentLevel && !currentItem.hasChilds)
                             {
-                                HierarchyRenderer.DrawHalfVerticalLineFrom(selectionRect, true, i);
+                                HierarchyRenderer.DrawHalfVerticalLineFrom(selectionRect, true, level);
                                 if (!currentItem.isLastElement)
-                                    HierarchyRenderer.DrawHalfVerticalLineFrom(selectionRect, false, i);
+                                    HierarchyRenderer.DrawHalfVerticalLineFrom(selectionRect, false, level);
                             }
                             else
                             {
-                                HierarchyRenderer.DrawDottedLine(selectionRect, i);
+                                HierarchyRenderer.DrawDottedLine(selectionRect, level);
                             }
                         }
                     }

@@ -18,6 +18,7 @@
  * 
  * For any other use, please ask for permission by contacting the author.
  */
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -32,13 +33,31 @@ namespace sHierarchy
             return "sHierarchy." + name;
         }
 
-        public static void CreateGroup(EmptyFunction func)
+        public static void CreateGroup(EmptyFunction func, bool flexibleSpace = false)
+        {
+            BeginHorizontal(() => 
+            { 
+                BeginVertical(() =>
+                {
+                    Indent(func);
+                }); 
+            }, 
+            flexibleSpace);
+        }
+
+        public static void BeginHorizontal(EmptyFunction func, bool flexibleSpace = false)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.BeginVertical("box");
-            Indent(func);
-            GUILayout.EndVertical();
+            if (flexibleSpace) GUILayout.FlexibleSpace();
+            func.Invoke();
             GUILayout.EndHorizontal();
+        }
+
+        public static void BeginVertical(EmptyFunction func)
+        {
+            GUILayout.BeginVertical("box");
+            func.Invoke();
+            GUILayout.EndVertical();
         }
 
         public static void Indent(EmptyFunction func)
@@ -64,6 +83,18 @@ namespace sHierarchy
             EditorPrefs.SetFloat(key + ".g", value.g);
             EditorPrefs.SetFloat(key + ".b", value.b);
             EditorPrefs.SetFloat(key + ".a", value.a);
+        }
+
+        public static void IgnoreErrors(EmptyFunction func)
+        {
+            try
+            {
+                func.Invoke();
+            }
+            catch (Exception)
+            {
+                // ..
+            }
         }
     }
 }
