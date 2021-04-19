@@ -83,7 +83,7 @@ namespace sHierarchy
             mPreviewRenderer = new PreviewRenderUtility();
             mPreviewRenderer.camera.clearFlags = CameraClearFlags.SolidColor;
             mPreviewRenderer.camera.transform.position = new Vector3(0, 0, -10);
-            mPreviewRenderer.camera.farClipPlane = 10000;
+            mPreviewRenderer.camera.farClipPlane = 10000;  // Just set far plane to very far
         }
 
         private void DrawSelected()
@@ -105,12 +105,10 @@ namespace sHierarchy
 
         private void DrawSelectedMesh(Mesh mesh, Material material)
         {
-            var boundaries = GUILayoutUtility.GetLastRect();
-            mPreviewRenderer.BeginPreview(boundaries, GUIStyle.none);
-            mPreviewRenderer.DrawMesh(mesh, Matrix4x4.identity, material, 0);
-            mPreviewRenderer.camera.Render();
-            var render = mPreviewRenderer.EndPreview();
-            GUI.DrawTexture(boundaries, render);
+            Render(() => 
+            {
+                mPreviewRenderer.DrawMesh(mesh, Matrix4x4.identity, material, 0);
+            });
         }
 
         private void DoRotate()
@@ -135,6 +133,16 @@ namespace sHierarchy
             cam.transform.RotateAround(Vector3.zero, cam.transform.right, rotY);
 
             mLastMousePos = mousePosition;
+        }
+
+        private void Render(EmptyFunction func)
+        {
+            var boundaries = GUILayoutUtility.GetLastRect();
+            mPreviewRenderer.BeginPreview(boundaries, GUIStyle.none);
+            func.Invoke();
+            mPreviewRenderer.camera.Render();
+            var render = mPreviewRenderer.EndPreview();
+            GUI.DrawTexture(boundaries, render);
         }
     }
 }
