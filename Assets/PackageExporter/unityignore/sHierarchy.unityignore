@@ -16,4 +16,4 @@ PackageExporter
 
 # Ignore test files
 sHierarchy/Scenes/
-sHierarchy/Scripts/Test/
+sHierarchy/Scripts/
