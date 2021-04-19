@@ -33,6 +33,7 @@ namespace sHierarchy
         public bool foldout = false;
 
         public bool enabled = true;
+        public float rotateSpeed = 1.0f;
 
         /* Setter & Getter */
 
@@ -43,6 +44,7 @@ namespace sHierarchy
         public void Init()
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
+            this.rotateSpeed = EditorPrefs.GetFloat(FormKey("rotateSpeed"), this.rotateSpeed);
         }
 
         public void Draw()
@@ -55,12 +57,14 @@ namespace sHierarchy
             HierarchyUtil.CreateGroup(() =>
             {
                 this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
+                this.rotateSpeed = EditorGUILayout.Slider("Rotate Speed", this.rotateSpeed, 0, 10);
             });
         }
 
         public void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
+            EditorPrefs.SetFloat(FormKey("rotateSpeed"), this.rotateSpeed);
         }
     }
 }

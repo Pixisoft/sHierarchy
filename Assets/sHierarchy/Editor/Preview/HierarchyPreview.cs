@@ -32,26 +32,109 @@ namespace sHierarchy
         private GameObject mTarget;
         private Editor mEditor;
 
+        private PreviewRenderUtility mPreviewRenderer;
+
+        private Vector2 mLastMousePos = Vector2.zero;
+
         public override bool HasPreviewGUI()
         {
-            return (HierarchyPreferences.data.preview.enabled && Selection.activeGameObject != null);
+            return (HierarchyData.instance.preview.enabled && Selection.activeGameObject != null);
+        }
+
+        public override void Cleanup()
+        {
+            base.Cleanup();
+
+            if (mPreviewRenderer != null)
+                mPreviewRenderer.Cleanup();
         }
 
         public override void OnPreviewGUI(Rect r, GUIStyle background)
         {
-            if (mTarget != Selection.activeGameObject)
-            {
-                if (mEditor != null) UnityEngine.Object.DestroyImmediate(mEditor);
-                mTarget = Selection.activeGameObject;
-            }
+            GetSelected();
+            InitEditor();
+            InitRenderer();
+            DoRotate();
+            DrawSelected();
+        }
 
-            if (mTarget != null)
-            {
-                if (mEditor == null)
-                    mEditor = Editor.CreateEditor(mTarget);
+        private void GetSelected()
+        {
+            if (mTarget == Selection.activeGameObject)
+                return;
 
-                mEditor.OnInteractivePreviewGUI(GUILayoutUtility.GetLastRect(), EditorStyles.whiteLabel);
-            }
+            if (mEditor != null) UnityEngine.Object.DestroyImmediate(mEditor);
+            mTarget = Selection.activeGameObject;
+        }
+        private void InitEditor()
+        {
+            if (mTarget == null)
+                return;
+
+            if (mEditor == null)
+                mEditor = Editor.CreateEditor(mTarget);
+        }
+
+        private void InitRenderer()
+        {
+            if (mPreviewRenderer != null)
+                return;
+
+            mPreviewRenderer = new PreviewRenderUtility();
+            mPreviewRenderer.camera.clearFlags = CameraClearFlags.SolidColor;
+            mPreviewRenderer.camera.transform.position = new Vector3(0, 0, -10);
+            mPreviewRenderer.camera.farClipPlane = 10000;
+        }
+
+        private void DrawSelected()
+        {
+            if (mTarget == null)
+                return;
+
+            var meshFilter = mTarget.GetComponent<MeshFilter>();
+            var meshRenderer = mTarget.GetComponent<MeshRenderer>();
+
+            if (meshFilter == null || meshRenderer == null)
+                return;
+
+            DrawSelectedMesh(meshFilter.sharedMesh, meshRenderer.sharedMaterial);
+            mEditor.Repaint();
+
+            //mEditor.OnInteractivePreviewGUI(GUILayoutUtility.GetLastRect(), EditorStyles.whiteLabel);
+        }
+
+        private void DrawSelectedMesh(Mesh mesh, Material material)
+        {
+            var boundaries = GUILayoutUtility.GetLastRect();
+            mPreviewRenderer.BeginPreview(boundaries, GUIStyle.none);
+            mPreviewRenderer.DrawMesh(mesh, Matrix4x4.identity, material, 0);
+            mPreviewRenderer.camera.Render();
+            var render = mPreviewRenderer.EndPreview();
+            GUI.DrawTexture(boundaries, render);
+        }
+
+        private void DoRotate()
+        {
+            if (Event.current.type == EventType.MouseUp)
+                mLastMousePos = Vector2.zero;
+
+            if (EditorWindow.focusedWindow.titleContent.text != "Inspector" ||
+                Event.current.type != EventType.MouseDrag)
+                return;
+
+            Vector3 mousePosition = Event.current.mousePosition;
+
+            float rotateSpeed = HierarchyData.instance.preview.rotateSpeed;
+
+            float rotX = (mousePosition.x - mLastMousePos.x) * rotateSpeed;
+            float rotY = (mousePosition.y - mLastMousePos.y) * rotateSpeed;
+
+            Camera cam = mPreviewRenderer.camera;
+
+            cam.transform.RotateAround(Vector3.zero, cam.transform.up, rotX);
+            cam.transform.RotateAround(Vector3.zero, cam.transform.right, rotY);
+
+            mLastMousePos = mousePosition;
         }
     }
 }

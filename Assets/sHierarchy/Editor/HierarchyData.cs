@@ -25,6 +25,8 @@ namespace sHierarchy
 {
     public class HierarchyData : HierarchyComponent
     {
+        public static HierarchyData instance { get { return HierarchyPreferences.data; } }
+
         public bool enabled = true;
         public bool updateInPlayMode = true;
 
