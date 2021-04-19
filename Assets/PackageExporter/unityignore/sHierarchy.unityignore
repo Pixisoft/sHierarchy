@@ -17,3 +17,6 @@ PackageExporter
 # Ignore test files
 sHierarchy/Scenes/
 sHierarchy/Scripts/
+
+# Ignore testing plugins
+TextMesh Pro/
