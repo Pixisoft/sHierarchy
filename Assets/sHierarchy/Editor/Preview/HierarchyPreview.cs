@@ -1,6 +1,5 @@
 #if UNITY_EDITOR
 /**
- * Copyright (c) 2020 Federico Bellucci - febucci.com
  * Copyright (c) 2021 Jen-Chieh Shen
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software/algorithm and associated
@@ -19,50 +18,40 @@
  * 
  * For any other use, please ask for permission by contacting the author.
  */
+using UnityEditor;
 using UnityEngine;
 
 namespace sHierarchy
 {
-    public class HierarchyData : HierarchyComponent
+    /// <summary>
+    /// Preview selected GameObject in Hierarchy.
+    /// </summary>
+    [CustomPreview(typeof(GameObject))]
+    public class HierarchyPreview : ObjectPreview
     {
-        public bool enabled = true;
-        public bool updateInPlayMode = true;
+        private GameObject mTarget;
+        private Editor mEditor;
 
-        public IconsData icons = new IconsData();
-        public PrefabsData prefabsData = new PrefabsData();
-        public AlternatingBGData alternatingBackground = new AlternatingBGData();
-        public SeparatorData separator = new SeparatorData();
-        public TreeData tree = new TreeData();
-        public PreviewData preview = new PreviewData();
-
-        public void Init()
+        public override bool HasPreviewGUI()
         {
-            icons.Init();
-            prefabsData.Init();
-            alternatingBackground.Init();
-            separator.Init();
-            tree.Init();
-            preview.Init();
+            return (HierarchyPreferences.data.preview.enabled && Selection.activeGameObject != null);
         }
 
-        public void Draw()
+        public override void OnPreviewGUI(Rect r, GUIStyle background)
         {
-            icons.Draw();
-            prefabsData.Draw();
-            alternatingBackground.Draw();
-            separator.Draw();
-            tree.Draw();
-            preview.Draw();
-        }
+            if (mTarget != Selection.activeGameObject)
+            {
+                if (mEditor != null) UnityEngine.Object.DestroyImmediate(mEditor);
+                mTarget = Selection.activeGameObject;
+            }
 
-        public void SavePref()
-        {
-            icons.SavePref();
-            prefabsData.SavePref();
-            alternatingBackground.SavePref();
-            separator.SavePref();
-            tree.SavePref();
-            preview.SavePref();
+            if (mTarget != null)
+            {
+                if (mEditor == null)
+                    mEditor = Editor.CreateEditor(mTarget);
+
+                mEditor.OnInteractivePreviewGUI(GUILayoutUtility.GetLastRect(), EditorStyles.whiteLabel);
+            }
         }
     }
 }
