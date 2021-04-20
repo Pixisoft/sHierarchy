@@ -7,4 +7,6 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### 2021-04-20
 
+* Add light section with `intensity` and `rotation` options.
+* Add `skybox` option.
 * Add preview data option.
