@@ -32,7 +32,8 @@ namespace sHierarchy
 
         public bool enabled = true;
         public string startString = ">";
-        public Color color = new Color(0, 1, 1, .15f);
+        public Color color = new Color(0, 1, 1, 0.15f);
+        public bool drawFill = true;
 
         /* Setter & Getters */
 
@@ -45,6 +46,7 @@ namespace sHierarchy
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
             this.startString = EditorPrefs.GetString(FormKey("startString"), ">");
             this.color = HierarchyUtil.GetColor(FormKey("color"), this.color);
+            this.drawFill = EditorPrefs.GetBool(FormKey("drawFill"), this.drawFill);
         }
 
         public void Draw()
@@ -58,7 +60,14 @@ namespace sHierarchy
             {
                 this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
                 this.startString = EditorGUILayout.TextField("Start String", this.startString);
-                this.color = EditorGUILayout.ColorField("Color", this.color);
+                HierarchyUtil.BeginHorizontal(() =>
+                {
+                    this.color = EditorGUILayout.ColorField("Color", this.color);
+
+                    if (GUILayout.Button("Reset", GUILayout.Width(50)))
+                        ResetColor();
+                });
+                this.drawFill = EditorGUILayout.Toggle("Draw Fill", this.drawFill);
             });
         }
 
@@ -67,6 +76,12 @@ namespace sHierarchy
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
             EditorPrefs.SetString(FormKey("startString"), this.startString);
             HierarchyUtil.SetColor(FormKey("color"), this.color);
+            EditorPrefs.SetBool(FormKey("drawFill"), this.drawFill);
+        }
+
+        private void ResetColor()
+        {
+            this.color = new Color(0, 1, 1, 0.15f);
         }
     }
 }

@@ -533,7 +533,10 @@ namespace sHierarchy
                 && currentItem.isSeparator && currentItem.nestingLevel == 0)
             {
                 // Adds color on top of the label
-                EditorGUI.DrawRect(selectionRect, data.separator.color);
+                if (data.separator.drawFill)
+                    HierarchyRenderer.DrawFullItem(selectionRect, data.separator.color);
+                else
+                    HierarchyRenderer.DrawSelection(selectionRect, data.separator.color);
             }
 
             #endregion
