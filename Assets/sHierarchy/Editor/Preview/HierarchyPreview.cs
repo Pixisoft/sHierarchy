@@ -212,6 +212,8 @@ namespace sHierarchy
             distance += 0.5f * objectSize;
             camera.transform.position = bounds.center - distance * camera.transform.forward;
 
+            camera.transform.LookAt(Vector3.zero, Vector3.up);
+
             this.mCameraPos = camera.transform.position;  // record it down
         }
 
@@ -223,7 +225,7 @@ namespace sHierarchy
             if (!HierarchyData.instance.preview.enabled || Selection.activeGameObject == null)
                 return false;
 
-
+            // TODO: Close with certain cases
 
             return true;
         }
