@@ -30,12 +30,22 @@ namespace sHierarchy
     [CustomPreview(typeof(GameObject))]
     public class HierarchyPreview : ObjectPreview
     {
+        /* Variables */
+
+        private static Vector3 CAMERA_POS = new Vector3(0, 0, -10);
+
         private GameObject mTarget;
         private Editor mEditor;
 
         private PreviewRenderUtility mPreviewRenderer;
 
         private Vector2 mLastMousePos = Vector2.zero;
+
+        /* Setter & Getter */
+
+        public Camera camera { get { return this.mPreviewRenderer.camera; } }
+
+        /* Functions */
 
         public override bool HasPreviewGUI()
         {
@@ -57,6 +67,7 @@ namespace sHierarchy
             InitRenderer();
             DoRotate();
             DrawSelected();
+            DrawOptions();
         }
 
         private void GetSelected()
@@ -67,6 +78,7 @@ namespace sHierarchy
             if (mEditor != null) UnityEngine.Object.DestroyImmediate(mEditor);
             mTarget = Selection.activeGameObject;
         }
+
         private void InitEditor()
         {
             if (mTarget == null)
@@ -81,10 +93,13 @@ namespace sHierarchy
             if (mPreviewRenderer == null)  // Initialize once
             {
                 mPreviewRenderer = new PreviewRenderUtility();
-                mPreviewRenderer.camera.clearFlags = CameraClearFlags.SolidColor;
-                mPreviewRenderer.camera.transform.position = new Vector3(0, 0, -10);
                 mPreviewRenderer.camera.farClipPlane = 10000;  // Just set far plane to very far
+                ResetCameraRotation();
             }
+
+            mPreviewRenderer.camera.clearFlags = 
+                (HierarchyData.instance.preview.skybox) ? 
+                CameraClearFlags.Skybox : CameraClearFlags.SolidColor;
 
             UpdateDirectionalLight();
         }
@@ -130,10 +145,8 @@ namespace sHierarchy
             float rotX = (mousePosition.x - mLastMousePos.x) * rotateSpeed;
             float rotY = (mousePosition.y - mLastMousePos.y) * rotateSpeed;
 
-            Camera cam = mPreviewRenderer.camera;
-
-            cam.transform.RotateAround(Vector3.zero, cam.transform.up, rotX);
-            cam.transform.RotateAround(Vector3.zero, cam.transform.right, rotY);
+            camera.transform.RotateAround(Vector3.zero, camera.transform.up, rotX);
+            camera.transform.RotateAround(Vector3.zero, camera.transform.right, rotY);
 
             mLastMousePos = mousePosition;
         }
@@ -160,6 +173,18 @@ namespace sHierarchy
 
             directional.transform.eulerAngles = HierarchyData.instance.preview.lightRotation;
             directional.intensity = HierarchyData.instance.preview.lightIntensity;
+        }
+        
+        private void DrawOptions()
+        {
+            if (GUILayout.Button("Reset", GUILayout.Width(50)))
+                ResetCameraRotation();
+        }
+
+        private void ResetCameraRotation()
+        {
+            camera.transform.position = CAMERA_POS;
+            camera.transform.LookAt(Vector3.zero, Vector3.up);
         }
     }
 }

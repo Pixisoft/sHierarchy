@@ -40,6 +40,8 @@ namespace sHierarchy
         public float lightIntensity = 1f;
         #endregion
 
+        public bool skybox = false;
+
         /* Setter & Getter */
 
         /* Functions */
@@ -52,6 +54,7 @@ namespace sHierarchy
             this.rotateSpeed = EditorPrefs.GetFloat(FormKey("rotateSpeed"), this.rotateSpeed);
             this.lightRotation = HierarchyUtil.GetVector3(FormKey("lightRotation"), lightRotation);
             this.lightIntensity = EditorPrefs.GetFloat(FormKey("lightIntensity"), lightIntensity);
+            this.skybox = EditorPrefs.GetBool(FormKey("skybox"), this.skybox);
         }
 
         public void Draw()
@@ -93,6 +96,8 @@ namespace sHierarchy
                             ResetLightIntensity();
                     });
                 });
+
+                this.skybox = EditorGUILayout.Toggle("Skybox", this.skybox);
             });
         }
 
@@ -102,6 +107,7 @@ namespace sHierarchy
             EditorPrefs.SetFloat(FormKey("rotateSpeed"), this.rotateSpeed);
             HierarchyUtil.SetVector3(FormKey("lightRotation"), this.lightRotation);
             EditorPrefs.SetFloat(FormKey("lightIntensity"), this.lightIntensity);
+            EditorPrefs.SetBool(FormKey("drawSkybox"), this.skybox);
         }
 
         private void ResetRotateSpeed() { this.rotateSpeed = 1f; }
