@@ -125,6 +125,9 @@ namespace sHierarchy
         {
             Render(() => 
             {
+                Debug.Log(mesh);
+                Debug.Log(material);
+
                 mPreviewRenderer.DrawMesh(mesh, Matrix4x4.identity, material, 0);
             });
         }
