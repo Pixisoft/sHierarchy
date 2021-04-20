@@ -34,6 +34,7 @@ namespace sHierarchy
 
         public bool enabled = true;
         public float rotateSpeed = 1.0f;
+        public float distance = 1.1f;  // how far apart from preview object
 
         #region Light
         public Vector3 lightRotation = new Vector3(50, -30, 0);
@@ -52,6 +53,7 @@ namespace sHierarchy
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
             this.rotateSpeed = EditorPrefs.GetFloat(FormKey("rotateSpeed"), this.rotateSpeed);
+            this.distance = EditorPrefs.GetFloat(FormKey("distance"), this.distance);
             this.lightRotation = HierarchyUtil.GetVector3(FormKey("lightRotation"), lightRotation);
             this.lightIntensity = EditorPrefs.GetFloat(FormKey("lightIntensity"), lightIntensity);
             this.skybox = EditorPrefs.GetBool(FormKey("skybox"), this.skybox);
@@ -74,6 +76,14 @@ namespace sHierarchy
 
                     if (GUILayout.Button("Reset", GUILayout.Width(50)))
                         ResetRotateSpeed();
+                });
+
+                HierarchyUtil.BeginHorizontal(() =>
+                {
+                    this.distance = EditorGUILayout.Slider("Distance", this.distance, 0, 10);
+
+                    if (GUILayout.Button("Reset", GUILayout.Width(50)))
+                        ResetDistance();
                 });
 
                 EditorGUILayout.LabelField("Light", EditorStyles.boldLabel);
@@ -105,15 +115,15 @@ namespace sHierarchy
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
             EditorPrefs.SetFloat(FormKey("rotateSpeed"), this.rotateSpeed);
+            EditorPrefs.SetFloat(FormKey("distance"), this.distance);
             HierarchyUtil.SetVector3(FormKey("lightRotation"), this.lightRotation);
             EditorPrefs.SetFloat(FormKey("lightIntensity"), this.lightIntensity);
-            EditorPrefs.SetBool(FormKey("drawSkybox"), this.skybox);
+            EditorPrefs.SetBool(FormKey("skybox"), this.skybox);
         }
 
         private void ResetRotateSpeed() { this.rotateSpeed = 1f; }
-
+        private void ResetDistance() { this.distance = 1.1f; }
         private void ResetLightRotation() { this.lightRotation = new Vector3(50, -30, 0); }
-
         private void ResetLightIntensity() { this.lightIntensity = 1f; }
     }
 }

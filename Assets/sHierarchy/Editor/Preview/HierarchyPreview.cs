@@ -20,6 +20,7 @@
  */
 using System.Linq;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace sHierarchy
@@ -32,18 +33,18 @@ namespace sHierarchy
     {
         /* Variables */
 
-        private static Vector3 CAMERA_POS = new Vector3(0, 0, -10);
+        private GameObject mTarget = null;
+        private Editor mEditor = null;
 
-        private GameObject mTarget;
-        private Editor mEditor;
+        private PreviewRenderUtility mPreviewRenderer = null;
 
-        private PreviewRenderUtility mPreviewRenderer;
-
+        private Vector3 mCameraPos = Vector3.zero;
         private Vector2 mLastMousePos = Vector2.zero;
 
         /* Setter & Getter */
 
         public Camera camera { get { return this.mPreviewRenderer.camera; } }
+        public Light DirectionalLight { get { return this.mPreviewRenderer.lights[0]; } }
 
         /* Functions */
 
@@ -62,9 +63,9 @@ namespace sHierarchy
 
         public override void OnPreviewGUI(Rect r, GUIStyle background)
         {
+            InitRenderer();
             GetSelected();
             InitEditor();
-            InitRenderer();
             DoRotate();
             DrawSelected();
             DrawOptions();
@@ -77,6 +78,8 @@ namespace sHierarchy
 
             if (mEditor != null) UnityEngine.Object.DestroyImmediate(mEditor);
             mTarget = Selection.activeGameObject;
+
+            InitScene();
         }
 
         private void InitEditor()
@@ -93,12 +96,13 @@ namespace sHierarchy
             if (mPreviewRenderer == null)  // Initialize once
             {
                 mPreviewRenderer = new PreviewRenderUtility();
+                mPreviewRenderer.camera.nearClipPlane = 0.01f;
                 mPreviewRenderer.camera.farClipPlane = 10000;  // Just set far plane to very far
                 ResetCameraRotation();
             }
 
-            mPreviewRenderer.camera.clearFlags = 
-                (HierarchyData.instance.preview.skybox) ? 
+            mPreviewRenderer.camera.clearFlags =
+                (HierarchyData.instance.preview.skybox) ?
                 CameraClearFlags.Skybox : CameraClearFlags.SolidColor;
 
             UpdateDirectionalLight();
@@ -109,27 +113,15 @@ namespace sHierarchy
             if (mTarget == null)
                 return;
 
-            var meshFilter = mTarget.GetComponent<MeshFilter>();
-            var meshRenderer = mTarget.GetComponent<MeshRenderer>();
+            Render(() =>
+            {
+                // empty..
+            });
 
-            if (meshFilter == null || meshRenderer == null)
-                return;
-
-            DrawSelectedMesh(meshFilter.sharedMesh, meshRenderer.sharedMaterial);
             mEditor.Repaint();
 
+            //Handles.DrawCamera(GUILayoutUtility.GetLastRect(), camera);
             //mEditor.OnInteractivePreviewGUI(GUILayoutUtility.GetLastRect(), EditorStyles.whiteLabel);
-        }
-
-        private void DrawSelectedMesh(Mesh mesh, Material material)
-        {
-            Render(() => 
-            {
-                Debug.Log(mesh);
-                Debug.Log(material);
-
-                mPreviewRenderer.DrawMesh(mesh, Matrix4x4.identity, material, 0);
-            });
         }
 
         private void DoRotate()
@@ -159,7 +151,7 @@ namespace sHierarchy
             var boundaries = GUILayoutUtility.GetLastRect();
             mPreviewRenderer.BeginPreview(boundaries, GUIStyle.none);
             func.Invoke();
-            mPreviewRenderer.camera.Render();
+            camera.Render();
             var render = mPreviewRenderer.EndPreview();
             GUI.DrawTexture(boundaries, render);
         }
@@ -169,15 +161,13 @@ namespace sHierarchy
             if (mPreviewRenderer == null || mPreviewRenderer.lights.Length == 0)
                 return;
 
-            Light directional = mPreviewRenderer.lights[0];
-
-            if (directional == null)
+            if (DirectionalLight == null)
                 return;
 
-            directional.transform.eulerAngles = HierarchyData.instance.preview.lightRotation;
-            directional.intensity = HierarchyData.instance.preview.lightIntensity;
+            DirectionalLight.transform.eulerAngles = HierarchyData.instance.preview.lightRotation;
+            DirectionalLight.intensity = HierarchyData.instance.preview.lightIntensity;
         }
-        
+
         private void DrawOptions()
         {
             if (GUILayout.Button("Reset", GUILayout.Width(50)))
@@ -186,8 +176,36 @@ namespace sHierarchy
 
         private void ResetCameraRotation()
         {
-            camera.transform.position = CAMERA_POS;
+            camera.transform.position = mCameraPos;
             camera.transform.LookAt(Vector3.zero, Vector3.up);
+        }
+
+        private void InitScene()
+        {
+            if (mPreviewRenderer == null || mTarget == null)
+                return;
+
+            GameObject go = GameObject.Instantiate(mTarget);
+            go.transform.position = Vector3.zero;
+            go.transform.localScale = Vector3.one;
+            go.AddComponent<SphereCollider>();
+            mPreviewRenderer.AddSingleGO(go);
+
+            FocusObject(go);
+        }
+
+        private void FocusObject(GameObject go)
+        {
+            Collider collider = go.GetComponent<SphereCollider>();
+            var bounds = collider.bounds;
+            Vector3 objectSizes = bounds.max - bounds.min;
+            float objectSize = Mathf.Max(objectSizes.x, objectSizes.y, objectSizes.z);
+            float cameraView = 2.0f * Mathf.Tan(0.5f * Mathf.Deg2Rad * camera.fieldOfView);
+            float distance = HierarchyData.instance.preview.distance * objectSize / cameraView;
+            distance += 0.5f * objectSize;
+            camera.transform.position = bounds.center - distance * camera.transform.forward;
+
+            this.mCameraPos = camera.transform.position;  // record it down
         }
     }
 }
