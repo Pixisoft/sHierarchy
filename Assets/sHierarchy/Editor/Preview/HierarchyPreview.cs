@@ -18,6 +18,7 @@
  * 
  * For any other use, please ask for permission by contacting the author.
  */
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -77,13 +78,15 @@ namespace sHierarchy
 
         private void InitRenderer()
         {
-            if (mPreviewRenderer != null)
-                return;
+            if (mPreviewRenderer == null)  // Initialize once
+            {
+                mPreviewRenderer = new PreviewRenderUtility();
+                mPreviewRenderer.camera.clearFlags = CameraClearFlags.SolidColor;
+                mPreviewRenderer.camera.transform.position = new Vector3(0, 0, -10);
+                mPreviewRenderer.camera.farClipPlane = 10000;  // Just set far plane to very far
+            }
 
-            mPreviewRenderer = new PreviewRenderUtility();
-            mPreviewRenderer.camera.clearFlags = CameraClearFlags.SolidColor;
-            mPreviewRenderer.camera.transform.position = new Vector3(0, 0, -10);
-            mPreviewRenderer.camera.farClipPlane = 10000;  // Just set far plane to very far
+            UpdateDirectionalLight();
         }
 
         private void DrawSelected()
@@ -113,8 +116,8 @@ namespace sHierarchy
 
         private void DoRotate()
         {
-            if (Event.current.type == EventType.MouseUp)
-                mLastMousePos = Vector2.zero;
+            if (Event.current.type == EventType.MouseDown)
+                mLastMousePos = Event.current.mousePosition;
 
             if (EditorWindow.focusedWindow.titleContent.text != "Inspector" ||
                 Event.current.type != EventType.MouseDrag)
@@ -143,6 +146,20 @@ namespace sHierarchy
             mPreviewRenderer.camera.Render();
             var render = mPreviewRenderer.EndPreview();
             GUI.DrawTexture(boundaries, render);
+        }
+
+        private void UpdateDirectionalLight()
+        {
+            if (mPreviewRenderer == null || mPreviewRenderer.lights.Length == 0)
+                return;
+
+            Light directional = mPreviewRenderer.lights[0];
+
+            if (directional == null)
+                return;
+
+            directional.transform.eulerAngles = HierarchyData.instance.preview.lightRotation;
+            directional.intensity = HierarchyData.instance.preview.lightIntensity;
         }
     }
 }

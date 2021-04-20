@@ -21,6 +21,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEditor;
 
 namespace sHierarchy
 {
@@ -33,6 +35,10 @@ namespace sHierarchy
 
         /* Functions */
 
+        private void Start()
+        {
+
+        }
     }
 }
 #endif

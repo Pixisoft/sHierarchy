@@ -28,6 +28,18 @@ namespace sHierarchy
 
     public static class HierarchyUtil
     {
+        public static void IgnoreErrors(EmptyFunction func)
+        {
+            try
+            {
+                func.Invoke();
+            }
+            catch (Exception)
+            {
+                // ..
+            }
+        }
+
         public static string FormKey(string name)
         {
             return "sHierarchy." + name;
@@ -67,6 +79,7 @@ namespace sHierarchy
             EditorGUI.indentLevel--;
         }
 
+        #region Color
         public static Color GetColor(string key, Color defaultValue)
         {
             Color color = defaultValue;
@@ -84,18 +97,25 @@ namespace sHierarchy
             EditorPrefs.SetFloat(key + ".b", value.b);
             EditorPrefs.SetFloat(key + ".a", value.a);
         }
+        #endregion
 
-        public static void IgnoreErrors(EmptyFunction func)
+        #region Vector3
+        public static Vector3 GetVector3(string key, Vector3 defaultValue)
         {
-            try
-            {
-                func.Invoke();
-            }
-            catch (Exception)
-            {
-                // ..
-            }
+            Vector3 vec = defaultValue;
+            vec.x = EditorPrefs.GetFloat(key + ".x", defaultValue.x);
+            vec.y = EditorPrefs.GetFloat(key + ".y", defaultValue.y);
+            vec.z = EditorPrefs.GetFloat(key + ".z", defaultValue.z);
+            return vec;
         }
+
+        public static void SetVector3(string key, Vector3 vec)
+        {
+            EditorPrefs.SetFloat(key + ".x", vec.x);
+            EditorPrefs.SetFloat(key + ".y", vec.y);
+            EditorPrefs.SetFloat(key + ".z", vec.z);
+        }
+        #endregion
     }
 }
 #endif

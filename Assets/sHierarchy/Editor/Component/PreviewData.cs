@@ -24,7 +24,7 @@ using UnityEngine;
 namespace sHierarchy
 {
     /// <summary>
-    /// 
+    /// Preview selected gameobject in Hierarch in Inspector window.
     /// </summary>
     public class PreviewData : HierarchyComponent
     {
@@ -34,6 +34,11 @@ namespace sHierarchy
 
         public bool enabled = true;
         public float rotateSpeed = 1.0f;
+
+        #region Light
+        public Vector3 lightRotation = new Vector3(50, -30, 0);
+        public float lightIntensity = 1f;
+        #endregion
 
         /* Setter & Getter */
 
@@ -45,6 +50,8 @@ namespace sHierarchy
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
             this.rotateSpeed = EditorPrefs.GetFloat(FormKey("rotateSpeed"), this.rotateSpeed);
+            this.lightRotation = HierarchyUtil.GetVector3(FormKey("lightRotation"), lightRotation);
+            this.lightIntensity = EditorPrefs.GetFloat(FormKey("lightIntensity"), lightIntensity);
         }
 
         public void Draw()
@@ -57,7 +64,35 @@ namespace sHierarchy
             HierarchyUtil.CreateGroup(() =>
             {
                 this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
-                this.rotateSpeed = EditorGUILayout.Slider("Rotate Speed", this.rotateSpeed, 0, 10);
+
+                HierarchyUtil.BeginHorizontal(() =>
+                {
+                    this.rotateSpeed = EditorGUILayout.Slider("Rotate Speed", this.rotateSpeed, 0, 10);
+
+                    if (GUILayout.Button("Reset", GUILayout.Width(50)))
+                        ResetRotateSpeed();
+                });
+
+                EditorGUILayout.LabelField("Light", EditorStyles.boldLabel);
+
+                HierarchyUtil.CreateGroup(() =>
+                {
+                    HierarchyUtil.BeginHorizontal(() =>
+                    {
+                        this.lightRotation = EditorGUILayout.Vector3Field("Rotation", this.lightRotation);
+
+                        if (GUILayout.Button("Reset", GUILayout.Width(50)))
+                            ResetLightRotation();
+                    });
+
+                    HierarchyUtil.BeginHorizontal(() =>
+                    {
+                        this.lightIntensity = EditorGUILayout.FloatField("Intensity", this.lightIntensity);
+
+                        if (GUILayout.Button("Reset", GUILayout.Width(50)))
+                            ResetLightIntensity();
+                    });
+                });
             });
         }
 
@@ -65,7 +100,15 @@ namespace sHierarchy
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
             EditorPrefs.SetFloat(FormKey("rotateSpeed"), this.rotateSpeed);
+            HierarchyUtil.SetVector3(FormKey("lightRotation"), this.lightRotation);
+            EditorPrefs.SetFloat(FormKey("lightIntensity"), this.lightIntensity);
         }
+
+        private void ResetRotateSpeed() { this.rotateSpeed = 1f; }
+
+        private void ResetLightRotation() { this.lightRotation = new Vector3(50, -30, 0); }
+
+        private void ResetLightIntensity() { this.lightIntensity = 1f; }
     }
 }
 #endif
