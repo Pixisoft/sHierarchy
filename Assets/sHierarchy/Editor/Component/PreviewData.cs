@@ -34,6 +34,7 @@ namespace sHierarchy
 
         public bool enabled = true;
         public float rotateSpeed = 1.0f;
+        public bool autoRotate = true;
         public float distance = 1.1f;  // how far apart from preview object
 
         #region Light
@@ -53,9 +54,10 @@ namespace sHierarchy
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
             this.rotateSpeed = EditorPrefs.GetFloat(FormKey("rotateSpeed"), this.rotateSpeed);
-            this.distance = EditorPrefs.GetFloat(FormKey("distance"), this.distance);
+            this.autoRotate = EditorPrefs.GetBool(FormKey("autoRotate"), this.autoRotate);
             this.lightRotation = HierarchyUtil.GetVector3(FormKey("lightRotation"), lightRotation);
             this.lightIntensity = EditorPrefs.GetFloat(FormKey("lightIntensity"), lightIntensity);
+            this.distance = EditorPrefs.GetFloat(FormKey("distance"), this.distance);
             this.skybox = EditorPrefs.GetBool(FormKey("skybox"), this.skybox);
         }
 
@@ -70,20 +72,19 @@ namespace sHierarchy
             {
                 this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
 
-                HierarchyUtil.BeginHorizontal(() =>
+                EditorGUILayout.LabelField("Rotate", EditorStyles.boldLabel);
+
+                HierarchyUtil.CreateGroup(() =>
                 {
-                    this.rotateSpeed = EditorGUILayout.Slider("Rotate Speed", this.rotateSpeed, 0, 10);
+                    HierarchyUtil.BeginHorizontal(() =>
+                    {
+                        this.rotateSpeed = EditorGUILayout.Slider("Rotate Speed", this.rotateSpeed, 0, 10);
 
-                    if (GUILayout.Button("Reset", GUILayout.Width(50)))
-                        ResetRotateSpeed();
-                });
+                        if (GUILayout.Button("Reset", GUILayout.Width(50)))
+                            ResetRotateSpeed();
+                    });
 
-                HierarchyUtil.BeginHorizontal(() =>
-                {
-                    this.distance = EditorGUILayout.Slider("Distance", this.distance, 0, 10);
-
-                    if (GUILayout.Button("Reset", GUILayout.Width(50)))
-                        ResetDistance();
+                    this.autoRotate = EditorGUILayout.Toggle("Auto Rotate", this.autoRotate);
                 });
 
                 EditorGUILayout.LabelField("Light", EditorStyles.boldLabel);
@@ -107,6 +108,14 @@ namespace sHierarchy
                     });
                 });
 
+                HierarchyUtil.BeginHorizontal(() =>
+                {
+                    this.distance = EditorGUILayout.Slider("Distance", this.distance, 0, 10);
+
+                    if (GUILayout.Button("Reset", GUILayout.Width(50)))
+                        ResetDistance();
+                });
+
                 this.skybox = EditorGUILayout.Toggle("Skybox", this.skybox);
             });
         }
@@ -115,9 +124,10 @@ namespace sHierarchy
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
             EditorPrefs.SetFloat(FormKey("rotateSpeed"), this.rotateSpeed);
-            EditorPrefs.SetFloat(FormKey("distance"), this.distance);
+            EditorPrefs.SetBool(FormKey("autoRotate"), this.autoRotate);
             HierarchyUtil.SetVector3(FormKey("lightRotation"), this.lightRotation);
             EditorPrefs.SetFloat(FormKey("lightIntensity"), this.lightIntensity);
+            EditorPrefs.SetFloat(FormKey("distance"), this.distance);
             EditorPrefs.SetBool(FormKey("skybox"), this.skybox);
         }
 

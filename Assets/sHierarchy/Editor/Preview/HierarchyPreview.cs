@@ -41,6 +41,8 @@ namespace sHierarchy
         private Vector3 mCameraPos = Vector3.zero;
         private Vector2 mLastMousePos = Vector2.zero;
 
+        private bool mAutoRotate = false;
+
         /* Setter & Getter */
 
         public Camera camera { get { return this.mPreviewRenderer.camera; } }
@@ -50,7 +52,7 @@ namespace sHierarchy
 
         public override bool HasPreviewGUI()
         {
-            return (HierarchyData.instance.preview.enabled && Selection.activeGameObject != null);
+            return CanPreview();
         }
 
         public override void Cleanup()
@@ -76,7 +78,7 @@ namespace sHierarchy
             if (mTarget == Selection.activeGameObject)
                 return;
 
-            if (mEditor != null) UnityEngine.Object.DestroyImmediate(mEditor);
+            if (mEditor != null) Object.DestroyImmediate(mEditor);
             mTarget = Selection.activeGameObject;
 
             InitScene();
@@ -119,9 +121,6 @@ namespace sHierarchy
             });
 
             mEditor.Repaint();
-
-            //Handles.DrawCamera(GUILayoutUtility.GetLastRect(), camera);
-            //mEditor.OnInteractivePreviewGUI(GUILayoutUtility.GetLastRect(), EditorStyles.whiteLabel);
         }
 
         private void DoRotate()
@@ -129,13 +128,19 @@ namespace sHierarchy
             if (Event.current.type == EventType.MouseDown)
                 mLastMousePos = Event.current.mousePosition;
 
+            float rotateSpeed = HierarchyData.instance.preview.rotateSpeed;
+
             if (EditorWindow.focusedWindow.titleContent.text != "Inspector" ||
                 Event.current.type != EventType.MouseDrag)
+            {
+                if (mAutoRotate)
+                    camera.transform.RotateAround(Vector3.zero, camera.transform.up, rotateSpeed * Time.deltaTime);
                 return;
+            }
+
+            this.mAutoRotate = false;
 
             Vector3 mousePosition = Event.current.mousePosition;
-
-            float rotateSpeed = HierarchyData.instance.preview.rotateSpeed;
 
             float rotX = (mousePosition.x - mLastMousePos.x) * rotateSpeed;
             float rotY = (mousePosition.y - mLastMousePos.y) * rotateSpeed;
@@ -185,6 +190,8 @@ namespace sHierarchy
             if (mPreviewRenderer == null || mTarget == null)
                 return;
 
+            this.mAutoRotate = HierarchyData.instance.preview.autoRotate;
+
             GameObject go = GameObject.Instantiate(mTarget);
             go.transform.position = Vector3.zero;
             go.transform.localScale = Vector3.one;
@@ -206,6 +213,19 @@ namespace sHierarchy
             camera.transform.position = bounds.center - distance * camera.transform.forward;
 
             this.mCameraPos = camera.transform.position;  // record it down
+        }
+
+        /// <summary>
+        /// Return true if current selection can be preview.
+        /// </summary>
+        private bool CanPreview()
+        {
+            if (!HierarchyData.instance.preview.enabled || Selection.activeGameObject == null)
+                return false;
+
+
+
+            return true;
         }
     }
 }
