@@ -1648,7 +1648,7 @@ Transform:
   m_GameObject: {fileID: 997669223}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_LocalScale: {x: 90, y: 90, z: 90}
   m_Children: []
   m_Father: {fileID: 839609998}
   m_RootOrder: 0
@@ -2429,7 +2429,7 @@ GameObject:
   - component: {fileID: 1740454023}
   - component: {fileID: 1740454024}
   m_Layer: 0
-  m_Name: sprite (1)
+  m_Name: sprite stretches
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2444,7 +2444,7 @@ Transform:
   m_GameObject: {fileID: 1740454022}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 258, y: -176, z: 0}
-  m_LocalScale: {x: 25, y: 25, z: 25}
+  m_LocalScale: {x: 50, y: 25, z: 25}
   m_Children: []
   m_Father: {fileID: 839609998}
   m_RootOrder: 1

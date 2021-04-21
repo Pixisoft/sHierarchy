@@ -211,7 +211,7 @@ namespace sHierarchy
 
             mClone = GameObject.Instantiate(mTarget);
             mClone.transform.position = Vector3.zero;
-            mClone.transform.localScale = Vector3.one;
+            mClone.transform.localScale = mClone.transform.localScale.normalized;
             mClone.AddComponent<SphereCollider>();
             mPreviewRenderer.AddSingleGO(mClone);
 
