@@ -28,4 +28,4 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 For any other use, please ask for permission by contacting the author.
 
-See [LICENSE.txt](https://github.com/jcs090218/sHierarchy/blob/master/LICENSE.txt) for details.
+See [COPYING](https://github.com/jcs090218/sHierarchy/blob/master/COPYING) for details.
