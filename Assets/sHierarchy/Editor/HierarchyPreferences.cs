@@ -75,9 +75,6 @@ namespace sHierarchy
 
             mData = new HierarchyData();
 
-            mData.enabled = EditorPrefs.GetBool(HierarchyUtil.FormKey("enabled"), true);
-            mData.updateInPlayMode = EditorPrefs.GetBool(HierarchyUtil.FormKey("updateInPlayMode"), true);
-
             mData.Init();
 
             prefsLoaded = true;
@@ -85,9 +82,6 @@ namespace sHierarchy
 
         private static void Draw()
         {
-            mData.enabled = EditorGUILayout.Toggle("Enabeld: ", mData.enabled);
-            mData.updateInPlayMode = EditorGUILayout.Toggle("Update In Play Mode: ", mData.updateInPlayMode);
-
             mData.Draw();
         }
 
@@ -95,9 +89,6 @@ namespace sHierarchy
         {
             if (!GUI.changed)
                 return;
-
-            EditorPrefs.SetBool(HierarchyUtil.FormKey("enabled"), mData.enabled);
-            EditorPrefs.SetBool(HierarchyUtil.FormKey("updateInPlayMode"), mData.updateInPlayMode);
 
             mData.SavePref();
 

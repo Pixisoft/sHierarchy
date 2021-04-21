@@ -19,6 +19,7 @@
  * 
  * For any other use, please ask for permission by contacting the author.
  */
+using UnityEditor;
 using UnityEngine;
 
 namespace sHierarchy
@@ -36,35 +37,50 @@ namespace sHierarchy
         public SeparatorData separator = new SeparatorData();
         public TreeData tree = new TreeData();
         public PreviewData preview = new PreviewData();
+        public Data_InstanceID instanceID = new Data_InstanceID();
+
+        public string FormKey(string name) { return HierarchyUtil.FormKey("root.") + name; }
 
         public void Init()
         {
+            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
+            this.updateInPlayMode = EditorPrefs.GetBool(FormKey("updateInPlayMode"), this.updateInPlayMode);
+            
             icons.Init();
             prefabsData.Init();
             alternatingBackground.Init();
             separator.Init();
             tree.Init();
             preview.Init();
+            instanceID.Init();
         }
 
         public void Draw()
         {
+            this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
+            this.updateInPlayMode = EditorGUILayout.Toggle("Update In Play Mode", this.updateInPlayMode);
+
             icons.Draw();
             prefabsData.Draw();
             alternatingBackground.Draw();
             separator.Draw();
             tree.Draw();
             preview.Draw();
+            instanceID.Draw();
         }
 
         public void SavePref()
         {
+            EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
+            EditorPrefs.SetBool(FormKey("updateInPlayMode"), this.updateInPlayMode);
+
             icons.SavePref();
             prefabsData.SavePref();
             alternatingBackground.SavePref();
             separator.SavePref();
             tree.SavePref();
             preview.SavePref();
+            instanceID.SavePref();
         }
     }
 }

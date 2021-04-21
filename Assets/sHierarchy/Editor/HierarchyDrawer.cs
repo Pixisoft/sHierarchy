@@ -173,16 +173,20 @@ namespace sHierarchy
 
             public int nestingGroup;
             public int nestingLevel;
+            public int index;
+            public int displayIndex;
         }
 
         #endregion
 
         private static bool initialized = false;
         private static HierarchyData data { get { return HierarchyPreferences.data; } }
-        private static int firstInstanceID = 0;
         private static List<int> iconsPositions = new List<int>();
         private static Dictionary<int, InstanceInfo> sceneGameObjects = new Dictionary<int, InstanceInfo>();
         private static Dictionary<int, Color> prefabColors = new Dictionary<int, Color>();
+
+        private static int itemIndex = 0;
+        private static int itemDisplayIndex = 0;
 
 
         #region Menu Items
@@ -239,7 +243,6 @@ namespace sHierarchy
 
             if (data.enabled)
             {
-
                 #region Registers events
 
                 EditorApplication.hierarchyWindowItemOnGUI += DrawCore;
@@ -281,7 +284,8 @@ namespace sHierarchy
 
             GameObject[] sceneRoots;
             Scene tempScene;
-            firstInstanceID = -1;
+            itemIndex = 0;
+            itemDisplayIndex = 0;
 
             for (int i = 0; i < SceneManager.sceneCount; ++i)
             {
@@ -307,9 +311,6 @@ namespace sHierarchy
                         nestingGroup: j,
                         isLastChild: j == (sceneRoots.Length - 1));
                 }
-
-                if (firstInstanceID == -1 && sceneRoots.Length > 0)
-                    firstInstanceID = sceneRoots[0].GetInstanceID();
             }
         }
 
@@ -317,7 +318,7 @@ namespace sHierarchy
         {
             int instanceID = go.GetInstanceID();
 
-            if (!sceneGameObjects.ContainsKey(instanceID)) //processes the gameobject only if it wasn't processed already
+            if (!sceneGameObjects.ContainsKey(instanceID))  // processes the gameobject only if it wasn't processed already
             {
                 InstanceInfo newInfo = new InstanceInfo();
                 newInfo.iconIndexes = new List<int>();
@@ -328,19 +329,25 @@ namespace sHierarchy
                 newInfo.isGoActive = go.activeInHierarchy;
                 newInfo.topParentHasChild = topParentHasChild;
                 newInfo.goName = go.name;
+                newInfo.index = itemIndex;
+                newInfo.displayIndex = itemDisplayIndex;
+
+                ++itemIndex;
+                ++itemDisplayIndex;
 
                 if (data.prefabsData.enabled)
                 {
                     var prefab = PrefabUtility.GetCorrespondingObjectFromSource(go);
                     if (prefab)
-                    {
                         newInfo.prefabInstanceID = prefab.GetInstanceID();
-                    }
                 }
 
-                newInfo.isSeparator = String.Compare(go.tag, "EditorOnly", StringComparison.Ordinal) == 0 // gameobject has EditorOnly tag
-                                      && (!string.IsNullOrEmpty(go.name) && !string.IsNullOrEmpty(data.separator.startString) 
-                                      && go.name.StartsWith(data.separator.startString)); // and also starts with '>'
+                if (data.separator.enabled)
+                {
+                    newInfo.isSeparator = String.Compare(go.tag, "EditorOnly", StringComparison.Ordinal) == 0 // gameobject has EditorOnly tag
+                                          && (!string.IsNullOrEmpty(go.name) && !string.IsNullOrEmpty(data.separator.startString)
+                                          && go.name.StartsWith(data.separator.startString)); // and also starts with '>'
+                }
 
                 if (data.icons.enabled && data.icons.pairs != null && data.icons.pairs.Length > 0)
                 {
@@ -396,15 +403,16 @@ namespace sHierarchy
             #region Analyzes Childrens
 
             int childCount = go.transform.childCount;
-            for (int j = 0; j < childCount; j++)
+            for (int j = 0; j < childCount; ++j)
             {
+                // TODO: This wouldn't work with alphabetic sorting
+
                 AnalyzeGoWithChildren(
                     go.transform.GetChild(j).gameObject,
                     nestingLevel + 1,
                     topParentHasChild,
                     nestingGroup,
-                    j == childCount - 1
-                    );
+                    j == childCount - 1);
             }
 
             #endregion
@@ -412,7 +420,6 @@ namespace sHierarchy
 
         #region Drawing
 
-        private static bool temp_alternatingDrawed;
         private static int temp_iconsDrawedCount;
         private static InstanceInfo currentItem;
         private static bool drawedPrefabOverlay;
@@ -421,30 +428,21 @@ namespace sHierarchy
         static void DrawCore(int instanceID, Rect selectionRect)
         {
             // skips early if item is not registered or not valid
-            if (!sceneGameObjects.ContainsKey(instanceID)) return;
+            if (!sceneGameObjects.ContainsKey(instanceID))
+                return;
 
             currentItem = sceneGameObjects[instanceID];
-
-            if (instanceID == firstInstanceID)
-            {
-                temp_alternatingDrawed = currentItem.nestingGroup % 2 == 0;
-            }
 
             #region Draw Alternating BG
 
             if (data.alternatingBackground.enabled)
             {
-                if (temp_alternatingDrawed)
+                if (currentItem.index % 2 == 0)
                 {
                     if (data.alternatingBackground.drawFill)
                         HierarchyRenderer.DrawFullItem(selectionRect, data.alternatingBackground.color);
                     else
                         HierarchyRenderer.DrawSelection(selectionRect, data.alternatingBackground.color);
-                    temp_alternatingDrawed = false;
-                }
-                else
-                {
-                    temp_alternatingDrawed = true;
                 }
             }
 
@@ -557,9 +555,10 @@ namespace sHierarchy
                         // Aligns icon based on texture's position on the array
                         int CalculateIconPosition()
                         {
-                            for (int i = 0; i < iconsPositions.Count; i++)
+                            for (int i = 0; i < iconsPositions.Count; ++i)
                             {
-                                if (iconsPositions[i] == textureIndex) return i;
+                                if (iconsPositions[i] == textureIndex)
+                                    return i;
                             }
 
                             return 0;
@@ -569,14 +568,12 @@ namespace sHierarchy
                     }
                     else
                     {
-                        temp_iconsDrawedCount++;
+                        ++temp_iconsDrawedCount;
                     }
-                    //---
 
                     GUI.DrawTexture(
                         new Rect(selectionRect.xMax - 16 * (temp_iconsDrawedCount + 1) - 2, selectionRect.yMin, 16, 16),
-                        data.icons.pairs[textureIndex].iconToDraw
-                        );
+                        data.icons.pairs[textureIndex].iconToDraw);
                 }
 
                 #endregion
@@ -593,23 +590,27 @@ namespace sHierarchy
                             GUI.DrawTexture(
                                 new Rect(
                                     selectionRect.xMax - 16 * (temp_iconsDrawedCount + 1) - 2, selectionRect.yMin, 16,
-                                    16
-                                    ),
-                                content.image
-                                );
+                                    16),
+                                content.image);
                         }
                     }
                 }
 
-
-
-                for (int i = 0; i < currentItem.iconIndexes.Count; i++)
+                for (int i = 0; i < currentItem.iconIndexes.Count; ++i)
                 {
                     DrawIcon(currentItem.iconIndexes[i]);
                 }
             }
 
             #endregion
+
+            if (HierarchyData.instance.instanceID.enabled)
+            {
+                Rect rect = new Rect(selectionRect.xMax - 50, selectionRect.y, selectionRect.width, selectionRect.height);
+                GUIStyle style = new GUIStyle();
+                style.normal.textColor = HierarchyData.instance.instanceID.color;
+                GUI.Label(rect, instanceID.ToString().PadLeft(6, ' '), style);
+            }
         }
 
         #endregion
