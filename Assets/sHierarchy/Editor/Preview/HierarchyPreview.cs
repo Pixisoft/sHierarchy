@@ -220,6 +220,9 @@ namespace sHierarchy
             FocusObject();
         }
 
+        /// <summary>
+        /// Return the Target's bounds for focusing the preview object.
+        /// </summary>
         private static Bounds GetBounds()
         {
             Bounds bounds = new Bounds();
@@ -227,7 +230,12 @@ namespace sHierarchy
 
             if (rect != null)
             {
-                bounds = RectTransformUtility.CalculateRelativeRectTransformBounds(rect);
+                // https://docs.unity3d.com/ScriptReference/RectTransform.GetWorldCorners.html
+                {
+                    Vector3[] v = new Vector3[4];
+                    rect.GetWorldCorners(v);
+                    bounds.SetMinMax(v[0], v[2]);
+                }
             }
             else
             {
