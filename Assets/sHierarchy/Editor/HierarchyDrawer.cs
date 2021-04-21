@@ -343,13 +343,8 @@ namespace sHierarchy
                 }
                 else
                 {
-                    //Debug.Log(go.name + " " + parent.gameObject.name + " " + HierarchyUtil.IsExpanded(parent.gameObject));
-
                     if (HierarchyUtil.IsExpanded(parent.gameObject))
-                    {
-                        Debug.Log("Add!");
                         ++itemDisplayIndex;
-                    }
                 }
 
                 if (data.prefabsData.enabled)
