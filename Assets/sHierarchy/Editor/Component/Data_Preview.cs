@@ -26,7 +26,7 @@ namespace sHierarchy
     /// <summary>
     /// Preview selected gameobject in Hierarch in Inspector window.
     /// </summary>
-    public class PreviewData : HierarchyComponent
+    public class Data_Preview : HierarchyComponent
     {
         /* Variables */
 

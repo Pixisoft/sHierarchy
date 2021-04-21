@@ -24,7 +24,7 @@ using UnityEngine;
 namespace sHierarchy
 {
     [System.Serializable]
-    public class SeparatorData : HierarchyComponent
+    public class Data_Separator : HierarchyComponent
     {
         /* Variables */
 

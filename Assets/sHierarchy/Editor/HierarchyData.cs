@@ -31,12 +31,12 @@ namespace sHierarchy
         public bool enabled = true;
         public bool updateInPlayMode = true;
 
-        public IconsData icons = new IconsData();
-        public PrefabsData prefabsData = new PrefabsData();
-        public AlternatingBGData alternatingBackground = new AlternatingBGData();
-        public SeparatorData separator = new SeparatorData();
-        public TreeData tree = new TreeData();
-        public PreviewData preview = new PreviewData();
+        public Data_Icons icons = new Data_Icons();
+        public Data_Prefabs prefabsData = new Data_Prefabs();
+        public Data_AlternatingBG alternatingBG = new Data_AlternatingBG();
+        public Data_Separator separator = new Data_Separator();
+        public Data_Tree tree = new Data_Tree();
+        public Data_Preview preview = new Data_Preview();
         public Data_InstanceID instanceID = new Data_InstanceID();
 
         public string FormKey(string name) { return HierarchyUtil.FormKey("root.") + name; }
@@ -48,7 +48,7 @@ namespace sHierarchy
             
             icons.Init();
             prefabsData.Init();
-            alternatingBackground.Init();
+            alternatingBG.Init();
             separator.Init();
             tree.Init();
             preview.Init();
@@ -62,7 +62,7 @@ namespace sHierarchy
 
             icons.Draw();
             prefabsData.Draw();
-            alternatingBackground.Draw();
+            alternatingBG.Draw();
             separator.Draw();
             tree.Draw();
             preview.Draw();
@@ -76,7 +76,7 @@ namespace sHierarchy
 
             icons.SavePref();
             prefabsData.SavePref();
-            alternatingBackground.SavePref();
+            alternatingBG.SavePref();
             separator.SavePref();
             tree.SavePref();
             preview.SavePref();

@@ -30,7 +30,7 @@ namespace sHierarchy
     }
 
     [System.Serializable]
-    public class TreeData : HierarchyComponent
+    public class Data_Tree : HierarchyComponent
     {
         /* Variables */
 

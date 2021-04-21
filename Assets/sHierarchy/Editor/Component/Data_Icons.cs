@@ -24,36 +24,43 @@ using UnityEngine;
 namespace sHierarchy
 {
     [System.Serializable]
-    public class Prefab
+    public class HierarchyElement
     {
-        public GameObject gameObject;
-        public Color color;
+        public Texture2D iconToDraw;
+        public MonoScript[] targetClasses = new MonoScript[0];
+    }
+
+    public class HE_Container : ScriptableObject
+    {
+        public HierarchyElement[] pairs = new HierarchyElement[0];
     }
 
     [System.Serializable]
-    public class PrefabsData : HierarchyComponent
+    public class Data_Icons : HierarchyComponent
     {
         /* Variables */
 
         public bool foldout = false;
 
-        public bool enabled;
-        public Prefab[] prefabs = new Prefab[0];
+        public bool enabled = true;
+        public bool aligned = false;
+        public HierarchyElement[] pairs = new HierarchyElement[0];
 
         /* Setter & Getters */
 
         /* Functions */
 
-        public string FormKey(string name) { return HierarchyUtil.FormKey("prefabs.") + name; }
+        public string FormKey(string name) { return HierarchyUtil.FormKey("icons.") + name; }
 
         public void Init()
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
+            this.aligned = EditorPrefs.GetBool(FormKey("aligned"), false);
         }
 
         public void Draw()
         {
-            foldout = EditorGUILayout.Foldout(foldout, "Prefabs Data");
+            foldout = EditorGUILayout.Foldout(foldout, "Icons");
 
             if (!foldout)
                 return;
@@ -61,12 +68,14 @@ namespace sHierarchy
             HierarchyUtil.CreateGroup(() =>
             {
                 this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
+                this.aligned = EditorGUILayout.Toggle("Aligned", this.aligned);
             });
         }
 
         public void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
+            EditorPrefs.SetBool(FormKey("aligned"), this.aligned);
         }
     }
 }

@@ -24,32 +24,36 @@ using UnityEngine;
 namespace sHierarchy
 {
     [System.Serializable]
-    public class AlternatingBGData : HierarchyComponent
+    public class Prefab
+    {
+        public GameObject gameObject;
+        public Color color;
+    }
+
+    [System.Serializable]
+    public class Data_Prefabs : HierarchyComponent
     {
         /* Variables */
 
         public bool foldout = false;
 
-        public bool enabled = true;
-        public Color color = new Color(0, 0, 0, .08f);
-        public bool drawFill = true;
+        public bool enabled;
+        public Prefab[] prefabs = new Prefab[0];
 
         /* Setter & Getters */
 
         /* Functions */
 
-        public string FormKey(string name) { return HierarchyUtil.FormKey("alterBG.") + name; }
+        public string FormKey(string name) { return HierarchyUtil.FormKey("prefabs.") + name; }
 
         public void Init()
         {
-            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
-            this.color = HierarchyUtil.GetColor(FormKey("color"), this.color);
-            this.drawFill = EditorPrefs.GetBool(FormKey("drawFill"), this.drawFill);
+            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
         }
 
         public void Draw()
         {
-            foldout = EditorGUILayout.Foldout(foldout, "Alternating Background");
+            foldout = EditorGUILayout.Foldout(foldout, "Prefabs Data");
 
             if (!foldout)
                 return;
@@ -57,16 +61,12 @@ namespace sHierarchy
             HierarchyUtil.CreateGroup(() =>
             {
                 this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
-                this.color = EditorGUILayout.ColorField("Color", this.color);
-                this.drawFill = EditorGUILayout.Toggle("Draw Fill", this.drawFill);
             });
         }
 
         public void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
-            HierarchyUtil.SetColor(FormKey("color"), this.color);
-            EditorPrefs.SetBool(FormKey("drawFill"), this.drawFill);
         }
     }
 }

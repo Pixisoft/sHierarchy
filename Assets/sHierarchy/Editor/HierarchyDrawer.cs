@@ -435,14 +435,14 @@ namespace sHierarchy
 
             #region Draw Alternating BG
 
-            if (data.alternatingBackground.enabled)
+            if (data.alternatingBG.enabled)
             {
                 if (currentItem.index % 2 == 0)
                 {
-                    if (data.alternatingBackground.drawFill)
-                        HierarchyRenderer.DrawFullItem(selectionRect, data.alternatingBackground.color);
+                    if (data.alternatingBG.drawFill)
+                        HierarchyRenderer.DrawFullItem(selectionRect, data.alternatingBG.color);
                     else
-                        HierarchyRenderer.DrawSelection(selectionRect, data.alternatingBackground.color);
+                        HierarchyRenderer.DrawSelection(selectionRect, data.alternatingBG.color);
                 }
             }
 

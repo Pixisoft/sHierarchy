@@ -24,43 +24,32 @@ using UnityEngine;
 namespace sHierarchy
 {
     [System.Serializable]
-    public class HierarchyElement
-    {
-        public Texture2D iconToDraw;
-        public MonoScript[] targetClasses = new MonoScript[0];
-    }
-
-    public class HE_Container : ScriptableObject
-    {
-        public HierarchyElement[] pairs = new HierarchyElement[0];
-    }
-
-    [System.Serializable]
-    public class IconsData : HierarchyComponent
+    public class Data_AlternatingBG : HierarchyComponent
     {
         /* Variables */
 
         public bool foldout = false;
 
         public bool enabled = true;
-        public bool aligned = false;
-        public HierarchyElement[] pairs = new HierarchyElement[0];
+        public Color color = new Color(0, 0, 0, .08f);
+        public bool drawFill = true;
 
         /* Setter & Getters */
 
         /* Functions */
 
-        public string FormKey(string name) { return HierarchyUtil.FormKey("icons.") + name; }
+        public string FormKey(string name) { return HierarchyUtil.FormKey("alterBG.") + name; }
 
         public void Init()
         {
-            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
-            this.aligned = EditorPrefs.GetBool(FormKey("aligned"), false);
+            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
+            this.color = HierarchyUtil.GetColor(FormKey("color"), this.color);
+            this.drawFill = EditorPrefs.GetBool(FormKey("drawFill"), this.drawFill);
         }
 
         public void Draw()
         {
-            foldout = EditorGUILayout.Foldout(foldout, "Icons");
+            foldout = EditorGUILayout.Foldout(foldout, "Alternating Background");
 
             if (!foldout)
                 return;
@@ -68,14 +57,16 @@ namespace sHierarchy
             HierarchyUtil.CreateGroup(() =>
             {
                 this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
-                this.aligned = EditorGUILayout.Toggle("Aligned", this.aligned);
+                this.color = EditorGUILayout.ColorField("Color", this.color);
+                this.drawFill = EditorGUILayout.Toggle("Draw Fill", this.drawFill);
             });
         }
 
         public void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
-            EditorPrefs.SetBool(FormKey("aligned"), this.aligned);
+            HierarchyUtil.SetColor(FormKey("color"), this.color);
+            EditorPrefs.SetBool(FormKey("drawFill"), this.drawFill);
         }
     }
 }
