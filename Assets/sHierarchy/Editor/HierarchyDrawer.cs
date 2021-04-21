@@ -53,7 +53,7 @@ namespace sHierarchy
             public static void DrawNestGroupOverlay(Rect originalRect, int nestlevel)
             {
                 Color color = GetNestColor(nestlevel);
-                color.a = (FoundBranchColor(nestlevel))? 0 : data.tree.overlayAlpha;
+                color.a = (FoundBranchColor(nestlevel)) ? 0 : data.tree.overlayAlpha;
                 if (data.tree.drawFill)
                     DrawFullItem(originalRect, color);
                 else
@@ -304,12 +304,14 @@ namespace sHierarchy
                 // Analyzes all scene's gameObjects
                 for (int j = 0; j < sceneRoots.Length; ++j)
                 {
+                    var go = sceneRoots[j];
+
                     AnalyzeGoWithChildren(
-                        go: sceneRoots[j],
+                        sceneRoots[j],
                         nestingLevel: 0,
                         sceneRoots[j].transform.childCount > 0,
-                        nestingGroup: j,
-                        isLastChild: j == (sceneRoots.Length - 1));
+                        j,
+                        j == (sceneRoots.Length - 1));
                 }
             }
         }
@@ -329,11 +331,26 @@ namespace sHierarchy
                 newInfo.isGoActive = go.activeInHierarchy;
                 newInfo.topParentHasChild = topParentHasChild;
                 newInfo.goName = go.name;
-                newInfo.index = itemIndex;
                 newInfo.displayIndex = itemDisplayIndex;
-
+                newInfo.index = itemIndex;
                 ++itemIndex;
-                ++itemDisplayIndex;
+
+                var parent = go.transform.parent;
+
+                if (parent == null)
+                {
+                    ++itemDisplayIndex;
+                }
+                else
+                {
+                    //Debug.Log(go.name + " " + parent.gameObject.name + " " + HierarchyUtil.IsExpanded(parent.gameObject));
+
+                    if (HierarchyUtil.IsExpanded(parent.gameObject))
+                    {
+                        Debug.Log("Add!");
+                        ++itemDisplayIndex;
+                    }
+                }
 
                 if (data.prefabsData.enabled)
                 {
@@ -407,8 +424,10 @@ namespace sHierarchy
             {
                 // TODO: This wouldn't work with alphabetic sorting
 
+                var child = go.transform.GetChild(j).gameObject;
+
                 AnalyzeGoWithChildren(
-                    go.transform.GetChild(j).gameObject,
+                    child,
                     nestingLevel + 1,
                     topParentHasChild,
                     nestingGroup,
@@ -437,7 +456,7 @@ namespace sHierarchy
 
             if (data.alternatingBG.enabled)
             {
-                if (currentItem.index % 2 == 0)
+                if (currentItem.displayIndex % 2 == 0)
                 {
                     if (data.alternatingBG.drawFill)
                         HierarchyRenderer.DrawFullItem(selectionRect, data.alternatingBG.color);
