@@ -39,7 +39,6 @@ namespace sHierarchy
 
         private static PreviewRenderUtility mPreviewRenderer = null;
 
-        private static Vector3 mCameraPos = Vector3.zero;
         private static Vector2 mLastMousePos = Vector2.zero;
 
         private static bool mAutoRotate = false;
@@ -202,6 +201,9 @@ namespace sHierarchy
 
             mClone.transform.eulerAngles = Vector3.zero;
             mAutoRotate = HierarchyData.instance.preview.autoRotate;
+
+            if (mClone.GetComponent<Canvas>() != null)
+                mAutoRotate = false;
         }
 
         private static void InitScene()
@@ -256,8 +258,6 @@ namespace sHierarchy
             float distance = HierarchyData.instance.preview.distance * objectSize / cameraView;
             distance += 0.5f * objectSize;
             camera.transform.position = bounds.center - distance * camera.transform.forward;
-
-            mCameraPos = camera.transform.position;  // record it down
         }
 
         /// <summary>

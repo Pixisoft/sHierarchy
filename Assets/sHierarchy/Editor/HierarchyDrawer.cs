@@ -433,7 +433,7 @@ namespace sHierarchy
 
             currentItem = sceneGameObjects[instanceID];
 
-            #region Draw Alternating BG
+            #region Alternating BG
 
             if (data.alternatingBG.enabled)
             {
@@ -448,7 +448,7 @@ namespace sHierarchy
 
             #endregion
 
-            #region DrawingPrefabsBackground
+            #region Prefabs Background
 
             drawedPrefabOverlay = false;
             if (data.prefabsData.enabled && prefabColors.Count > 0)
@@ -463,7 +463,7 @@ namespace sHierarchy
 
             #endregion
 
-            #region Drawing Tree
+            #region Tree
 
             if (data.tree.enabled && currentItem.nestingLevel >= 0)
             {
@@ -524,7 +524,7 @@ namespace sHierarchy
 
             #endregion
 
-            #region Drawing Separators
+            #region Separators
 
             // EditorOnly objects are only removed from build if they're not childrens
             if (data.separator.enabled && data.separator.color.a > 0
@@ -539,7 +539,7 @@ namespace sHierarchy
 
             #endregion
 
-            #region Drawing Icon
+            #region Icons
 
             const int padding = 8;
             const int instanceIDLength = (padding - 2) * 10;
@@ -607,6 +607,7 @@ namespace sHierarchy
 
             #endregion
 
+            #region Instance ID
             if (HierarchyData.instance.instanceID.enabled)
             {
                 Rect rect = new Rect(selectionRect.xMax + instanceIDOffset, selectionRect.y, selectionRect.width, selectionRect.height);
@@ -614,6 +615,7 @@ namespace sHierarchy
                 style.normal.textColor = HierarchyData.instance.instanceID.color;
                 GUI.Label(rect, instanceID.ToString().PadLeft(padding, ' '), style);
             }
+            #endregion
         }
 
         #endregion
