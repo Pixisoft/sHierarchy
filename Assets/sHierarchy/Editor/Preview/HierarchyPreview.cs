@@ -33,20 +33,21 @@ namespace sHierarchy
     {
         /* Variables */
 
-        private GameObject mTarget = null;
-        private Editor mEditor = null;
+        private static GameObject mTarget = null;
+        private static GameObject mClone = null;
+        private static Editor mEditor = null;
 
-        private PreviewRenderUtility mPreviewRenderer = null;
+        private static PreviewRenderUtility mPreviewRenderer = null;
 
-        private Vector3 mCameraPos = Vector3.zero;
-        private Vector2 mLastMousePos = Vector2.zero;
+        private static Vector3 mCameraPos = Vector3.zero;
+        private static Vector2 mLastMousePos = Vector2.zero;
 
-        private bool mAutoRotate = false;
+        private static bool mAutoRotate = false;
 
         /* Setter & Getter */
 
-        public Camera camera { get { return this.mPreviewRenderer.camera; } }
-        public Light DirectionalLight { get { return this.mPreviewRenderer.lights[0]; } }
+        public static Camera camera { get { return mPreviewRenderer.camera; } }
+        public static Light DirectionalLight { get { return mPreviewRenderer.lights[0]; } }
 
         /* Functions */
 
@@ -60,10 +61,18 @@ namespace sHierarchy
             base.Cleanup();
 
             if (mPreviewRenderer != null)
+            {
                 mPreviewRenderer.Cleanup();
+                mPreviewRenderer = null;
+            }
         }
 
         public override void OnPreviewGUI(Rect r, GUIStyle background)
+        {
+            Draw();
+        }
+
+        public static void Draw()
         {
             InitRenderer();
             GetSelected();
@@ -73,18 +82,19 @@ namespace sHierarchy
             DrawOptions();
         }
 
-        private void GetSelected()
+        private static void GetSelected()
         {
             if (mTarget == Selection.activeGameObject)
                 return;
 
             if (mEditor != null) Object.DestroyImmediate(mEditor);
             mTarget = Selection.activeGameObject;
+            mClone = null;
 
             InitScene();
         }
 
-        private void InitEditor()
+        private static void InitEditor()
         {
             if (mTarget == null)
                 return;
@@ -93,7 +103,7 @@ namespace sHierarchy
                 mEditor = Editor.CreateEditor(mTarget);
         }
 
-        private void InitRenderer()
+        private static void InitRenderer()
         {
             if (mPreviewRenderer == null)  // Initialize once
             {
@@ -103,14 +113,14 @@ namespace sHierarchy
                 ResetCameraRotation();
             }
 
-            mPreviewRenderer.camera.clearFlags =
+            camera.clearFlags =
                 (HierarchyData.instance.preview.skybox) ?
                 CameraClearFlags.Skybox : CameraClearFlags.SolidColor;
 
             UpdateDirectionalLight();
         }
 
-        private void DrawSelected()
+        private static void DrawSelected()
         {
             if (mTarget == null)
                 return;
@@ -123,35 +133,41 @@ namespace sHierarchy
             mEditor.Repaint();
         }
 
-        private void DoRotate()
+        private static void DoRotate()
         {
             if (Event.current.type == EventType.MouseDown)
                 mLastMousePos = Event.current.mousePosition;
 
             float rotateSpeed = HierarchyData.instance.preview.rotateSpeed;
 
+            if (mClone == null)
+                return;
+
             if (EditorWindow.focusedWindow.titleContent.text != "Inspector" ||
                 Event.current.type != EventType.MouseDrag)
             {
                 if (mAutoRotate)
-                    camera.transform.RotateAround(Vector3.zero, camera.transform.up, rotateSpeed * Time.deltaTime);
+                {
+                    float speed = rotateSpeed * Time.deltaTime;
+                    RotateX(speed);
+                }
                 return;
             }
 
-            this.mAutoRotate = false;
+            mAutoRotate = false;
 
             Vector3 mousePosition = Event.current.mousePosition;
 
-            float rotX = (mousePosition.x - mLastMousePos.x) * rotateSpeed;
-            float rotY = (mousePosition.y - mLastMousePos.y) * rotateSpeed;
+            float rotX = (mousePosition.x - mLastMousePos.x) * rotateSpeed * Time.deltaTime;
+            float rotY = (mousePosition.y - mLastMousePos.y) * rotateSpeed * Time.deltaTime;
 
-            camera.transform.RotateAround(Vector3.zero, camera.transform.up, rotX);
-            camera.transform.RotateAround(Vector3.zero, camera.transform.right, rotY);
+            RotateX(-rotX);
+            RotateY(-rotY);
 
             mLastMousePos = mousePosition;
         }
 
-        private void Render(EmptyFunction func)
+        private static void Render(EmptyFunction func)
         {
             var boundaries = GUILayoutUtility.GetLastRect();
             mPreviewRenderer.BeginPreview(boundaries, GUIStyle.none);
@@ -161,7 +177,7 @@ namespace sHierarchy
             GUI.DrawTexture(boundaries, render);
         }
 
-        private void UpdateDirectionalLight()
+        private static void UpdateDirectionalLight()
         {
             if (mPreviewRenderer == null || mPreviewRenderer.lights.Length == 0)
                 return;
@@ -173,38 +189,59 @@ namespace sHierarchy
             DirectionalLight.intensity = HierarchyData.instance.preview.lightIntensity;
         }
 
-        private void DrawOptions()
+        private static void DrawOptions()
         {
             if (GUILayout.Button("Reset", GUILayout.Width(50)))
                 ResetCameraRotation();
         }
 
-        private void ResetCameraRotation()
+        private static void ResetCameraRotation()
         {
-            camera.transform.position = mCameraPos;
-            camera.transform.LookAt(Vector3.zero, Vector3.up);
+            if (mClone == null)
+                return;
+
+            mClone.transform.eulerAngles = Vector3.zero;
+            mAutoRotate = HierarchyData.instance.preview.autoRotate;
         }
 
-        private void InitScene()
+        private static void InitScene()
         {
             if (mPreviewRenderer == null || mTarget == null)
                 return;
 
-            this.mAutoRotate = HierarchyData.instance.preview.autoRotate;
+            mClone = GameObject.Instantiate(mTarget);
+            mClone.transform.position = Vector3.zero;
+            mClone.transform.localScale = Vector3.one;
+            mClone.AddComponent<SphereCollider>();
+            mPreviewRenderer.AddSingleGO(mClone);
 
-            GameObject go = GameObject.Instantiate(mTarget);
-            go.transform.position = Vector3.zero;
-            go.transform.localScale = Vector3.one;
-            go.AddComponent<SphereCollider>();
-            mPreviewRenderer.AddSingleGO(go);
+            ResetCameraRotation();
 
-            FocusObject(go);
+            FocusObject();
         }
 
-        private void FocusObject(GameObject go)
+        private static Bounds GetBounds()
         {
-            Collider collider = go.GetComponent<SphereCollider>();
-            var bounds = collider.bounds;
+            Bounds bounds = new Bounds();
+            RectTransform rect = mClone.GetComponent<RectTransform>();
+
+            if (rect != null)
+            {
+                bounds = RectTransformUtility.CalculateRelativeRectTransformBounds(rect);
+            }
+            else
+            {
+                Collider collider = mClone.GetComponent<SphereCollider>();
+                if (collider != null)
+                    bounds = collider.bounds;
+            }
+
+            return bounds;
+        }
+
+        private static void FocusObject()
+        {
+            Bounds bounds = GetBounds();
             Vector3 objectSizes = bounds.max - bounds.min;
             float objectSize = Mathf.Max(objectSizes.x, objectSizes.y, objectSizes.z);
             float cameraView = 2.0f * Mathf.Tan(0.5f * Mathf.Deg2Rad * camera.fieldOfView);
@@ -212,15 +249,13 @@ namespace sHierarchy
             distance += 0.5f * objectSize;
             camera.transform.position = bounds.center - distance * camera.transform.forward;
 
-            camera.transform.LookAt(Vector3.zero, Vector3.up);
-
-            this.mCameraPos = camera.transform.position;  // record it down
+            mCameraPos = camera.transform.position;  // record it down
         }
 
         /// <summary>
         /// Return true if current selection can be preview.
         /// </summary>
-        private bool CanPreview()
+        private static bool CanPreview()
         {
             if (!HierarchyData.instance.preview.enabled || Selection.activeGameObject == null)
                 return false;
@@ -228,6 +263,16 @@ namespace sHierarchy
             // TODO: Close with certain cases
 
             return true;
+        }
+
+        private static void RotateX(float speed)
+        {
+            mClone.transform.RotateAround(Vector3.zero, Vector3.up, speed);
+        }
+
+        private static void RotateY(float speed)
+        {
+            mClone.transform.RotateAround(Vector3.zero, Vector3.right, speed);
         }
     }
 }

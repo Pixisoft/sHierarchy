@@ -33,7 +33,7 @@ namespace sHierarchy
         public bool foldout = false;
 
         public bool enabled = true;
-        public float rotateSpeed = 1.0f;
+        public float rotateSpeed = 15f;
         public bool autoRotate = true;
         public float distance = 1.1f;  // how far apart from preview object
 
@@ -78,7 +78,7 @@ namespace sHierarchy
                 {
                     HierarchyUtil.BeginHorizontal(() =>
                     {
-                        this.rotateSpeed = EditorGUILayout.Slider("Rotate Speed", this.rotateSpeed, 0, 10);
+                        this.rotateSpeed = EditorGUILayout.Slider("Rotate Speed", this.rotateSpeed, 0, 30);
 
                         if (GUILayout.Button("Reset", GUILayout.Width(50)))
                             ResetRotateSpeed();
@@ -131,7 +131,7 @@ namespace sHierarchy
             EditorPrefs.SetBool(FormKey("skybox"), this.skybox);
         }
 
-        private void ResetRotateSpeed() { this.rotateSpeed = 1f; }
+        private void ResetRotateSpeed() { this.rotateSpeed = 15f; }
         private void ResetDistance() { this.distance = 1.1f; }
         private void ResetLightRotation() { this.lightRotation = new Vector3(50, -30, 0); }
         private void ResetLightIntensity() { this.lightIntensity = 1f; }

@@ -93,6 +93,7 @@ namespace sHierarchy
             mData.SavePref();
 
             HierarchyDrawer.Initialize();
+            HierarchyPreview.Draw();
         }
     }
 }
