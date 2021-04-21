@@ -542,6 +542,7 @@ namespace sHierarchy
             #region Drawing Icon
 
             const int instanceIDLength = 50;
+            int instanceIDOffset = HierarchyData.instance.instanceID.enabled ? -instanceIDLength : 0;
 
             if (data.icons.enabled)
             {
@@ -591,8 +592,7 @@ namespace sHierarchy
                             temp_iconsDrawedCount++;
                             GUI.DrawTexture(
                                 new Rect(
-                                    selectionRect.xMax - 16 * (temp_iconsDrawedCount + 1) - 2 +
-                                    ((HierarchyData.instance.instanceID.enabled) ? -instanceIDLength : 0),
+                                    selectionRect.xMax - 16 * (temp_iconsDrawedCount + 1) - 2 + instanceIDOffset,
                                     selectionRect.yMin, 16,
                                     16),
                                 content.image);
@@ -608,7 +608,7 @@ namespace sHierarchy
 
             if (HierarchyData.instance.instanceID.enabled)
             {
-                Rect rect = new Rect(selectionRect.xMax - instanceIDLength, selectionRect.y, selectionRect.width, selectionRect.height);
+                Rect rect = new Rect(selectionRect.xMax + instanceIDOffset, selectionRect.y, selectionRect.width, selectionRect.height);
                 GUIStyle style = new GUIStyle();
                 style.normal.textColor = HierarchyData.instance.instanceID.color;
                 GUI.Label(rect, instanceID.ToString().PadLeft(6, ' '), style);
