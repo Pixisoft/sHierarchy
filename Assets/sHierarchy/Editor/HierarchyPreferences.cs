@@ -26,6 +26,7 @@ namespace sHierarchy
     /// <summary>
     /// Preferences settings in `Preferences` window.
     /// </summary>
+    [InitializeOnLoad]
     public static class HierarchyPreferences
     {
         /* Variables */
@@ -39,6 +40,11 @@ namespace sHierarchy
         public static HierarchyData data { get { return mData; } }
 
         /* Functions */
+
+        static HierarchyPreferences()
+        {
+            Init();
+        }
 
 #if UNITY_2018_3_OR_NEWER
         private class HP_SettingsProvider : SettingsProvider
@@ -61,6 +67,7 @@ namespace sHierarchy
 #else
         [PreferenceItem("sHierarchy")]
 #endif
+
         private static void CustomPreferencesGUI()
         {
             Init();
