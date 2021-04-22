@@ -184,7 +184,7 @@ namespace sHierarchy
         private static Dictionary<int, Color> prefabColors = new Dictionary<int, Color>();
         private static Dictionary<int, bool> sceneRenders = new Dictionary<int, bool>();
 
-        private static int firstInstanceID = 0;
+        private static bool firstDraw = false;
         private static bool temp_alternatingDrawed = false;
 
         #region Menu Items
@@ -231,6 +231,7 @@ namespace sHierarchy
                 // Prevents registering events multiple times
                 EditorApplication.hierarchyWindowItemOnGUI -= DrawCore;
                 EditorApplication.hierarchyChanged -= RetrieveDataFromScene;
+                EditorApplication.update -= Update;
             }
 
             #endregion
@@ -245,6 +246,7 @@ namespace sHierarchy
 
                 EditorApplication.hierarchyWindowItemOnGUI += DrawCore;
                 EditorApplication.hierarchyChanged += RetrieveDataFromScene;
+                EditorApplication.update += Update;
 
                 #endregion
 
@@ -282,7 +284,6 @@ namespace sHierarchy
 
             GameObject[] sceneRoots;
             Scene tempScene;
-            firstInstanceID = -1;
 
             for (int i = 0; i < SceneManager.sceneCount; ++i)
             {
@@ -310,9 +311,6 @@ namespace sHierarchy
                         j,
                         j == (sceneRoots.Length - 1));
                 }
-
-                if (firstInstanceID == -1 && sceneRoots.Length > 0)
-                    firstInstanceID = sceneRoots[0].GetInstanceID();
             }
         }
 
@@ -423,6 +421,10 @@ namespace sHierarchy
         private static InstanceInfo currentItem;
         private static bool drawedPrefabOverlay;
 
+        static void Update()
+        {
+            firstDraw = true;
+        }
 
         static void DrawCore(int instanceID, Rect selectionRect)
         {
@@ -432,7 +434,7 @@ namespace sHierarchy
 
             currentItem = sceneGameObjects[instanceID];
 
-            if (instanceID == firstInstanceID)
+            if (firstDraw)
             {
                 if (sceneRenders.ContainsKey(instanceID))
                 {
@@ -441,30 +443,27 @@ namespace sHierarchy
                 else
                 {
                     temp_alternatingDrawed = true;  // default to `true`
-                    sceneRenders[instanceID] = temp_alternatingDrawed;
                 }
-            }
-            else
-            {
-                sceneRenders[instanceID] = temp_alternatingDrawed;
+
+                sceneRenders.Clear();
+                firstDraw = false;
             }
 
             #region Alternating BG
 
             if (data.alternatingBG.enabled)
             {
+                //sceneRenders[instanceID] = temp_alternatingDrawed;
+
                 if (temp_alternatingDrawed)
                 {
                     if (data.alternatingBG.drawFill)
                         HierarchyRenderer.DrawFullItem(selectionRect, data.alternatingBG.color);
                     else
                         HierarchyRenderer.DrawSelection(selectionRect, data.alternatingBG.color);
-                    temp_alternatingDrawed = false;
                 }
-                else
-                {
-                    temp_alternatingDrawed = true;
-                }
+
+                temp_alternatingDrawed = !temp_alternatingDrawed;
             }
 
             #endregion
