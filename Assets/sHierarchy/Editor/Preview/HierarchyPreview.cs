@@ -142,8 +142,7 @@ namespace sHierarchy
             if (mClone == null)
                 return;
 
-            if (EditorWindow.focusedWindow.titleContent.text != "Inspector" ||
-                Event.current.type != EventType.MouseDrag)
+            if (!HierarchyUtil.IsFocusedWindow("Inspector") || Event.current.type != EventType.MouseDrag)
             {
                 if (mAutoRotate)
                 {

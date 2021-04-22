@@ -173,8 +173,6 @@ namespace sHierarchy
 
             public int nestingGroup;
             public int nestingLevel;
-            public int index;
-            public int displayIndex;
         }
 
         #endregion
@@ -184,10 +182,10 @@ namespace sHierarchy
         private static List<int> iconsPositions = new List<int>();
         private static Dictionary<int, InstanceInfo> sceneGameObjects = new Dictionary<int, InstanceInfo>();
         private static Dictionary<int, Color> prefabColors = new Dictionary<int, Color>();
+        private static Dictionary<int, bool> sceneRenders = new Dictionary<int, bool>();
 
-        private static int itemIndex = 0;
-        private static int itemDisplayIndex = 0;
-
+        private static int firstInstanceID = 0;
+        private static bool temp_alternatingDrawed = false;
 
         #region Menu Items
 
@@ -284,8 +282,7 @@ namespace sHierarchy
 
             GameObject[] sceneRoots;
             Scene tempScene;
-            itemIndex = 0;
-            itemDisplayIndex = 0;
+            firstInstanceID = -1;
 
             for (int i = 0; i < SceneManager.sceneCount; ++i)
             {
@@ -313,6 +310,9 @@ namespace sHierarchy
                         j,
                         j == (sceneRoots.Length - 1));
                 }
+
+                if (firstInstanceID == -1 && sceneRoots.Length > 0)
+                    firstInstanceID = sceneRoots[0].GetInstanceID();
             }
         }
 
@@ -331,21 +331,6 @@ namespace sHierarchy
                 newInfo.isGoActive = go.activeInHierarchy;
                 newInfo.topParentHasChild = topParentHasChild;
                 newInfo.goName = go.name;
-                newInfo.displayIndex = itemDisplayIndex;
-                newInfo.index = itemIndex;
-                ++itemIndex;
-
-                var parent = go.transform.parent;
-
-                if (parent == null)
-                {
-                    ++itemDisplayIndex;
-                }
-                else
-                {
-                    if (HierarchyUtil.IsExpanded(parent.gameObject))
-                        ++itemDisplayIndex;
-                }
 
                 if (data.prefabsData.enabled)
                 {
@@ -356,9 +341,9 @@ namespace sHierarchy
 
                 if (data.separator.enabled)
                 {
-                    newInfo.isSeparator = String.Compare(go.tag, "EditorOnly", StringComparison.Ordinal) == 0 // gameobject has EditorOnly tag
+                    newInfo.isSeparator = String.Compare(go.tag, "EditorOnly", StringComparison.Ordinal) == 0  // gameobject has EditorOnly tag
                                           && (!string.IsNullOrEmpty(go.name) && !string.IsNullOrEmpty(data.separator.startString)
-                                          && go.name.StartsWith(data.separator.startString)); // and also starts with '>'
+                                          && go.name.StartsWith(data.separator.startString));  // and also starts with '>'
                 }
 
                 if (data.icons.enabled && data.icons.pairs != null && data.icons.pairs.Length > 0)
@@ -447,16 +432,38 @@ namespace sHierarchy
 
             currentItem = sceneGameObjects[instanceID];
 
+            if (instanceID == firstInstanceID)
+            {
+                if (sceneRenders.ContainsKey(instanceID))
+                {
+                    temp_alternatingDrawed = sceneRenders[instanceID];
+                }
+                else
+                {
+                    temp_alternatingDrawed = true;  // default to `true`
+                    sceneRenders[instanceID] = temp_alternatingDrawed;
+                }
+            }
+            else
+            {
+                sceneRenders[instanceID] = temp_alternatingDrawed;
+            }
+
             #region Alternating BG
 
             if (data.alternatingBG.enabled)
             {
-                if (currentItem.displayIndex % 2 == 0)
+                if (temp_alternatingDrawed)
                 {
                     if (data.alternatingBG.drawFill)
                         HierarchyRenderer.DrawFullItem(selectionRect, data.alternatingBG.color);
                     else
                         HierarchyRenderer.DrawSelection(selectionRect, data.alternatingBG.color);
+                    temp_alternatingDrawed = false;
+                }
+                else
+                {
+                    temp_alternatingDrawed = true;
                 }
             }
 
