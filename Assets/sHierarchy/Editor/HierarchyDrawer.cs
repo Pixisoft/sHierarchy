@@ -453,8 +453,6 @@ namespace sHierarchy
 
             if (data.alternatingBG.enabled)
             {
-                //sceneRenders[instanceID] = temp_alternatingDrawed;
-
                 if (temp_alternatingDrawed)
                 {
                     if (data.alternatingBG.drawFill)
