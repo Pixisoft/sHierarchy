@@ -24,6 +24,8 @@ namespace PackageExporter
     {
         public static PackageExporterWindow instance = null;
 
+        private const string WINDOW_NAME = "Package Exporter";
+
         private const string PACKAGE_FOLDER = "Assets";
         private const string DEFAULT_PACKAGE_NAME = "Empty Package Name";
         private const string DELIMITER = "_";
@@ -366,7 +368,7 @@ namespace PackageExporter
         [MenuItem("PackageExporter/Window", false, 1)]
         private static void GeneratePackageExporterWindow()
         {
-            PackageExporterWindow window = (PackageExporterWindow)GetWindow(typeof(PackageExporterWindow));
+            PackageExporterWindow window = GetWindow<PackageExporterWindow>(false, WINDOW_NAME, true);
             window.Show();
         }
 
