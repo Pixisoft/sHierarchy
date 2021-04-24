@@ -9,9 +9,6 @@ N/A
 
 ## License
 
-Copyright (c) 2020 Federico Bellucci - febucci.com
-Copyright (c) 2021 Jen-Chieh Shen
-
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software/algorithm and associated
 documentation files (the "Software"), to use, copy, modify, merge or distribute copies of the Software, and to permit
 persons to whom the Software is furnished to do so, subject to the following conditions:
