@@ -52,7 +52,13 @@ namespace sHierarchy
 
         public override bool HasPreviewGUI()
         {
-            return CanPreview();
+            if (!HierarchyData.instance.enabled || !HierarchyData.instance.preview.enabled || 
+                Selection.activeGameObject == null)
+                return false;
+
+            // TODO: Close with certain cases
+
+            return true;
         }
 
         public override void Cleanup()
@@ -257,19 +263,6 @@ namespace sHierarchy
             float distance = HierarchyData.instance.preview.distance * objectSize / cameraView;
             distance += 0.5f * objectSize;
             camera.transform.position = bounds.center - distance * camera.transform.forward;
-        }
-
-        /// <summary>
-        /// Return true if current selection can be preview.
-        /// </summary>
-        private static bool CanPreview()
-        {
-            if (!HierarchyData.instance.preview.enabled || Selection.activeGameObject == null)
-                return false;
-
-            // TODO: Close with certain cases
-
-            return true;
         }
 
         private static void RotateX(float speed)
