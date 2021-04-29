@@ -46,9 +46,8 @@ namespace sHierarchy
         {
             static private Color[] currentBranch { get { return data.tree.branches; } }
 
-            private const float barWidth = 2;
+            private const float barWidth = 1;
             private const int barOffsetX = 15;
-            private const float dotDivider = 11.0f;
 
             public static void DrawNestGroupOverlay(Rect originalRect, int nestlevel)
             {
@@ -62,7 +61,8 @@ namespace sHierarchy
 
             public static void DrawFullItem(Rect originalRect, Color color)
             {
-                originalRect = new Rect(32, originalRect.y, originalRect.width + (originalRect.x - 32), originalRect.height);
+                const int offset = 32;
+                originalRect = new Rect(offset, originalRect.y, originalRect.width + originalRect.x, originalRect.height);
                 EditorGUI.DrawRect(originalRect, color);
             }
 
@@ -136,7 +136,7 @@ namespace sHierarchy
 
                 float x = GetStartX(originalRect, nestLevel) + offsetX;
                 float y = originalRect.y;
-                float height = originalRect.height / dotDivider;
+                float height = originalRect.height / 4 - 2;
                 float centerY = y + originalRect.height / 2f;
 
                 // startsOnTop? originalRect.y: (originalRect.y + originalRect.height / 2f),
@@ -182,10 +182,6 @@ namespace sHierarchy
         private static List<int> iconsPositions = new List<int>();
         private static Dictionary<int, InstanceInfo> sceneGameObjects = new Dictionary<int, InstanceInfo>();
         private static Dictionary<int, Color> prefabColors = new Dictionary<int, Color>();
-        private static Dictionary<int, bool> sceneRenders = new Dictionary<int, bool>();
-
-        private static bool firstDraw = false;
-        private static bool temp_alternatingDrawed = false;
 
         #region Menu Items
 
@@ -229,9 +225,8 @@ namespace sHierarchy
             if (initialized)
             {
                 // Prevents registering events multiple times
-                EditorApplication.hierarchyWindowItemOnGUI -= DrawCore;
                 EditorApplication.hierarchyChanged -= RetrieveDataFromScene;
-                EditorApplication.update -= Update;
+                EditorApplication.hierarchyWindowItemOnGUI -= DrawCore;
             }
 
             #endregion
@@ -244,9 +239,8 @@ namespace sHierarchy
             {
                 #region Registers events
 
-                EditorApplication.hierarchyWindowItemOnGUI += DrawCore;
                 EditorApplication.hierarchyChanged += RetrieveDataFromScene;
-                EditorApplication.update += Update;
+                EditorApplication.hierarchyWindowItemOnGUI += DrawCore;
 
                 #endregion
 
@@ -421,12 +415,11 @@ namespace sHierarchy
         private static InstanceInfo currentItem;
         private static bool drawedPrefabOverlay;
 
-        static void Update()
-        {
-            firstDraw = true;
-        }
+        private const int padding = 8;
+        private const int instanceIDLength = padding * 5;
+        private static int instanceIDOffset = 0;
 
-        static void DrawCore(int instanceID, Rect selectionRect)
+        private static void DrawCore(int instanceID, Rect selectionRect)
         {
             // skips early if item is not registered or not valid
             if (!sceneGameObjects.ContainsKey(instanceID))
@@ -434,206 +427,194 @@ namespace sHierarchy
 
             currentItem = sceneGameObjects[instanceID];
 
-            if (firstDraw)
+            /* Initialzie draw variables */
             {
-                if (sceneRenders.ContainsKey(instanceID))
-                {
-                    temp_alternatingDrawed = sceneRenders[instanceID];
-                }
-                else
-                {
-                    temp_alternatingDrawed = true;  // default to `true`
-                }
-
-                sceneRenders.Clear();
-                firstDraw = false;
+                instanceIDOffset = HierarchyData.instance.instanceID.enabled ? -instanceIDLength : 0;
             }
 
-            #region Alternating BG
+            DrawAlternatingBG(instanceID, selectionRect);
+            DrawPrefabBG(instanceID, selectionRect);
+            DrawTree(instanceID, selectionRect);
+            DrawSeparators(instanceID, selectionRect);
+            DrawIcons(instanceID, selectionRect);
+            DrawInstanceID(instanceID, selectionRect);
+        }
 
-            if (data.alternatingBG.enabled)
-            {
-                if (temp_alternatingDrawed)
-                {
-                    if (data.alternatingBG.drawFill)
-                        HierarchyRenderer.DrawFullItem(selectionRect, data.alternatingBG.color);
-                    else
-                        HierarchyRenderer.DrawSelection(selectionRect, data.alternatingBG.color);
-                }
+        private static void DrawAlternatingBG(int instanceID, Rect selectionRect)
+        {
+            if (!data.alternatingBG.enabled)
+                return;
 
-                temp_alternatingDrawed = !temp_alternatingDrawed;
-            }
+            var isOdd = Mathf.FloorToInt(((selectionRect.y - 4) / 16) % 2) != 0;
+            if (isOdd) return;
 
-            #endregion
+            if (data.alternatingBG.drawFill)
+                HierarchyRenderer.DrawFullItem(selectionRect, data.alternatingBG.color);
+            else
+                HierarchyRenderer.DrawSelection(selectionRect, data.alternatingBG.color);
 
-            #region Prefabs Background
+        }
 
+        private static void DrawPrefabBG(int instanceID, Rect selectionRect)
+        {
             drawedPrefabOverlay = false;
-            if (data.prefabsData.enabled && prefabColors.Count > 0)
+
+            if (!data.prefabsData.enabled || prefabColors.Count <= 0)
+                return;
+
+            if (prefabColors.ContainsKey(currentItem.prefabInstanceID))
             {
-                if (prefabColors.ContainsKey(currentItem.prefabInstanceID))
-                {
-                    EditorGUI.DrawRect(selectionRect, prefabColors[currentItem.prefabInstanceID]);
-                    drawedPrefabOverlay = true;
-                }
+                EditorGUI.DrawRect(selectionRect, prefabColors[currentItem.prefabInstanceID]);
+                drawedPrefabOverlay = true;
             }
+        }
 
+        private static void DrawTree(int instanceID, Rect selectionRect)
+        {
+            if (!data.tree.enabled || currentItem.nestingLevel < 0)
+                return;
 
-            #endregion
-
-            #region Tree
-
-            if (data.tree.enabled && currentItem.nestingLevel >= 0)
+            // prevents drawing when the hierarchy search mode is enabled
+            if (selectionRect.x >= 60)
             {
-                // prevents drawing when the hierarchy search mode is enabled
-                if (selectionRect.x >= 60)
+                // Group
+                if (data.tree.colorizedItem && !drawedPrefabOverlay && currentItem.topParentHasChild)
                 {
-                    // Group
-                    if (data.tree.colorizedItem && !drawedPrefabOverlay && currentItem.topParentHasChild)
-                    {
-                        HierarchyRenderer.DrawNestGroupOverlay(selectionRect, currentItem.nestingLevel);
-                    }
-
-                    HierarchyRenderer.DrawDottedLine(selectionRect, 0, 0);
-
-                    if (currentItem.nestingLevel == 0 && !currentItem.hasChilds)
-                    {
-                        HierarchyRenderer.DrawHalfVerticalLineFrom(selectionRect, true, 0, data.tree.baseLevelColor);
-                        if (!currentItem.isLastElement)
-                            HierarchyRenderer.DrawHalfVerticalLineFrom(selectionRect, false, 0, data.tree.baseLevelColor);
-                    }
-                    else
-                    {
-                        // Draws a vertical line for each previous nesting level
-                        for (int level = 0; level <= currentItem.nestingLevel; ++level)
-                        {
-                            bool currentLevel = (currentItem.nestingLevel == level);
-
-                            if (currentLevel && currentItem.hasChilds)
-                                continue;
-
-                            if (currentLevel && !currentItem.hasChilds)
-                            {
-                                HierarchyRenderer.DrawHalfVerticalLineFrom(selectionRect, true, level);
-                                if (!currentItem.isLastElement)
-                                    HierarchyRenderer.DrawHalfVerticalLineFrom(selectionRect, false, level);
-                            }
-                            else
-                            {
-                                HierarchyRenderer.DrawDottedLine(selectionRect, level);
-                            }
-                        }
-                    }
-
-                    if (!currentItem.hasChilds)
-                        HierarchyRenderer.DrawHorizontalLineFrom(selectionRect, currentItem.nestingLevel, currentItem.hasChilds);
+                    HierarchyRenderer.DrawNestGroupOverlay(selectionRect, currentItem.nestingLevel);
                 }
 
-                // draws a super small divider between different groups
-                if (currentItem.nestingLevel == 0 && data.tree.dividerHeight > 0)
+                HierarchyRenderer.DrawDottedLine(selectionRect, 0, 0);
+
+                if (currentItem.nestingLevel == 0 && !currentItem.hasChilds)
                 {
-                    Rect boldGroupRect = new Rect(
-                        32, selectionRect.y - data.tree.dividerHeight / 2f,
-                        selectionRect.width + (selectionRect.x - 32),
-                        data.tree.dividerHeight);
-                    EditorGUI.DrawRect(boldGroupRect, Color.black * .3f);
+                    HierarchyRenderer.DrawHalfVerticalLineFrom(selectionRect, true, 0, data.tree.baseLevelColor);
+                    if (!currentItem.isLastElement)
+                        HierarchyRenderer.DrawHalfVerticalLineFrom(selectionRect, false, 0, data.tree.baseLevelColor);
                 }
-            }
-
-            #endregion
-
-            #region Separators
-
-            // EditorOnly objects are only removed from build if they're not childrens
-            if (data.separator.enabled && data.separator.color.a > 0
-                && currentItem.isSeparator && currentItem.nestingLevel == 0)
-            {
-                // Adds color on top of the label
-                if (data.separator.drawFill)
-                    HierarchyRenderer.DrawFullItem(selectionRect, data.separator.color);
                 else
-                    HierarchyRenderer.DrawSelection(selectionRect, data.separator.color);
-            }
-
-            #endregion
-
-            #region Icons
-
-            const int padding = 8;
-            const int instanceIDLength = (padding - 2) * 10;
-            int instanceIDOffset = HierarchyData.instance.instanceID.enabled ? -instanceIDLength : 0;
-
-            if (data.icons.enabled)
-            {
-                temp_iconsDrawedCount = -1;
-                #region Local Method
-
-                // Draws each component icon
-                void DrawIcon(int textureIndex)
                 {
-                    //---Icon Alignment---
-                    if (data.icons.aligned)
+                    // Draws a vertical line for each previous nesting level
+                    for (int level = 0; level <= currentItem.nestingLevel; ++level)
                     {
-                        // Aligns icon based on texture's position on the array
-                        int CalculateIconPosition()
-                        {
-                            for (int i = 0; i < iconsPositions.Count; ++i)
-                            {
-                                if (iconsPositions[i] == textureIndex)
-                                    return i;
-                            }
+                        bool currentLevel = (currentItem.nestingLevel == level);
 
-                            return 0;
+                        if (currentLevel && currentItem.hasChilds)
+                            continue;
+
+                        if (currentLevel && !currentItem.hasChilds)
+                        {
+                            HierarchyRenderer.DrawHalfVerticalLineFrom(selectionRect, true, level);
+                            if (!currentItem.isLastElement)
+                                HierarchyRenderer.DrawHalfVerticalLineFrom(selectionRect, false, level);
                         }
-
-                        temp_iconsDrawedCount = CalculateIconPosition();
-                    }
-                    else
-                    {
-                        ++temp_iconsDrawedCount;
-                    }
-
-                    GUI.DrawTexture(
-                        new Rect(selectionRect.xMax - 16 * (temp_iconsDrawedCount + 1) - 2, selectionRect.yMin, 16, 16),
-                        data.icons.pairs[textureIndex].iconToDraw);
-                }
-
-                #endregion
-
-                {
-                    //Draws the gameobject icon, if present
-                    var content = EditorGUIUtility.ObjectContent(EditorUtility.InstanceIDToObject(instanceID), null);
-
-                    if (content.image && !string.IsNullOrEmpty(content.image.name))
-                    {
-                        if (content.image.name != "d_GameObject Icon" && content.image.name != "d_Prefab Icon")
+                        else
                         {
-                            temp_iconsDrawedCount++;
-                            GUI.DrawTexture(
-                                new Rect(
-                                    selectionRect.xMax - 16 * (temp_iconsDrawedCount + 1) - 2 + instanceIDOffset,
-                                    selectionRect.yMin, 16,
-                                    16),
-                                content.image);
+                            HierarchyRenderer.DrawDottedLine(selectionRect, level);
                         }
                     }
                 }
 
-                for (int i = 0; i < currentItem.iconIndexes.Count; ++i)
-                    DrawIcon(currentItem.iconIndexes[i]);
+                if (!currentItem.hasChilds)
+                    HierarchyRenderer.DrawHorizontalLineFrom(selectionRect, currentItem.nestingLevel, currentItem.hasChilds);
             }
 
-            #endregion
-
-            #region Instance ID
-            if (HierarchyData.instance.instanceID.enabled)
+            // draws a super small divider between different groups
+            if (currentItem.nestingLevel == 0 && data.tree.dividerHeight > 0)
             {
-                Rect rect = new Rect(selectionRect.xMax + instanceIDOffset, selectionRect.y, selectionRect.width, selectionRect.height);
-                GUIStyle style = new GUIStyle();
-                style.normal.textColor = HierarchyData.instance.instanceID.color;
-                GUI.Label(rect, instanceID.ToString().PadLeft(padding, ' '), style);
+                Rect boldGroupRect = new Rect(
+                    32, selectionRect.y - data.tree.dividerHeight / 2f,
+                    selectionRect.width + (selectionRect.x - 32),
+                    data.tree.dividerHeight);
+                EditorGUI.DrawRect(boldGroupRect, Color.black * .3f);
             }
+        }
+
+        private static void DrawSeparators(int instanceID, Rect selectionRect)
+        {
+            // EditorOnly objects are only removed from build if they're not childrens
+            if (!data.separator.enabled || data.separator.color.a <= 0 || !currentItem.isSeparator || currentItem.nestingLevel != 0)
+                return;
+
+            // Adds color on top of the label
+            if (data.separator.drawFill)
+                HierarchyRenderer.DrawFullItem(selectionRect, data.separator.color);
+            else
+                HierarchyRenderer.DrawSelection(selectionRect, data.separator.color);
+        }
+
+        private static void DrawIcons(int instanceID, Rect selectionRect)
+        {
+            if (!data.icons.enabled)
+                return;
+
+            const int size = 16;
+
+            temp_iconsDrawedCount = -1;
+            #region Local Method
+
+            // Draws each component icon
+            void DrawIcon(int textureIndex)
+            {
+                //---Icon Alignment---
+                if (data.icons.aligned)
+                {
+                    // Aligns icon based on texture's position on the array
+                    int CalculateIconPosition()
+                    {
+                        for (int i = 0; i < iconsPositions.Count; ++i)
+                        {
+                            if (iconsPositions[i] == textureIndex)
+                                return i;
+                        }
+
+                        return 0;
+                    }
+
+                    temp_iconsDrawedCount = CalculateIconPosition();
+                }
+                else
+                {
+                    ++temp_iconsDrawedCount;
+                }
+
+                GUI.DrawTexture(
+                    new Rect(selectionRect.xMax - 16 * (temp_iconsDrawedCount + 1) - 2, selectionRect.yMin, 16, 16),
+                    data.icons.pairs[textureIndex].iconToDraw);
+            }
+
             #endregion
+
+            //Draws the gameobject icon, if present
+            var content = EditorGUIUtility.ObjectContent(EditorUtility.InstanceIDToObject(instanceID), null);
+
+            if (content.image && !string.IsNullOrEmpty(content.image.name))
+            {
+                if (content.image.name != "d_GameObject Icon" && content.image.name != "d_Prefab Icon")
+                {
+                    ++temp_iconsDrawedCount;
+
+                    Rect rect = new Rect(
+                            selectionRect.xMax - (size * temp_iconsDrawedCount) - 10 + instanceIDOffset,
+                            selectionRect.yMin,
+                            size, size);
+
+                    GUI.DrawTexture(rect, content.image);
+                }
+            }
+
+            for (int i = 0; i < currentItem.iconIndexes.Count; ++i)
+                DrawIcon(currentItem.iconIndexes[i]);
+        }
+
+        private static void DrawInstanceID(int instanceID, Rect selectionRect)
+        {
+            if (!HierarchyData.instance.instanceID.enabled)
+                return;
+
+            Rect rect = new Rect(selectionRect.xMax + instanceIDOffset, selectionRect.y, selectionRect.width, selectionRect.height);
+            GUIStyle style = new GUIStyle();
+            style.normal.textColor = HierarchyData.instance.instanceID.color;
+            GUI.Label(rect, instanceID.ToString().PadLeft(padding, ' '), style);
         }
 
         #endregion

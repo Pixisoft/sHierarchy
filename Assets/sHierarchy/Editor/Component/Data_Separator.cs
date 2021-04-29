@@ -79,10 +79,7 @@ namespace sHierarchy
             EditorPrefs.SetBool(FormKey("drawFill"), this.drawFill);
         }
 
-        private void ResetColor()
-        {
-            this.color = new Color(0, 1, 1, 0.15f);
-        }
+        private void ResetColor() { this.color = new Color(0, 1, 1, 0.15f); }
     }
 }
 #endif

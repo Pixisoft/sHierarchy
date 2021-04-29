@@ -57,7 +57,15 @@ namespace sHierarchy
             HierarchyUtil.CreateGroup(() =>
             {
                 this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
-                this.color = EditorGUILayout.ColorField("Color", this.color);
+
+                HierarchyUtil.BeginHorizontal(() =>
+                {
+                    this.color = EditorGUILayout.ColorField("Color", this.color);
+
+                    if (GUILayout.Button("Reset", GUILayout.Width(50)))
+                        ResetColor();
+                });
+
                 this.drawFill = EditorGUILayout.Toggle("Draw Fill", this.drawFill);
             });
         }
@@ -68,6 +76,8 @@ namespace sHierarchy
             HierarchyUtil.SetColor(FormKey("color"), this.color);
             EditorPrefs.SetBool(FormKey("drawFill"), this.drawFill);
         }
+
+        private void ResetColor() { this.color = new Color(0, 0, 0, .08f); }
     }
 }
 #endif
