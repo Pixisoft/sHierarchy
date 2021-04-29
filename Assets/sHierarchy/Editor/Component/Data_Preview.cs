@@ -80,8 +80,7 @@ namespace sHierarchy
                     {
                         this.rotateSpeed = EditorGUILayout.Slider("Rotate Speed", this.rotateSpeed, 0, 30);
 
-                        if (GUILayout.Button("Reset", GUILayout.Width(50)))
-                            ResetRotateSpeed();
+                        HierarchyUtil.Button("Reset", ResetRotateSpeed);
                     });
 
                     this.autoRotate = EditorGUILayout.Toggle("Auto Rotate", this.autoRotate);
@@ -95,16 +94,14 @@ namespace sHierarchy
                     {
                         this.lightRotation = EditorGUILayout.Vector3Field("Rotation", this.lightRotation);
 
-                        if (GUILayout.Button("Reset", GUILayout.Width(50)))
-                            ResetLightRotation();
+                        HierarchyUtil.Button("Reset", ResetLightRotation);
                     });
 
                     HierarchyUtil.BeginHorizontal(() =>
                     {
                         this.lightIntensity = EditorGUILayout.FloatField("Intensity", this.lightIntensity);
 
-                        if (GUILayout.Button("Reset", GUILayout.Width(50)))
-                            ResetLightIntensity();
+                        HierarchyUtil.Button("Reset", ResetLightIntensity);
                     });
                 });
 
@@ -112,8 +109,7 @@ namespace sHierarchy
                 {
                     this.distance = EditorGUILayout.Slider("Distance", this.distance, 0, 10);
 
-                    if (GUILayout.Button("Reset", GUILayout.Width(50)))
-                        ResetDistance();
+                    HierarchyUtil.Button("Reset", ResetDistance);
                 });
 
                 this.skybox = EditorGUILayout.Toggle("Skybox", this.skybox);

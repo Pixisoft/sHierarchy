@@ -46,7 +46,6 @@ namespace sHierarchy
         {
             static private Color[] currentBranch { get { return data.tree.branches; } }
 
-            private const float barWidth = 1;
             private const int barOffsetX = 15;
 
             public static void DrawNestGroupOverlay(Rect originalRect, int nestlevel)
@@ -107,7 +106,7 @@ namespace sHierarchy
                 Rect rect = new Rect(
                         GetStartX(originalRect, nestLevel) + barOffsetX,
                         startsOnTop ? originalRect.y : (originalRect.y + originalRect.height / 2f),
-                        barWidth,
+                        data.tree.lineWidth,
                         originalRect.height / 2f);
 
                 // Vertical rect, starts from the very left and then proceeds to te right
@@ -124,7 +123,7 @@ namespace sHierarchy
                         GetStartX(originalRect, nestLevel) + barOffsetX,
                         originalRect.y + originalRect.height / 2f,
                         originalRect.height + (hasChilds ? -5 : 2 - 12),
-                        barWidth);
+                        data.tree.lineWidth);
 
                 EditorGUI.DrawRect(rect, color);
             }
@@ -141,10 +140,10 @@ namespace sHierarchy
 
                 // startsOnTop? originalRect.y: (originalRect.y + originalRect.height / 2f),
 
-                Rect dot1 = new Rect(x, y, barWidth, height);
-                Rect dot2 = new Rect(x, (y + centerY) / 2.0f, barWidth, height);
-                Rect dot3 = new Rect(x, centerY, barWidth, height);
-                Rect dot4 = new Rect(x, (centerY + y + originalRect.height) / 2.0f, barWidth, height);
+                Rect dot1 = new Rect(x, y, data.tree.lineWidth, height);
+                Rect dot2 = new Rect(x, (y + centerY) / 2.0f, data.tree.lineWidth, height);
+                Rect dot3 = new Rect(x, centerY, data.tree.lineWidth, height);
+                Rect dot4 = new Rect(x, (centerY + y + originalRect.height) / 2.0f, data.tree.lineWidth, height);
 
                 EditorGUI.DrawRect(dot1, color);
                 EditorGUI.DrawRect(dot2, color);

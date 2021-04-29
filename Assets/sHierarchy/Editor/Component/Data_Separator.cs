@@ -64,8 +64,7 @@ namespace sHierarchy
                 {
                     this.color = EditorGUILayout.ColorField("Color", this.color);
 
-                    if (GUILayout.Button("Reset", GUILayout.Width(50)))
-                        ResetColor();
+                    HierarchyUtil.Button("Reset", ResetColor);
                 });
                 this.drawFill = EditorGUILayout.Toggle("Draw Fill", this.drawFill);
             });

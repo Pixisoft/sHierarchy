@@ -128,6 +128,12 @@ namespace sHierarchy
             if (win == null) return false;
             return win.titleContent.text == name;
         }
+
+        public static void Button(string text, EmptyFunction func)
+        {
+            if (GUILayout.Button(text, GUILayout.Width(50)))
+                func.Invoke();
+        }
     }
 }
 #endif

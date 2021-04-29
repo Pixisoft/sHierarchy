@@ -48,6 +48,7 @@ namespace sHierarchy
         public bool drawFill = false;
         public float overlayAlpha = 0.12f;
         public float lineAlpa = 0.8f;
+        public float lineWidth = 1.0f;
         private int branchesLen = 0;
 
         /* Setter & Getters */
@@ -68,6 +69,7 @@ namespace sHierarchy
             this.branchesLen = EditorPrefs.GetInt(FormKey("branches.Length"), this.branchesLen);
             this.overlayAlpha = EditorPrefs.GetFloat(FormKey("overlayAlpha"), this.overlayAlpha);
             this.lineAlpa = EditorPrefs.GetFloat(FormKey("lineAlpa"), this.lineAlpa);
+            this.lineWidth = EditorPrefs.GetFloat(FormKey("lineWidth"), this.lineWidth);
             this.drawFill = EditorPrefs.GetBool(FormKey("drawFill"), this.drawFill);
 
             DynamicRefresh();
@@ -91,8 +93,7 @@ namespace sHierarchy
                 {
                     this.baseLevelColor = EditorGUILayout.ColorField("Base Level Color", this.baseLevelColor);
 
-                    if (GUILayout.Button("Reset", GUILayout.Width(50)))
-                        ResetBaseLevelColor();
+                    HierarchyUtil.Button("Reset", ResetBaseLevelColor);
                 });
 
                 HierarchyUtil.BeginHorizontal(() =>
@@ -107,12 +108,22 @@ namespace sHierarchy
                     EditorGUILayout.PropertyField(propBranches);
                     serializedObject.ApplyModifiedProperties();
 
-                    if (GUILayout.Button("Reset", GUILayout.Width(50)))
-                        ResetBranchesColor();
+                    HierarchyUtil.Button("Reset", ResetBranchesColor);
                 });
 
                 this.overlayAlpha = EditorGUILayout.Slider("Overlay Alpha", this.overlayAlpha, 0, 0.8f);
-                this.lineAlpa = EditorGUILayout.Slider("Line Alpha", this.lineAlpa, 0, 1.0f);
+                HierarchyUtil.BeginHorizontal(() =>
+                {
+                    this.lineAlpa = EditorGUILayout.Slider("Line Alpha", this.lineAlpa, 0, 1.0f);
+
+                    HierarchyUtil.Button("Reset", ResetLineAlpha);
+                });
+                HierarchyUtil.BeginHorizontal(() =>
+                {
+                    this.lineWidth = EditorGUILayout.Slider("Line Width", this.lineWidth, 0.001f, 3.0f);
+
+                    HierarchyUtil.Button("Reset", ResetLineWidth);
+                });
                 this.drawFill = EditorGUILayout.Toggle("Draw Fill", this.drawFill);
             });
         }
@@ -133,6 +144,7 @@ namespace sHierarchy
             }
             EditorPrefs.SetFloat(FormKey("overlayAlpha"), this.overlayAlpha);
             EditorPrefs.SetFloat(FormKey("lineAlpa"), this.lineAlpa);
+            EditorPrefs.SetFloat(FormKey("lineWidth"), this.lineWidth);
             EditorPrefs.SetBool(FormKey("drawFill"), this.drawFill);
         }
 
@@ -167,6 +179,9 @@ namespace sHierarchy
             branchesLen = instance.branches.Length;
             SavePref();
         }
+
+        private void ResetLineAlpha() { this.lineAlpa = 0.8f; }
+        private void ResetLineWidth() { this.lineWidth = 1.0f; }
     }
 }
 #endif
