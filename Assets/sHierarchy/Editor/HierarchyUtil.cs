@@ -30,6 +30,8 @@ namespace sHierarchy
 
     public static class HierarchyUtil
     {
+        private const string NAME = "sHierarchy";
+
         public static void IgnoreErrors(EmptyFunction func)
         {
             try
@@ -44,7 +46,7 @@ namespace sHierarchy
 
         public static string FormKey(string name)
         {
-            return "sHierarchy." + name;
+            return NAME + "." + name;
         }
 
         public static void CreateGroup(EmptyFunction func, bool flexibleSpace = false)

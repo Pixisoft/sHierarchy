@@ -18,31 +18,45 @@
  * 
  * For any other use, please ask for permission by contacting the author.
  */
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEditor;
 
 namespace sHierarchy
 {
-    public class Test_IconScript
-        : MonoBehaviour
+    public class Data_Log : HierarchyComponent
     {
         /* Variables */
+
+        public bool foldout = false;
+
+        public bool enabled = true;
 
         /* Setter & Getter */
 
         /* Functions */
 
-        private void Update()
+        public string FormKey(string name) { return HierarchyUtil.FormKey("log.") + name; }
+
+        public void Init()
         {
-            if (Input.GetKeyDown(KeyCode.Q))
-                Debug.Log("oy");
-            if (Input.GetKeyDown(KeyCode.W))
-                Debug.LogWarning("oy");
-            if (Input.GetKeyDown(KeyCode.E))
-                Debug.LogError("oy");
+            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
+        }
+
+        public void Draw()
+        {
+            foldout = EditorGUILayout.Foldout(foldout, "Log");
+
+            if (!foldout)
+                return;
+
+            HierarchyUtil.CreateGroup(() =>
+            {
+                this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
+            });
+        }
+
+        public void SavePref()
+        {
+            EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
         }
     }
 }

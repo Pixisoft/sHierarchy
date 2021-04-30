@@ -33,6 +33,8 @@ namespace sHierarchy
     {
         /* Variables */
 
+        private static float ROW_HEIGHT = 15;
+
         /* Setter & Getter */
 
         /* Functions */
@@ -47,7 +49,6 @@ namespace sHierarchy
             static private Color[] currentBranch { get { return data.tree.branches; } }
 
             private const int barOffsetX = 15;
-
             public static void DrawNestGroupOverlay(Rect originalRect, int nestlevel)
             {
                 Color color = GetNestColor(nestlevel);
@@ -70,9 +71,22 @@ namespace sHierarchy
                 EditorGUI.DrawRect(originalRect, color);
             }
 
+            /// <summary>
+            /// Return the started x position in nested level.
+            /// </summary>
             static float GetStartX(Rect originalRect, int nestLevel)
             {
                 return 37 + (originalRect.height - 2) * nestLevel;
+            }
+
+            /// <summary>
+            /// Return the started x position after the name of gameobject.
+            /// </summary>
+            static float GetNameX(Rect originalRect, int nestLevel)
+            {
+                float goWidth = ROW_HEIGHT + 10;
+                return GetStartX(originalRect, nestLevel + 1) + goWidth +
+                    GUI.skin.label.CalcSize(new GUIContent(currentItem.goName)).x;
             }
 
             static bool FoundBranchColor(int nestLevel)
@@ -149,6 +163,41 @@ namespace sHierarchy
                 EditorGUI.DrawRect(dot2, color);
                 EditorGUI.DrawRect(dot3, color);
                 EditorGUI.DrawRect(dot4, color);
+            }
+
+            public static GUIContent GetLogIcon(LogType type, string stackTrace)
+            {
+                switch (type)
+                {
+                    case LogType.Log: return EditorGUIUtility.IconContent("console.infoicon.sml", stackTrace);
+                    case LogType.Warning: return EditorGUIUtility.IconContent("console.warnicon.sml", stackTrace);
+                    case LogType.Error: return EditorGUIUtility.IconContent("console.erroricon.sml", stackTrace);
+                }
+                return null;
+            }
+
+            public static bool DrawLogIcon(GameObject go, Rect selectionRect, Dictionary<string, string> log, LogType type, int iconLevel)
+            {
+                foreach (KeyValuePair<string, string> entry in log)
+                {
+                    string t = entry.Key;
+
+                    if (go.GetComponent(t) == null)
+                        continue;
+
+                    var stackTrace = entry.Value;
+                    var c = GetLogIcon(type, stackTrace);
+
+                    var x = GetNameX(selectionRect, currentItem.nestingLevel) + (ROW_HEIGHT * iconLevel);
+
+                    Rect r = new Rect(x, selectionRect.yMin, ROW_HEIGHT, ROW_HEIGHT);
+
+                    GUI.DrawTexture(r, c.image);
+
+                    return true;
+                }
+
+                return false;
             }
         }
 
@@ -414,10 +463,6 @@ namespace sHierarchy
         private static InstanceInfo currentItem;
         private static bool drawedPrefabOverlay;
 
-        private const int padding = 8;
-        private const int instanceIDLength = padding * 5;
-        private static int instanceIDOffset = 0;
-
         private static void DrawCore(int instanceID, Rect selectionRect)
         {
             // skips early if item is not registered or not valid
@@ -428,13 +473,14 @@ namespace sHierarchy
 
             /* Initialzie draw variables */
             {
-                instanceIDOffset = HierarchyData.instance.instanceID.enabled ? -instanceIDLength : 0;
+                ROW_HEIGHT = GUI.skin.label.lineHeight + 1;
             }
 
             DrawAlternatingBG(instanceID, selectionRect);
             DrawPrefabBG(instanceID, selectionRect);
             DrawTree(instanceID, selectionRect);
             DrawSeparators(instanceID, selectionRect);
+            DrawLog(instanceID, selectionRect);
             DrawIcons(instanceID, selectionRect);
             DrawInstanceID(instanceID, selectionRect);
         }
@@ -444,7 +490,7 @@ namespace sHierarchy
             if (!data.alternatingBG.enabled)
                 return;
 
-            var isOdd = Mathf.FloorToInt(((selectionRect.y - 4) / 16) % 2) != 0;
+            var isOdd = Mathf.FloorToInt(((selectionRect.y - 4) / ROW_HEIGHT) % 2) != 0;
             if (isOdd) return;
 
             if (data.alternatingBG.drawFill)
@@ -541,14 +587,33 @@ namespace sHierarchy
                 HierarchyRenderer.DrawSelection(selectionRect, data.separator.color);
         }
 
+        private static void DrawLog(int instanceID, Rect selectionRect)
+        {
+            if (!data.log.enabled)
+                return;
+
+            Dictionary<string, string> log = HierarchyLog.LogStorage(LogType.Log);
+            Dictionary<string, string> warn = HierarchyLog.LogStorage(LogType.Warning);
+            Dictionary<string, string> error = HierarchyLog.LogStorage(LogType.Error);
+
+            var go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+
+            int iconLevel = 0;
+
+            bool drawnLog = HierarchyRenderer.DrawLogIcon(go, selectionRect, log, LogType.Log, iconLevel);
+            if (drawnLog) ++iconLevel;
+            bool drawnWarn = HierarchyRenderer.DrawLogIcon(go, selectionRect, warn, LogType.Warning, iconLevel);
+            if (drawnWarn) ++iconLevel;
+            HierarchyRenderer.DrawLogIcon(go, selectionRect, error, LogType.Error, iconLevel);
+        }
+
         private static void DrawIcons(int instanceID, Rect selectionRect)
         {
             if (!data.icons.enabled)
                 return;
 
-            const int size = 16;
+            temp_iconsDrawedCount = (data.instanceID.enabled) ? 0 : -1;
 
-            temp_iconsDrawedCount = -1;
             #region Local Method
 
             // Draws each component icon
@@ -577,7 +642,7 @@ namespace sHierarchy
                 }
 
                 GUI.DrawTexture(
-                    new Rect(selectionRect.xMax - 16 * (temp_iconsDrawedCount + 1) - 2, selectionRect.yMin, 16, 16),
+                    new Rect(selectionRect.xMax - ROW_HEIGHT * (temp_iconsDrawedCount + 1) - 2, selectionRect.yMin, ROW_HEIGHT, ROW_HEIGHT),
                     data.icons.pairs[textureIndex].iconToDraw);
             }
 
@@ -586,6 +651,13 @@ namespace sHierarchy
             //Draws the gameobject icon, if present
             var content = EditorGUIUtility.ObjectContent(EditorUtility.InstanceIDToObject(instanceID), null);
 
+            float instanceIDOffset = 0f;
+            if (data.instanceID.enabled)
+            {
+                string fullStr = instanceID.ToString();
+                instanceIDOffset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
+            }
+
             if (content.image && !string.IsNullOrEmpty(content.image.name))
             {
                 if (content.image.name != "d_GameObject Icon" && content.image.name != "d_Prefab Icon")
@@ -593,9 +665,9 @@ namespace sHierarchy
                     ++temp_iconsDrawedCount;
 
                     Rect rect = new Rect(
-                            selectionRect.xMax - (size * temp_iconsDrawedCount) - 10 + instanceIDOffset,
+                            selectionRect.xMax - (ROW_HEIGHT * temp_iconsDrawedCount) - 5 - instanceIDOffset,
                             selectionRect.yMin,
-                            size, size);
+                            ROW_HEIGHT, ROW_HEIGHT);
 
                     GUI.DrawTexture(rect, content.image);
                 }
@@ -607,13 +679,16 @@ namespace sHierarchy
 
         private static void DrawInstanceID(int instanceID, Rect selectionRect)
         {
-            if (!HierarchyData.instance.instanceID.enabled)
+            if (!data.instanceID.enabled)
                 return;
 
-            Rect rect = new Rect(selectionRect.xMax + instanceIDOffset, selectionRect.y, selectionRect.width, selectionRect.height);
+            string fullStr = instanceID.ToString();
+            float instanceIDOffset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
+
+            Rect rect = new Rect(selectionRect.xMax - instanceIDOffset, selectionRect.y, selectionRect.width, selectionRect.height);
             GUIStyle style = new GUIStyle();
             style.normal.textColor = HierarchyData.instance.instanceID.color;
-            GUI.Label(rect, instanceID.ToString().PadLeft(padding, ' '), style);
+            GUI.Label(rect, fullStr, style);
         }
 
         #endregion

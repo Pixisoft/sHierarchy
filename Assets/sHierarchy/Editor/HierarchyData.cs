@@ -20,7 +20,6 @@
  * For any other use, please ask for permission by contacting the author.
  */
 using UnityEditor;
-using UnityEngine;
 
 namespace sHierarchy
 {
@@ -36,6 +35,7 @@ namespace sHierarchy
         public Data_AlternatingBG alternatingBG = new Data_AlternatingBG();
         public Data_Separator separator = new Data_Separator();
         public Data_Tree tree = new Data_Tree();
+        public Data_Log log = new Data_Log();
         public Data_Preview preview = new Data_Preview();
         public Data_InstanceID instanceID = new Data_InstanceID();
 
@@ -51,6 +51,7 @@ namespace sHierarchy
             alternatingBG.Init();
             separator.Init();
             tree.Init();
+            log.Init();
             preview.Init();
             instanceID.Init();
         }
@@ -65,6 +66,7 @@ namespace sHierarchy
             alternatingBG.Draw();
             separator.Draw();
             tree.Draw();
+            log.Draw();
             preview.Draw();
             instanceID.Draw();
         }
@@ -79,6 +81,7 @@ namespace sHierarchy
             alternatingBG.SavePref();
             separator.SavePref();
             tree.SavePref();
+            log.SavePref();
             preview.SavePref();
             instanceID.SavePref();
         }
