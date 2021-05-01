@@ -612,7 +612,7 @@ namespace sHierarchy
             if (!data.icons.enabled)
                 return;
 
-            temp_iconsDrawedCount = (data.instanceID.enabled) ? 0 : -1;
+            temp_iconsDrawedCount = -1;
 
             #region Local Method
 
@@ -685,9 +685,12 @@ namespace sHierarchy
             string fullStr = instanceID.ToString();
             float instanceIDOffset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
 
-            Rect rect = new Rect(selectionRect.xMax - instanceIDOffset, selectionRect.y, selectionRect.width, selectionRect.height);
+            var x = selectionRect.xMax - instanceIDOffset + ROW_HEIGHT - 1;
+            Rect rect = new Rect(x, selectionRect.y, selectionRect.width, selectionRect.height);
+
             GUIStyle style = new GUIStyle();
             style.normal.textColor = HierarchyData.instance.instanceID.color;
+
             GUI.Label(rect, fullStr, style);
         }
 
