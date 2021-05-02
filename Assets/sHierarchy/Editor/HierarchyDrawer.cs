@@ -492,7 +492,10 @@ namespace sHierarchy
                             ROW_HEIGHT, ROW_HEIGHT);
 
                     GUI.DrawTexture(rect, content.image);
-                    GUI.Label(rect, new GUIContent("", "tooltip"));
+                    /* Add tooltip? */
+                    {
+                        //GUI.Label(rect, new GUIContent("", "TOOLTIP HERE"));
+                    }
                 }
             }
 
