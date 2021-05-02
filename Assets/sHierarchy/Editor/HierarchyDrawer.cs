@@ -417,6 +417,9 @@ namespace sHierarchy
 
             var go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
 
+            if (!go.activeSelf)
+                return;
+
             int iconLevel = 0;
 
             bool drawnLog = HierarchyRenderer.DrawLogIcon(go, selectionRect, log, LogType.Log, iconLevel);
@@ -467,10 +470,10 @@ namespace sHierarchy
 
             #endregion
 
-            //Draws the gameobject icon, if present
+            // Draws the gameobject icon, if present
             var content = EditorGUIUtility.ObjectContent(EditorUtility.InstanceIDToObject(instanceID), null);
 
-            float instanceIDOffset = 0f;
+            float instanceIDOffset = 0.0f;
             if (data.instanceID.enabled)
             {
                 string fullStr = instanceID.ToString();
@@ -489,6 +492,7 @@ namespace sHierarchy
                             ROW_HEIGHT, ROW_HEIGHT);
 
                     GUI.DrawTexture(rect, content.image);
+                    GUI.Label(rect, new GUIContent("", "tooltip"));
                 }
             }
 

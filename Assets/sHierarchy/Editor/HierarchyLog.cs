@@ -53,9 +53,8 @@ namespace sHierarchy
             {
                 case LogType.Log: return LOG;
                 case LogType.Warning: return WARN;
-                case LogType.Error: return ERROR;
+                default: return ERROR;
             }
-            return null;
         }
 
         private static void HandleLog(string logString, string stackTrace, LogType type)
@@ -64,23 +63,50 @@ namespace sHierarchy
             if (storage == null)
                 return;
 
-            string component = GetComponentName(stackTrace);
-            storage[component] = stackTrace;
+            string component = GetComponentName(stackTrace, type);
+            storage[component] = logString + "\n\n" + stackTrace;
         }
 
-        private static string GetComponentName(string stackTrace)
+        #region Parse Stacktrace
+
+        private static int GetLogIndex(LogType type)
         {
-            var list = stackTrace.Split('\n');
-            var start = list[1];
+            switch (type)
+            {
+                case LogType.Log: 
+                case LogType.Warning: 
+                case LogType.Error: return 1;
+                default: return 0;
+            }
+        }
+
+        private static int GetLogLengthIndex(LogType type, string[] lst)
+        {
+            switch (type)
+            {
+                case LogType.Log:
+                case LogType.Warning:
+                case LogType.Error: return lst.Length - 1;
+                default: return lst.Length - 2;
+            }
+        }
+
+        private static string GetComponentName(string stackTrace, LogType type)
+        {
+            var str = stackTrace.Replace("(at", "\n(at");
+
+            var list = str.Split('\n');
+            var start = list[GetLogIndex(type)];
             list = start.Split(':');
 
             var name = list[0];
             list = name.Split('.');
 
-            name = list[list.Length - 1];
-
+            name = list[GetLogLengthIndex(type, list)];
             return name;
         }
+
+        #endregion
     }
 }
 #endif

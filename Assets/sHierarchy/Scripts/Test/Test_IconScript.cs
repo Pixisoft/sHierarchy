@@ -35,6 +35,13 @@ namespace sHierarchy
 
         /* Functions */
 
+        private void Start()
+        {
+            SpriteRenderer sr = this.GetComponent<SpriteRenderer>();
+
+            sr.sprite = null;
+        }
+
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Q))

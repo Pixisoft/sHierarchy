@@ -18,6 +18,7 @@
  * 
  * For any other use, please ask for permission by contacting the author.
  */
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -166,7 +167,8 @@ namespace sHierarchy
             {
                 string t = entry.Key;
 
-                if (go.GetComponent(t) == null)
+                Component component = go.GetComponent(t);
+                if (component == null)
                     continue;
 
                 var stackTrace = entry.Value;
@@ -174,9 +176,10 @@ namespace sHierarchy
 
                 var x = GetNameX(selectionRect, currentItem.nestingLevel) + (ROW_HEIGHT * iconLevel);
 
-                Rect r = new Rect(x, selectionRect.yMin, ROW_HEIGHT, ROW_HEIGHT);
+                Rect rect = new Rect(x, selectionRect.yMin, ROW_HEIGHT, ROW_HEIGHT);
 
-                GUI.DrawTexture(r, c.image);
+                GUI.DrawTexture(rect, c.image);
+                GUI.Label(rect, new GUIContent("", stackTrace));  // add tooltip
 
                 return true;
             }
