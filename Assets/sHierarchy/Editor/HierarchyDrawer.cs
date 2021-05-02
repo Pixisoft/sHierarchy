@@ -301,6 +301,7 @@ namespace sHierarchy
             DrawSeparators(instanceID, selectionRect);
             DrawLog(instanceID, selectionRect);
             DrawIcons(instanceID, selectionRect);
+            DrawTag(instanceID, selectionRect);
             DrawInstanceID(instanceID, selectionRect);
         }
 
@@ -331,6 +332,19 @@ namespace sHierarchy
                 EditorGUI.DrawRect(selectionRect, prefabColors[currentItem.prefabInstanceID]);
                 drawedPrefabOverlay = true;
             }
+        }
+
+        private static void DrawSeparators(int instanceID, Rect selectionRect)
+        {
+            // EditorOnly objects are only removed from build if they're not childrens
+            if (!data.separator.enabled || data.separator.color.a <= 0 || !currentItem.isSeparator || currentItem.nestingLevel != 0)
+                return;
+
+            // Adds color on top of the label
+            if (data.separator.drawFill)
+                HierarchyRenderer.DrawFullItem(selectionRect, data.separator.color);
+            else
+                HierarchyRenderer.DrawSelection(selectionRect, data.separator.color);
         }
 
         private static void DrawTree(int instanceID, Rect selectionRect)
@@ -393,19 +407,6 @@ namespace sHierarchy
             }
         }
 
-        private static void DrawSeparators(int instanceID, Rect selectionRect)
-        {
-            // EditorOnly objects are only removed from build if they're not childrens
-            if (!data.separator.enabled || data.separator.color.a <= 0 || !currentItem.isSeparator || currentItem.nestingLevel != 0)
-                return;
-
-            // Adds color on top of the label
-            if (data.separator.drawFill)
-                HierarchyRenderer.DrawFullItem(selectionRect, data.separator.color);
-            else
-                HierarchyRenderer.DrawSelection(selectionRect, data.separator.color);
-        }
-
         private static void DrawLog(int instanceID, Rect selectionRect)
         {
             if (!data.log.enabled)
@@ -427,6 +428,24 @@ namespace sHierarchy
             bool drawnWarn = HierarchyRenderer.DrawLogIcon(go, selectionRect, warn, LogType.Warning, iconLevel);
             if (drawnWarn) ++iconLevel;
             HierarchyRenderer.DrawLogIcon(go, selectionRect, error, LogType.Error, iconLevel);
+        }
+
+        private static void DrawTag(int instanceID, Rect selectionRect)
+        {
+            if (!data.tag.enabled)
+                return;
+
+            GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            string fullStr = go.tag;
+            float offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
+
+            var x = selectionRect.xMax - offset + ROW_HEIGHT - 1;
+            Rect rect = new Rect(x, selectionRect.y, selectionRect.width, selectionRect.height);
+
+            GUIStyle style = new GUIStyle();
+            style.normal.textColor = (go.tag == "Untagged") ? data.tag.colorUntagged : data.tag.color;
+
+            GUI.Label(rect, fullStr, style);
         }
 
         private static void DrawIcons(int instanceID, Rect selectionRect)
@@ -473,11 +492,11 @@ namespace sHierarchy
             // Draws the gameobject icon, if present
             var content = EditorGUIUtility.ObjectContent(EditorUtility.InstanceIDToObject(instanceID), null);
 
-            float instanceIDOffset = 0.0f;
+            float offset = 0.0f;
             if (data.instanceID.enabled)
             {
                 string fullStr = instanceID.ToString();
-                instanceIDOffset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
+                offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
             }
 
             if (content.image && !string.IsNullOrEmpty(content.image.name))
@@ -487,7 +506,7 @@ namespace sHierarchy
                     ++temp_iconsDrawedCount;
 
                     Rect rect = new Rect(
-                            selectionRect.xMax - (ROW_HEIGHT * temp_iconsDrawedCount) - 5 - instanceIDOffset,
+                            selectionRect.xMax - (ROW_HEIGHT * temp_iconsDrawedCount) - 5 - offset,
                             selectionRect.yMin,
                             ROW_HEIGHT, ROW_HEIGHT);
 
@@ -509,13 +528,13 @@ namespace sHierarchy
                 return;
 
             string fullStr = instanceID.ToString();
-            float instanceIDOffset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
+            float offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
 
-            var x = selectionRect.xMax - instanceIDOffset + ROW_HEIGHT - 1;
+            var x = selectionRect.xMax - offset + ROW_HEIGHT - 1;
             Rect rect = new Rect(x, selectionRect.y, selectionRect.width, selectionRect.height);
 
             GUIStyle style = new GUIStyle();
-            style.normal.textColor = HierarchyData.instance.instanceID.color;
+            style.normal.textColor = data.instanceID.color;
 
             GUI.Label(rect, fullStr, style);
         }

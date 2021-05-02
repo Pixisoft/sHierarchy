@@ -18,7 +18,6 @@
  * 
  * For any other use, please ask for permission by contacting the author.
  */
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 

@@ -178,8 +178,7 @@ namespace sHierarchy
 
                 Rect rect = new Rect(x, selectionRect.yMin, ROW_HEIGHT, ROW_HEIGHT);
 
-                GUI.DrawTexture(rect, c.image);
-                GUI.Label(rect, new GUIContent("", stackTrace));  // add tooltip
+                GUI.Label(rect, new GUIContent("", c.image, stackTrace));  // add tooltip
 
                 return true;
             }
