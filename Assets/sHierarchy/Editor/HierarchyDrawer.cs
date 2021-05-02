@@ -278,9 +278,9 @@ namespace sHierarchy
 
         #region Drawing
 
-        private static int temp_iconsDrawedCount;
+        private static int temp_iconsDrawedCount = -1;
         public static InstanceInfo currentItem;
-        private static bool drawedPrefabOverlay;
+        private static bool drawedPrefabOverlay = false;
 
         private static void DrawCore(int instanceID, Rect selectionRect)
         {
@@ -430,24 +430,6 @@ namespace sHierarchy
             HierarchyRenderer.DrawLogIcon(go, selectionRect, error, LogType.Error, iconLevel);
         }
 
-        private static void DrawTag(int instanceID, Rect selectionRect)
-        {
-            if (!data.tag.enabled)
-                return;
-
-            GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
-            string fullStr = go.tag;
-            float offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
-
-            var x = selectionRect.xMax - offset + ROW_HEIGHT - 1;
-            Rect rect = new Rect(x, selectionRect.y, selectionRect.width, selectionRect.height);
-
-            GUIStyle style = new GUIStyle();
-            style.normal.textColor = (go.tag == "Untagged") ? data.tag.colorUntagged : data.tag.color;
-
-            GUI.Label(rect, fullStr, style);
-        }
-
         private static void DrawIcons(int instanceID, Rect selectionRect)
         {
             if (!data.icons.enabled)
@@ -520,6 +502,29 @@ namespace sHierarchy
 
             for (int i = 0; i < currentItem.iconIndexes.Count; ++i)
                 DrawIcon(currentItem.iconIndexes[i]);
+        }
+
+        private static void DrawTag(int instanceID, Rect selectionRect)
+        {
+            if (!data.tag.enabled)
+                return;
+
+            GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            string fullStr = go.tag;
+
+            float offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
+            int iconCount = temp_iconsDrawedCount + 1; 
+            iconCount = (iconCount <= 0) ? 0 : iconCount;
+            float iconOffset = (iconCount == 0)? 0.0f : 5.0f;
+            offset += iconCount * ROW_HEIGHT + iconOffset;
+
+            var x = selectionRect.xMax - offset + ROW_HEIGHT - 1;
+            Rect rect = new Rect(x, selectionRect.y, selectionRect.width, selectionRect.height);
+
+            GUIStyle style = new GUIStyle();
+            style.normal.textColor = (go.tag == "Untagged") ? data.tag.colorUntagged : data.tag.color;
+
+            GUI.Label(rect, fullStr, style);
         }
 
         private static void DrawInstanceID(int instanceID, Rect selectionRect)
