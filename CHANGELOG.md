@@ -8,6 +8,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### 2021-05-02
 
 * Add new feature `log` options.
+* Add new feature `tag` options.
 
 ### 2021-04-20
 
