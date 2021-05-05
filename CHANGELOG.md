@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 
+### 2021-05-05
+
+* Fix bug, instance ID overlaps with tags.
+* Fix bug, disable preview gameobject's components.
+
 ### 2021-05-02
 
 * Add new feature `log` options.
