@@ -474,13 +474,6 @@ namespace sHierarchy
             // Draws the gameobject icon, if present
             var content = EditorGUIUtility.ObjectContent(EditorUtility.InstanceIDToObject(instanceID), null);
 
-            float offset = 0.0f;
-            if (data.instanceID.enabled)
-            {
-                string fullStr = instanceID.ToString();
-                offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
-            }
-
             if (content.image && !string.IsNullOrEmpty(content.image.name))
             {
                 if (content.image.name != "d_GameObject Icon" && content.image.name != "d_Prefab Icon")
@@ -488,7 +481,7 @@ namespace sHierarchy
                     ++temp_iconsDrawedCount;
 
                     Rect rect = new Rect(
-                            selectionRect.xMax - (ROW_HEIGHT * temp_iconsDrawedCount) - 5 - offset,
+                            selectionRect.xMax - (ROW_HEIGHT * temp_iconsDrawedCount) - 5 - HierarchyUtil.InstanceIDLength(instanceID),
                             selectionRect.yMin,
                             ROW_HEIGHT, ROW_HEIGHT);
 
@@ -513,12 +506,12 @@ namespace sHierarchy
             string fullStr = go.tag;
 
             float offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
-            int iconCount = temp_iconsDrawedCount + 1; 
+            int iconCount = temp_iconsDrawedCount + 1;
             iconCount = (iconCount <= 0) ? 0 : iconCount;
-            float iconOffset = (iconCount == 0)? 0.0f : 5.0f;
+            float iconOffset = (iconCount == 0) ? 0.0f : 5.0f;
             offset += iconCount * ROW_HEIGHT + iconOffset;
 
-            var x = selectionRect.xMax - offset + ROW_HEIGHT - 1;
+            var x = selectionRect.xMax - offset + ROW_HEIGHT - 1 - HierarchyUtil.InstanceIDLength(instanceID);
             Rect rect = new Rect(x, selectionRect.y, selectionRect.width, selectionRect.height);
 
             GUIStyle style = new GUIStyle();
@@ -533,9 +526,8 @@ namespace sHierarchy
                 return;
 
             string fullStr = instanceID.ToString();
-            float offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
 
-            var x = selectionRect.xMax - offset + ROW_HEIGHT - 1;
+            var x = selectionRect.xMax - HierarchyUtil.InstanceIDLength(instanceID) + ROW_HEIGHT - 1;
             Rect rect = new Rect(x, selectionRect.y, selectionRect.width, selectionRect.height);
 
             GUIStyle style = new GUIStyle();

@@ -142,6 +142,17 @@ namespace sHierarchy
             if (GUILayout.Button(text, GUILayout.Width(50)))
                 func.Invoke();
         }
+
+        public static float InstanceIDLength(int instanceID)
+        {
+            if (!HierarchyData.instance.instanceID.enabled)
+                return 0.0f;
+
+            float offset = 0.0f;
+            string fullStr = instanceID.ToString();
+            offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
+            return offset;
+        }
     }
 }
 #endif
