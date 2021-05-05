@@ -52,7 +52,7 @@ namespace sHierarchy
 
         public override bool HasPreviewGUI()
         {
-            if (!HierarchyData.instance.enabled || !HierarchyData.instance.preview.enabled || 
+            if (!HierarchyData.instance.enabled || !HierarchyData.instance.preview.enabled ||
                 Selection.activeGameObject == null)
                 return false;
 
@@ -195,8 +195,7 @@ namespace sHierarchy
 
         private static void DrawOptions()
         {
-            if (GUILayout.Button("Reset", GUILayout.Width(50)))
-                ResetCameraRotation();
+            HierarchyUtil.Button("Reset", ResetCameraRotation);
         }
 
         private static void ResetCameraRotation()
@@ -219,6 +218,7 @@ namespace sHierarchy
             mClone = GameObject.Instantiate(mTarget);
             mClone.transform.position = Vector3.zero;
             mClone.transform.localScale = mClone.transform.localScale.normalized;
+            EnableCustomComponents(mClone, false);
             mClone.AddComponent<SphereCollider>();
             mPreviewRenderer.AddSingleGO(mClone);
 
@@ -273,6 +273,15 @@ namespace sHierarchy
         private static void RotateY(float speed)
         {
             mClone.transform.RotateAround(Vector3.zero, Vector3.right, speed);
+        }
+
+        private static void EnableCustomComponents(GameObject go, bool active)
+        {
+            foreach (var component in go.GetComponents<MonoBehaviour>())
+                component.enabled = active;
+
+            for (int index = 0; index < go.transform.childCount; ++index)
+                EnableCustomComponents(go.transform.GetChild(index).gameObject, active);
         }
     }
 }

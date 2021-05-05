@@ -20,35 +20,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEditor;
 
 namespace sHierarchy.Test
 {
-    public class Test_IconScript
-        : MonoBehaviour
+    public class Test_CustomScript : MonoBehaviour
     {
-        /* Variables */
-
-        /* Setter & Getter */
-
-        /* Functions */
-
-        private void Start()
-        {
-            SpriteRenderer sr = this.GetComponent<SpriteRenderer>();
-
-            sr.sprite = null;
-        }
-
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Q))
-                Debug.Log("oy");
-            if (Input.GetKeyDown(KeyCode.W))
-                Debug.LogWarning("oy");
-            if (Input.GetKeyDown(KeyCode.E))
-                Debug.LogError("oy");
+
         }
     }
 }

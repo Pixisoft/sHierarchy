@@ -20,35 +20,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEditor;
 
 namespace sHierarchy.Test
 {
-    public class Test_IconScript
+    public class Test_RipComponents 
         : MonoBehaviour
     {
-        /* Variables */
-
-        /* Setter & Getter */
-
-        /* Functions */
-
-        private void Start()
+        private static void EnableCustomComponents(GameObject go, bool active)
         {
-            SpriteRenderer sr = this.GetComponent<SpriteRenderer>();
+            foreach (var component in go.GetComponents<MonoBehaviour>())
+                component.enabled = active;
 
-            sr.sprite = null;
+            for (int index = 0; index < go.transform.childCount; ++index)
+                EnableCustomComponents(go.transform.GetChild(index).gameObject, active);
         }
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Q))
-                Debug.Log("oy");
-            if (Input.GetKeyDown(KeyCode.W))
-                Debug.LogWarning("oy");
-            if (Input.GetKeyDown(KeyCode.E))
-                Debug.LogError("oy");
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                EnableCustomComponents(this.gameObject, false);
+            }
         }
     }
 }
