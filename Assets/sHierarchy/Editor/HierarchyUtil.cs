@@ -30,7 +30,13 @@ namespace sHierarchy
 
     public static class HierarchyUtil
     {
+        /* Variables */
+
         private const string NAME = "sHierarchy";
+
+        /* Setter & Getters */
+
+        /* Functions */
 
         public static void IgnoreErrors(EmptyFunction func)
         {
