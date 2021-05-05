@@ -17,21 +17,19 @@
  * 
  * For any other use, please ask for permission by contacting the author.
  */
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace sHierarchy.Test
+namespace sHierarchy
 {
-    public class Test_RipComponents 
-        : MonoBehaviour
+    public static class Test_Util
     {
-        private void Update()
+        public static void EnableCustomComponents(GameObject go, bool active)
         {
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                Test_Util.EnableCustomComponents(this.gameObject, false);
-            }
+            foreach (var component in go.GetComponents<MonoBehaviour>())
+                component.enabled = active;
+
+            for (int index = 0; index < go.transform.childCount; ++index)
+                EnableCustomComponents(go.transform.GetChild(index).gameObject, active);
         }
     }
 }
