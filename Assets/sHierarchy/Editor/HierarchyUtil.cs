@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace sHierarchy
@@ -57,13 +58,13 @@ namespace sHierarchy
 
         public static void CreateGroup(EmptyFunction func, bool flexibleSpace = false)
         {
-            BeginHorizontal(() => 
-            { 
+            BeginHorizontal(() =>
+            {
                 BeginVertical(() =>
                 {
                     Indent(func);
-                }); 
-            }, 
+                });
+            },
             flexibleSpace);
         }
 
@@ -188,12 +189,53 @@ namespace sHierarchy
             return len;
         }
 
+        private static Texture ScriptTexture(Type t)
+        {
+            Texture tex = null;
+            if (t.IsSubclassOf(typeof(MonoBehaviour)))
+                tex = EditorGUIUtility.IconContent("cs Script Icon").image;
+            else if (t.IsSubclassOf(typeof(ScriptableObject)))
+                tex = EditorGUIUtility.IconContent("d_ScriptableObject Icon").image;
+            return tex;
+        }
+
         public static Texture TypeTexture(Type t)
         {
             var image = EditorGUIUtility.ObjectContent(null, t).image;
-            if (image == null)
-                image = EditorGUIUtility.IconContent("cs Script Icon").image;
+            if (image == null) image = ScriptTexture(t);
+            // default icon
+            if (image == null) image = EditorGUIUtility.IconContent("d__Help@2x").image;
             return image;
+        }
+
+        public static void ExpandComponents(GameObject go, bool act)
+        {
+            Selection.activeGameObject = go;
+
+            foreach (var comp in go.GetComponents<Component>())
+                InternalEditorUtility.SetIsInspectorExpanded(comp, act);
+            ActiveEditorTracker.sharedTracker.ForceRebuild();
+        }
+
+        public static void ExpandComponents(int instanceID, bool act)
+        {
+            GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            ExpandComponents(go, act);
+        }
+
+        private static void FocusComponent(GameObject go, Type current)
+        {
+            Selection.activeGameObject = go;
+
+            foreach (var comp in go.GetComponents<Component>())
+                InternalEditorUtility.SetIsInspectorExpanded(comp, (comp.GetType() == current));
+            ActiveEditorTracker.sharedTracker.ForceRebuild();
+        }
+
+        public static void FocusComponent(int instanceID, Type current)
+        {
+            GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            FocusComponent(go, current);
         }
     }
 }

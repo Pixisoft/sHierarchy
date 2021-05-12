@@ -450,11 +450,15 @@ namespace sHierarchy
                 GUI.Label(rect, new GUIContent("", null, t.Name));
                 if (GUI.Button(rect, "", "Label"))
                 {
-                    Selection.activeGameObject = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
-                    Highlighter.Highlight("Inspector", "m_LocalScale.x");
+                    HierarchyUtil.FocusComponent(instanceID, t);
                 }
 
                 ++temp_iconsDrawedCount;
+            }
+
+            if (GUI.Button(selectionRect, "", "Label"))
+            {
+                HierarchyUtil.ExpandComponents(instanceID, true);
             }
         }
 
