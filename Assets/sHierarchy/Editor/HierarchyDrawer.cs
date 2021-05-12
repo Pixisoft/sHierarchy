@@ -435,21 +435,24 @@ namespace sHierarchy
             if (!data.components.enabled)
                 return;
 
-            GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
             temp_iconsDrawedCount = (data.tag.enabled) ? 1 : 0;
             float offsetX_const = (data.tag.enabled) ? 10 : 5;
             float offsetX = offsetX_const + maxTagLength + maxInstanceIDLength;
 
             foreach (Type t in currentItem.types)
             {
-                var image = EditorGUIUtility.ObjectContent(null, t).image;
-                if (image == null)
-                    continue;
+                var image = HierarchyUtil.TypeTexture(t);
 
                 float offset = offsetX + (ROW_HEIGHT * temp_iconsDrawedCount);
                 float x = selectionRect.xMax - offset;
                 Rect rect = new Rect(x, selectionRect.yMin, ROW_HEIGHT, ROW_HEIGHT);
                 GUI.DrawTexture(rect, image);
+                GUI.Label(rect, new GUIContent("", null, t.Name));
+                if (GUI.Button(rect, "", "Label"))
+                {
+                    Selection.activeGameObject = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+                    Highlighter.Highlight("Inspector", "m_LocalScale.x");
+                }
 
                 ++temp_iconsDrawedCount;
             }

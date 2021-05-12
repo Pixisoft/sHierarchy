@@ -187,6 +187,14 @@ namespace sHierarchy
 
             return len;
         }
+
+        public static Texture TypeTexture(Type t)
+        {
+            var image = EditorGUIUtility.ObjectContent(null, t).image;
+            if (image == null)
+                image = EditorGUIUtility.IconContent("cs Script Icon").image;
+            return image;
+        }
     }
 }
 #endif
