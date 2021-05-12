@@ -46,9 +46,14 @@ namespace sHierarchy
 
         private static bool initialized = false;
         private static HierarchyData data { get { return HierarchyPreferences.data; } }
-        private static List<int> iconsPositions = new List<int>();
         private static Dictionary<int, InstanceInfo> sceneGameObjects = new Dictionary<int, InstanceInfo>();
         private static Dictionary<int, Color> prefabColors = new Dictionary<int, Color>();
+
+        private static HashSet<string> tags = new HashSet<string>();
+        private static float maxTagLength = 0.0f;
+
+        private static HashSet<int> instanceIDs = new HashSet<int>();
+        private static float maxInstanceIDLength = 0.0f;
 
         #region Menu Items
 
@@ -141,7 +146,7 @@ namespace sHierarchy
                 return;
 
             sceneGameObjects.Clear();
-            iconsPositions.Clear();
+            tags.Clear();
 
             GameObject[] sceneRoots;
             Scene tempScene;
@@ -182,7 +187,7 @@ namespace sHierarchy
             if (!sceneGameObjects.ContainsKey(instanceID))  // processes the gameobject only if it wasn't processed already
             {
                 InstanceInfo newInfo = new InstanceInfo();
-                newInfo.iconIndexes = new List<int>();
+                newInfo.types = new List<Type>();
                 newInfo.isLastElement = isLastChild;
                 newInfo.nestingLevel = nestingLevel;
                 newInfo.nestingGroup = nestingGroup;
@@ -190,6 +195,9 @@ namespace sHierarchy
                 newInfo.isGoActive = go.activeInHierarchy;
                 newInfo.topParentHasChild = topParentHasChild;
                 newInfo.goName = go.name;
+
+                tags.Add(go.tag);
+                instanceIDs.Add(instanceID);
 
                 if (data.prefabsData.enabled)
                 {
@@ -205,49 +213,16 @@ namespace sHierarchy
                                           && go.name.StartsWith(data.separator.startString));  // and also starts with '>'
                 }
 
-                if (data.icons.enabled && data.icons.pairs != null && data.icons.pairs.Length > 0)
+                if (data.components.enabled)
                 {
                     #region Components Information (icons)
 
-                    Type classReferenceType; //todo opt
-                    Type componentType;
+                    var comps = go.GetComponents<Component>();
 
-                    foreach (var c in go.GetComponents<Component>())
+                    foreach (var c in comps)
                     {
-                        if (!c) continue;
-
-                        componentType = c.GetType();
-
-                        for (int elementIndex = 0; elementIndex < data.icons.pairs.Length; ++elementIndex)
-                        {
-                            if (!data.icons.pairs[elementIndex].iconToDraw) continue;
-
-                            // Class inherithance
-                            foreach (var classReference in data.icons.pairs[elementIndex].targetClasses)
-                            {
-                                if (!classReference) continue;
-
-                                classReferenceType = classReference.GetClass();
-
-                                if (!classReferenceType.IsClass) continue;
-
-                                // class ineriths 
-                                if (componentType.IsAssignableFrom(classReferenceType) || componentType.IsSubclassOf(classReferenceType))
-                                {
-                                    // Adds the icon index to the "positions" list, to draw all of them in order later [if enabled] 
-                                    if (!iconsPositions.Contains(elementIndex)) iconsPositions.Add(elementIndex);
-
-                                    // Adds the icon index to draw, only if it's not present already
-                                    if (!newInfo.iconIndexes.Contains(elementIndex))
-                                        newInfo.iconIndexes.Add(elementIndex);
-
-                                    break;
-                                }
-                            }
-                        }
+                        newInfo.types.Add(c.GetType());
                     }
-
-                    newInfo.iconIndexes.Sort();
 
                     #endregion
                 }
@@ -293,6 +268,8 @@ namespace sHierarchy
             /* Initialzie draw variables */
             {
                 ROW_HEIGHT = GUI.skin.label.lineHeight + 1;
+                maxTagLength = HierarchyUtil.MaxTagLength(tags.ToArray());
+                maxInstanceIDLength = HierarchyUtil.MaxInstanceIDLength(instanceIDs.ToArray());
             }
 
             DrawAlternatingBG(instanceID, selectionRect);
@@ -301,6 +278,7 @@ namespace sHierarchy
             DrawSeparators(instanceID, selectionRect);
             DrawLog(instanceID, selectionRect);
             DrawIcons(instanceID, selectionRect);
+            DrawComponents(instanceID, selectionRect);
             DrawTag(instanceID, selectionRect);
             DrawInstanceID(instanceID, selectionRect);
         }
@@ -435,66 +413,46 @@ namespace sHierarchy
             if (!data.icons.enabled)
                 return;
 
-            temp_iconsDrawedCount = -1;
-
-            #region Local Method
-
-            // Draws each component icon
-            void DrawIcon(int textureIndex)
-            {
-                //---Icon Alignment---
-                if (data.icons.aligned)
-                {
-                    // Aligns icon based on texture's position on the array
-                    int CalculateIconPosition()
-                    {
-                        for (int i = 0; i < iconsPositions.Count; ++i)
-                        {
-                            if (iconsPositions[i] == textureIndex)
-                                return i;
-                        }
-
-                        return 0;
-                    }
-
-                    temp_iconsDrawedCount = CalculateIconPosition();
-                }
-                else
-                {
-                    ++temp_iconsDrawedCount;
-                }
-
-                GUI.DrawTexture(
-                    new Rect(selectionRect.xMax - ROW_HEIGHT * (temp_iconsDrawedCount + 1) - 2, selectionRect.yMin, ROW_HEIGHT, ROW_HEIGHT),
-                    data.icons.pairs[textureIndex].iconToDraw);
-            }
-
-            #endregion
-
             // Draws the gameobject icon, if present
-            var content = EditorGUIUtility.ObjectContent(EditorUtility.InstanceIDToObject(instanceID), null);
+            var go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            var content = EditorGUIUtility.ObjectContent(go, null);
 
             if (content.image && !string.IsNullOrEmpty(content.image.name))
             {
                 if (content.image.name != "d_GameObject Icon" && content.image.name != "d_Prefab Icon")
                 {
-                    ++temp_iconsDrawedCount;
+                    float x = HierarchyRenderer.GetGOStartX(selectionRect, currentItem.nestingLevel);
 
-                    Rect rect = new Rect(
-                            selectionRect.xMax - (ROW_HEIGHT * temp_iconsDrawedCount) - 5 - HierarchyUtil.InstanceIDLength(instanceID),
-                            selectionRect.yMin,
-                            ROW_HEIGHT, ROW_HEIGHT);
+                    Rect rect = new Rect(x, selectionRect.yMin, ROW_HEIGHT, ROW_HEIGHT);
 
                     GUI.DrawTexture(rect, content.image);
-                    /* Add tooltip? */
-                    {
-                        //GUI.Label(rect, new GUIContent("", "TOOLTIP HERE"));
-                    }
                 }
             }
+        }
 
-            for (int i = 0; i < currentItem.iconIndexes.Count; ++i)
-                DrawIcon(currentItem.iconIndexes[i]);
+        private static void DrawComponents(int instanceID, Rect selectionRect)
+        {
+            if (!data.components.enabled)
+                return;
+
+            GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            temp_iconsDrawedCount = (data.tag.enabled) ? 1 : 0;
+            float offsetX_const = (data.tag.enabled) ? 10 : 5;
+            float offsetX = offsetX_const + maxTagLength + maxInstanceIDLength;
+
+            foreach (Type t in currentItem.types)
+            {
+                var image = EditorGUIUtility.ObjectContent(null, t).image;
+                if (image == null)
+                    continue;
+
+                float offset = offsetX + (ROW_HEIGHT * temp_iconsDrawedCount);
+                float x = selectionRect.xMax - offset;
+                Rect rect = new Rect(x, selectionRect.yMin, ROW_HEIGHT, ROW_HEIGHT);
+                GUI.DrawTexture(rect, image);
+
+                ++temp_iconsDrawedCount;
+            }
         }
 
         private static void DrawTag(int instanceID, Rect selectionRect)
@@ -504,18 +462,9 @@ namespace sHierarchy
 
             GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
             string fullStr = go.tag;
-
             float offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
 
-            if (data.icons.enabled)
-            {
-                int iconCount = temp_iconsDrawedCount + 1;
-                iconCount = (iconCount <= 0) ? 0 : iconCount;
-                float iconOffset = (iconCount == 0) ? 0.0f : 5.0f;
-                offset += iconCount * ROW_HEIGHT + iconOffset;
-            }
-
-            var x = selectionRect.xMax - offset + ROW_HEIGHT - 1 - HierarchyUtil.InstanceIDLength(instanceID);
+            float x = selectionRect.xMax - offset + ROW_HEIGHT - 1 - maxInstanceIDLength;
             Rect rect = new Rect(x, selectionRect.y, selectionRect.width, selectionRect.height);
 
             GUIStyle style = new GUIStyle();
@@ -531,7 +480,8 @@ namespace sHierarchy
 
             string fullStr = instanceID.ToString();
 
-            var x = selectionRect.xMax - HierarchyUtil.InstanceIDLength(instanceID) + ROW_HEIGHT - 1;
+            float offset = maxInstanceIDLength - ROW_HEIGHT + 1;
+            float x = selectionRect.xMax - offset;
             Rect rect = new Rect(x, selectionRect.y, selectionRect.width, selectionRect.height);
 
             GUIStyle style = new GUIStyle();

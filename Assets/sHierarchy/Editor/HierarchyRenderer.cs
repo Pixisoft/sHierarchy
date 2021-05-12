@@ -59,7 +59,7 @@ namespace sHierarchy
         /// <summary>
         /// Return the started x position in nested level.
         /// </summary>
-        static float GetStartX(Rect originalRect, int nestLevel)
+        public static float GetStartX(Rect originalRect, int nestLevel)
         {
             return 37 + (originalRect.height - 2) * nestLevel;
         }
@@ -67,11 +67,16 @@ namespace sHierarchy
         /// <summary>
         /// Return the started x position after the name of gameobject.
         /// </summary>
-        static float GetNameX(Rect originalRect, int nestLevel)
+        public static float GetNameX(Rect originalRect, int nestLevel)
         {
             float goWidth = ROW_HEIGHT + 10;
             return GetStartX(originalRect, nestLevel + 1) + goWidth +
                 GUI.skin.label.CalcSize(new GUIContent(currentItem.goName)).x;
+        }
+
+        public static float GetGOStartX(Rect originalRect, int nestLevel)
+        {
+            return GetStartX(originalRect, nestLevel) + ROW_HEIGHT + (ROW_HEIGHT / 2.0f) - 1;
         }
 
         static bool FoundBranchColor(int nestLevel)

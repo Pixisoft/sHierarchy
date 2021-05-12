@@ -30,13 +30,14 @@ namespace sHierarchy
         public bool enabled = true;
         public bool updateInPlayMode = true;
 
-        public Data_Icons icons = new Data_Icons();
-        public Data_Prefabs prefabsData = new Data_Prefabs();
         public Data_AlternatingBG alternatingBG = new Data_AlternatingBG();
+        public Data_Prefabs prefabsData = new Data_Prefabs();
         public Data_Separator separator = new Data_Separator();
         public Data_Tree tree = new Data_Tree();
         public Data_Log log = new Data_Log();
         public Data_Tag tag = new Data_Tag();
+        public Data_Icons icons = new Data_Icons();
+        public Data_Components components = new Data_Components();
         public Data_InstanceID instanceID = new Data_InstanceID();
 
         public Data_Preview preview = new Data_Preview();
@@ -59,8 +60,9 @@ namespace sHierarchy
             separator.Init();
             tree.Init();
             log.Init();
-            tag.Init();
             icons.Init();
+            components.Init();
+            tag.Init();
             instanceID.Init();
 
             preview.Init();
@@ -76,8 +78,9 @@ namespace sHierarchy
             separator.Draw();
             tree.Draw();
             log.Draw();
-            tag.Draw();
             icons.Draw();
+            components.Draw();
+            tag.Draw();
             instanceID.Draw();
 
             preview.Draw();
@@ -93,8 +96,9 @@ namespace sHierarchy
             separator.SavePref();
             tree.SavePref();
             log.SavePref();
-            tag.SavePref();
             icons.SavePref();
+            components.SavePref();
+            tag.SavePref();
             instanceID.SavePref();
 
             preview.SavePref();
