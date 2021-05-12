@@ -506,10 +506,14 @@ namespace sHierarchy
             string fullStr = go.tag;
 
             float offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
-            int iconCount = temp_iconsDrawedCount + 1;
-            iconCount = (iconCount <= 0) ? 0 : iconCount;
-            float iconOffset = (iconCount == 0) ? 0.0f : 5.0f;
-            offset += iconCount * ROW_HEIGHT + iconOffset;
+
+            if (data.icons.enabled)
+            {
+                int iconCount = temp_iconsDrawedCount + 1;
+                iconCount = (iconCount <= 0) ? 0 : iconCount;
+                float iconOffset = (iconCount == 0) ? 0.0f : 5.0f;
+                offset += iconCount * ROW_HEIGHT + iconOffset;
+            }
 
             var x = selectionRect.xMax - offset + ROW_HEIGHT - 1 - HierarchyUtil.InstanceIDLength(instanceID);
             Rect rect = new Rect(x, selectionRect.y, selectionRect.width, selectionRect.height);
