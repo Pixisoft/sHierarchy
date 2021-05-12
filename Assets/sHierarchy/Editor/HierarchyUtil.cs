@@ -237,6 +237,17 @@ namespace sHierarchy
             GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
             FocusComponent(go, current);
         }
+
+        public static bool IsExpanded(GameObject go, Type current)
+        {
+            return InternalEditorUtility.GetIsInspectorExpanded(go.GetComponent(current));
+        }
+
+        public static bool IsExpanded(int instanceID, Type current)
+        {
+            GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            return IsExpanded(go, current);
+        }
     }
 }
 #endif

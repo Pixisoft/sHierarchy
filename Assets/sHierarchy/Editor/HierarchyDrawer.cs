@@ -450,15 +450,22 @@ namespace sHierarchy
                 GUI.Label(rect, new GUIContent("", null, t.Name));
                 if (GUI.Button(rect, "", "Label"))
                 {
-                    HierarchyUtil.FocusComponent(instanceID, t);
+                    Type check = currentItem.types[0];
+                    if (check == t && currentItem.types.Count > 1)
+                        check = currentItem.types[1];
+
+                    bool otherExpanded = HierarchyUtil.IsExpanded(instanceID, check);
+                    bool selfExpanded = HierarchyUtil.IsExpanded(instanceID, t);
+
+                    if (!selfExpanded)
+                        HierarchyUtil.FocusComponent(instanceID, t);
+                    else if (!otherExpanded)
+                        HierarchyUtil.ExpandComponents(instanceID, true);
+                    else
+                        HierarchyUtil.FocusComponent(instanceID, t);
                 }
 
                 ++temp_iconsDrawedCount;
-            }
-
-            if (GUI.Button(selectionRect, "", "Label"))
-            {
-                HierarchyUtil.ExpandComponents(instanceID, true);
             }
         }
 
