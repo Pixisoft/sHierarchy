@@ -143,15 +143,49 @@ namespace sHierarchy
                 func.Invoke();
         }
 
-        public static float InstanceIDLength(int instanceID)
+        private static float InstanceIDLength(int instanceID)
+        {
+            float len = 0.0f;
+            string fullStr = instanceID.ToString();
+            len = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
+            return len;
+        }
+
+        public static float MaxInstanceIDLength(int[] instanceIDs)
         {
             if (!HierarchyData.instance.instanceID.enabled)
                 return 0.0f;
 
-            float offset = 0.0f;
-            string fullStr = instanceID.ToString();
-            offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
-            return offset;
+            float len = 0.0f;
+
+            foreach (int instanceID in instanceIDs)
+            {
+                len = InstanceIDLength(instanceID);
+            }
+
+            return len;
+        }
+
+        private static float TagLength(string tag)
+        {
+            float len = 0.0f;
+            len = GUI.skin.label.CalcSize(new GUIContent(tag)).x;
+            return len;
+        }
+
+        public static float MaxTagLength(string[] tags)
+        {
+            if (!HierarchyData.instance.tag.enabled)
+                return 0.0f;
+
+            float len = 0.0f;
+
+            foreach (string tag in tags)
+            {
+                len = TagLength(tag.Trim());
+            }
+
+            return len;
         }
     }
 }
