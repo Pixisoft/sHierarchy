@@ -30,7 +30,7 @@ namespace sHierarchy
         /// <summary>
         /// Contains the indexes for each icon to draw, eg. draw(iconTextures[iconIndexes[0]]);
         /// </summary>
-        public List<int> iconIndexes;
+        public List<Type> types;
         public bool isSeparator;
         public string goName;
         public int prefabInstanceID;
