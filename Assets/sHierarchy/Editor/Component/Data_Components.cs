@@ -23,28 +23,31 @@ using UnityEngine;
 
 namespace sHierarchy
 {
-    public class Data_Icons : HierarchyComponent
+    [System.Serializable]
+    public class Data_Components : HierarchyComponent
     {
         /* Variables */
 
         public bool foldout = false;
 
         public bool enabled = true;
+        public bool aligned = false;
 
         /* Setter & Getters */
 
         /* Functions */
 
-        public string FormKey(string name) { return HierarchyUtil.FormKey("icons.") + name; }
+        public string FormKey(string name) { return HierarchyUtil.FormKey("components.") + name; }
 
         public void Init()
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
+            this.aligned = EditorPrefs.GetBool(FormKey("aligned"), false);
         }
 
         public void Draw()
         {
-            foldout = EditorGUILayout.Foldout(foldout, "Icons");
+            foldout = EditorGUILayout.Foldout(foldout, "Components");
 
             if (!foldout)
                 return;
@@ -52,12 +55,14 @@ namespace sHierarchy
             HierarchyUtil.CreateGroup(() =>
             {
                 this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
+                this.aligned = EditorGUILayout.Toggle("Aligned", this.aligned);
             });
         }
 
         public void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
+            EditorPrefs.SetBool(FormKey("aligned"), this.aligned);
         }
     }
 }
