@@ -99,6 +99,7 @@ namespace sHierarchy
                 // Prevents registering events multiple times
                 EditorApplication.hierarchyChanged -= RetrieveDataFromScene;
                 EditorApplication.hierarchyWindowItemOnGUI -= DrawCore;
+                Selection.selectionChanged -= SelectionChanged;
             }
 
             #endregion
@@ -113,6 +114,7 @@ namespace sHierarchy
 
                 EditorApplication.hierarchyChanged += RetrieveDataFromScene;
                 EditorApplication.hierarchyWindowItemOnGUI += DrawCore;
+                Selection.selectionChanged += SelectionChanged;
 
                 #endregion
 
@@ -251,11 +253,28 @@ namespace sHierarchy
             #endregion
         }
 
+        static void SelectionChanged()
+        {
+            if (clickComponent)
+            {
+                clickComponent = false;
+                return;
+            }
+
+            GameObject ago = Selection.activeGameObject;
+            if (ago == null)
+                return;
+
+            HierarchyUtil.ExpandComponents(ago, true);
+        }
+
         #region Drawing
 
         private static int temp_iconsDrawedCount = -1;
         public static InstanceInfo currentItem;
         private static bool drawedPrefabOverlay = false;
+
+        private static bool clickComponent = false;
 
         private static void DrawCore(int instanceID, Rect selectionRect)
         {
@@ -448,6 +467,8 @@ namespace sHierarchy
                 HierarchyUtil.ExpandComponents(instanceID, true);
             else
                 HierarchyUtil.FocusComponent(instanceID, t);
+
+            clickComponent = true;
         }
 
         private static void DrawComponents(int instanceID, Rect selectionRect)
