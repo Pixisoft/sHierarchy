@@ -426,6 +426,7 @@ namespace sHierarchy
                     Rect rect = new Rect(x, selectionRect.yMin, ROW_HEIGHT, ROW_HEIGHT);
 
                     GUI.DrawTexture(rect, content.image);
+                    HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, (Texture2D)content.image);
                 }
             }
         }
