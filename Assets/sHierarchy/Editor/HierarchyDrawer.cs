@@ -255,6 +255,9 @@ namespace sHierarchy
 
         static void SelectionChanged()
         {
+            if (!data.components.enabled)
+                return;
+
             if (clickComponent)
             {
                 clickComponent = false;
