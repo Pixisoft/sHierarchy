@@ -27,10 +27,7 @@ namespace sHierarchy
     [Serializable]
     public struct InstanceInfo
     {
-        /// <summary>
-        /// Contains the indexes for each icon to draw, eg. draw(iconTextures[iconIndexes[0]]);
-        /// </summary>
-        public List<Type> types;
+        public List<Type> types;  // types of each components
         public bool isSeparator;
         public string goName;
         public int prefabInstanceID;
