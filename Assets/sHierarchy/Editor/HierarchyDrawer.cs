@@ -255,7 +255,7 @@ namespace sHierarchy
 
         static void SelectionChanged()
         {
-            if (!data.components.enabled)
+            if (!data.components.enabled || !data.components.folding)
                 return;
 
             if (clickComponent)
@@ -492,10 +492,8 @@ namespace sHierarchy
                 Rect rect = new Rect(x, selectionRect.yMin, ROW_HEIGHT, ROW_HEIGHT);
                 HierarchyUtil.DrawTextureTooltip(rect, image, t.Name);
 
-                if (GUI.Button(rect, "", "Label"))
-                {
+                if (data.components.folding && GUI.Button(rect, "", "Label"))
                     OnClick_Component(instanceID, t);
-                }
 
                 ++temp_iconsDrawedCount;
             }
