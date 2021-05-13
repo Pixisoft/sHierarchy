@@ -183,8 +183,7 @@ namespace sHierarchy
 
                 Rect rect = new Rect(x, selectionRect.yMin, ROW_HEIGHT, ROW_HEIGHT);
 
-                GUI.DrawTexture(rect, c.image);
-                GUI.Label(rect, new GUIContent("", null, stackTrace));  // add tooltip
+                HierarchyUtil.DrawTextureTooltip(rect, c.image, stackTrace);
 
                 return true;
             }

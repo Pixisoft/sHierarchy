@@ -475,7 +475,7 @@ namespace sHierarchy
             if (!data.tag.enabled)
                 return;
 
-            GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            var go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
             if (go == null)
                 return;
 

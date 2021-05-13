@@ -248,6 +248,12 @@ namespace sHierarchy
             GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
             return IsExpanded(go, current);
         }
+
+        public static void DrawTextureTooltip(Rect rect, Texture tex, string tooltip)
+        {
+            GUI.DrawTexture(rect, tex);
+            GUI.Label(rect, new GUIContent("", null, tooltip));  // add tooltip
+        }
     }
 }
 #endif
