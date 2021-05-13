@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 
+### 2021-05-14
+
+* Now has gradient color for colorized item.
+
 ### 2021-05-13
 
 * Render gameobject icon on the left instead the right.
