@@ -31,6 +31,8 @@ namespace sHierarchy
     [InitializeOnLoad]
     public static class HierarchyWindowAdapter
     {
+        /* Variables */
+
         private const string EDITOR_WINDOW_TYPE = "UnityEditor.SceneHierarchyWindow";
         private const double EDITOR_WINDOWS_CACHE_TTL = 2;
 
@@ -47,9 +49,9 @@ namespace sHierarchy
         private static double _nextWindowsUpdate;
         private static EditorWindow[] _windowsCache;
 
-        //---------------------------------------------------------------------
-        // Ctor
-        //---------------------------------------------------------------------
+        /* Setter & Getters */
+
+        /* Functions */
 
         static HierarchyWindowAdapter()
         {
@@ -72,10 +74,6 @@ namespace sHierarchy
             var treeViewItem = assembly.GetType("UnityEditor.GameObjectTreeViewItem");
             TREE_VIEW_OBJECT_PROPERTY = treeViewItem.GetProperty("objectPPTR", INSTANCE_PUBLIC);
         }
-
-        //---------------------------------------------------------------------
-        // Public
-        //---------------------------------------------------------------------
 
         public static EditorWindow GetFirstHierarchyWindow()
         {
@@ -113,10 +111,6 @@ namespace sHierarchy
             var windows = from obj in objectList where obj.GetType().ToString() == type select (EditorWindow)obj;
             return windows;
         }
-
-        //---------------------------------------------------------------------
-        // Helpers
-        //---------------------------------------------------------------------
 
         private static IEnumerable<TreeViewItem> GetTreeViewItems(EditorWindow window)
         {

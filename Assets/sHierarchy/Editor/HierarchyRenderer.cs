@@ -26,12 +26,18 @@ namespace sHierarchy
 {
     public static class HierarchyRenderer
     {
-        static float ROW_HEIGHT { get { return HierarchyDrawer.ROW_HEIGHT; } }
-        static HierarchyData data { get { return HierarchyData.instance; } }
-        static Color[] currentBranch { get { return data.tree.branches; } }
-        static InstanceInfo currentItem { get { return HierarchyDrawer.currentItem; } }
+        /* Variables */
 
         private const int barOffsetX = 15;
+
+        /* Setter & Getters */
+
+        private static float ROW_HEIGHT { get { return HierarchyDrawer.ROW_HEIGHT; } }
+        private static HierarchyData data { get { return HierarchyData.instance; } }
+        private static Color[] currentBranch { get { return data.tree.branches; } }
+        private static InstanceInfo currentItem { get { return HierarchyDrawer.currentItem; } }
+
+        /* Functions */
 
         public static void DrawNestGroupOverlay(Rect originalRect, int nestlevel)
         {
