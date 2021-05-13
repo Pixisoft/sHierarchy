@@ -396,7 +396,7 @@ namespace sHierarchy
 
             var go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
 
-            if (!go.activeSelf)
+            if (go == null || !go.activeSelf)
                 return;
 
             int iconLevel = 0;
@@ -476,6 +476,9 @@ namespace sHierarchy
                 return;
 
             GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            if (go == null)
+                return;
+
             string fullStr = go.tag;
             float offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
 
