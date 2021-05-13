@@ -35,6 +35,8 @@ namespace sHierarchy
 
         private const string NAME = "sHierarchy";
 
+        private const string DEFAULT_COMPONENT_ICON = "d__Help@2x";
+
         /* Setter & Getters */
 
         /* Functions */
@@ -204,7 +206,7 @@ namespace sHierarchy
             var image = EditorGUIUtility.ObjectContent(null, t).image;
             if (image == null) image = ScriptTexture(t);
             // default icon
-            if (image == null) image = EditorGUIUtility.IconContent("d__Help@2x").image;
+            if (image == null) image = EditorGUIUtility.IconContent(DEFAULT_COMPONENT_ICON).image;
             return image;
         }
 
