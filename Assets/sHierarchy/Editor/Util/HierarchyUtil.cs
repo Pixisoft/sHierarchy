@@ -210,8 +210,6 @@ namespace sHierarchy
 
         public static void ExpandComponents(GameObject go, bool act)
         {
-            Selection.activeGameObject = go;
-
             foreach (var comp in go.GetComponents<Component>())
                 InternalEditorUtility.SetIsInspectorExpanded(comp, act);
             ActiveEditorTracker.sharedTracker.ForceRebuild();
@@ -225,8 +223,6 @@ namespace sHierarchy
 
         private static void FocusComponent(GameObject go, Type current)
         {
-            Selection.activeGameObject = go;
-
             foreach (var comp in go.GetComponents<Component>())
                 InternalEditorUtility.SetIsInspectorExpanded(comp, (comp.GetType() == current));
             ActiveEditorTracker.sharedTracker.ForceRebuild();
