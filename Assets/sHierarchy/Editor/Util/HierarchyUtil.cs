@@ -252,6 +252,12 @@ namespace sHierarchy
             GUI.DrawTexture(rect, tex);
             GUI.Label(rect, new GUIContent("", null, tooltip));  // add tooltip
         }
+
+        public static bool Toggle(string name, bool val, string tooltip = "")
+        {
+            if (tooltip == "") return EditorGUILayout.Toggle(name, val);
+            return EditorGUILayout.Toggle(new GUIContent(name, tooltip), val);
+        }
     }
 }
 #endif

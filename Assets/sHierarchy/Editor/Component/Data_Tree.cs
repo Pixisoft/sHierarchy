@@ -23,6 +23,13 @@ using UnityEngine;
 
 namespace sHierarchy
 {
+    public enum DrawMode
+    { 
+        GRADIENT = 1,
+        FILL = 2,
+        SEMI = 3,
+    }
+
     public class Container_TreeData : ScriptableObject
     {
         public Color[] branches = new Color[0];
@@ -44,11 +51,13 @@ namespace sHierarchy
         public bool colorizedItem = true;
         public float dividerHeight = 1;
         public Color baseLevelColor = Color.gray;
-        public bool drawFill = false;
         public float overlayAlpha = 0.12f;
         public float lineAlpa = 0.8f;
         public float lineWidth = 1.0f;
         private int branchesLen = 0;
+
+        public DrawMode drawMode = DrawMode.GRADIENT;
+        public float gradientLength = 0.8f;
 
         /* Setter & Getters */
 
@@ -69,7 +78,8 @@ namespace sHierarchy
             this.overlayAlpha = EditorPrefs.GetFloat(FormKey("overlayAlpha"), this.overlayAlpha);
             this.lineAlpa = EditorPrefs.GetFloat(FormKey("lineAlpa"), this.lineAlpa);
             this.lineWidth = EditorPrefs.GetFloat(FormKey("lineWidth"), this.lineWidth);
-            this.drawFill = EditorPrefs.GetBool(FormKey("drawFill"), this.drawFill);
+            this.drawMode = (DrawMode)EditorPrefs.GetInt(FormKey("drawMode"), (int)this.drawMode);
+            this.gradientLength = EditorPrefs.GetFloat(FormKey("dividegradientLengthrHeight"), this.gradientLength);
 
             DynamicRefresh();
         }
@@ -86,7 +96,7 @@ namespace sHierarchy
                 this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
                 this.colorizedLine = EditorGUILayout.Toggle("Colorized Line", this.colorizedLine);
                 this.colorizedItem = EditorGUILayout.Toggle("Coloried Item", this.colorizedItem);
-                this.dividerHeight = EditorGUILayout.Slider("Divider Height", this.dividerHeight, 0, 3);
+                this.dividerHeight = EditorGUILayout.Slider("Divider Height", this.dividerHeight, 0.0f, 3.0f);
 
                 HierarchyUtil.BeginHorizontal(() =>
                 {
@@ -110,20 +120,29 @@ namespace sHierarchy
                     HierarchyUtil.Button("Reset", ResetBranchesColor);
                 });
 
-                this.overlayAlpha = EditorGUILayout.Slider("Overlay Alpha", this.overlayAlpha, 0, 0.8f);
+                this.overlayAlpha = EditorGUILayout.Slider("Overlay Alpha", this.overlayAlpha, 0.0f, 0.8f);
+
                 HierarchyUtil.BeginHorizontal(() =>
                 {
-                    this.lineAlpa = EditorGUILayout.Slider("Line Alpha", this.lineAlpa, 0, 1.0f);
-
+                    this.lineAlpa = EditorGUILayout.Slider("Line Alpha", this.lineAlpa, 0.0f, 1.0f);
                     HierarchyUtil.Button("Reset", ResetLineAlpha);
                 });
+
                 HierarchyUtil.BeginHorizontal(() =>
                 {
                     this.lineWidth = EditorGUILayout.Slider("Line Width", this.lineWidth, 0.001f, 3.0f);
-
                     HierarchyUtil.Button("Reset", ResetLineWidth);
                 });
-                this.drawFill = EditorGUILayout.Toggle("Draw Fill", this.drawFill);
+
+                HierarchyUtil.CreateGroup(() =>
+                {
+                    this.drawMode = (DrawMode)EditorGUILayout.EnumPopup("Draw Mode", this.drawMode);
+                    HierarchyUtil.BeginHorizontal(() =>
+                    {
+                        this.gradientLength = EditorGUILayout.Slider("Gradient Length", this.gradientLength, 0.0f, 1.0f);
+                        HierarchyUtil.Button("Reset", ResetGradientLength);
+                    });
+                });
             });
         }
 
@@ -144,7 +163,8 @@ namespace sHierarchy
             EditorPrefs.SetFloat(FormKey("overlayAlpha"), this.overlayAlpha);
             EditorPrefs.SetFloat(FormKey("lineAlpa"), this.lineAlpa);
             EditorPrefs.SetFloat(FormKey("lineWidth"), this.lineWidth);
-            EditorPrefs.SetBool(FormKey("drawFill"), this.drawFill);
+            EditorPrefs.SetInt(FormKey("drawMode"), (int)this.drawMode);
+            EditorPrefs.SetFloat(FormKey("gradientLength"), this.gradientLength);
         }
 
         private void DynamicRefresh()
@@ -181,6 +201,7 @@ namespace sHierarchy
 
         private void ResetLineAlpha() { this.lineAlpa = 0.8f; }
         private void ResetLineWidth() { this.lineWidth = 1.0f; }
+        private void ResetGradientLength() { this.gradientLength = 0.8f; }
     }
 }
 #endif

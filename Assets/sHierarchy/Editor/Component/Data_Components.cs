@@ -31,7 +31,7 @@ namespace sHierarchy
         public bool foldout = false;
 
         public bool enabled = true;
-        public bool folding = true;
+        public bool focus = true;
 
         /* Setter & Getters */
 
@@ -42,7 +42,7 @@ namespace sHierarchy
         public void Init()
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
-            this.folding = EditorPrefs.GetBool(FormKey("folding"), true);
+            this.focus = EditorPrefs.GetBool(FormKey("focus"), true);
         }
 
         public void Draw()
@@ -55,14 +55,15 @@ namespace sHierarchy
             HierarchyUtil.CreateGroup(() =>
             {
                 this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
-                this.folding = EditorGUILayout.Toggle("Folding", this.folding);
+                this.focus = HierarchyUtil.Toggle("Folding", this.focus, 
+                    @"Focus the component after clicking the icon");
             });
         }
 
         public void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
-            EditorPrefs.SetBool(FormKey("folding"), this.folding);
+            EditorPrefs.SetBool(FormKey("focus"), this.focus);
         }
     }
 }

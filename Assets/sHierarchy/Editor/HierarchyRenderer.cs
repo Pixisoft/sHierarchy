@@ -43,10 +43,27 @@ namespace sHierarchy
         {
             Color color = GetNestColor(nestlevel);
             color.a = (FoundBranchColor(nestlevel)) ? 0 : data.tree.overlayAlpha;
-            if (data.tree.drawFill)
-                DrawFullItem(originalRect, color);
-            else
-                DrawSelection(originalRect, color);
+
+            switch (data.tree.drawMode)
+            {
+                case DrawMode.GRADIENT:
+                    {
+                        Texture2D texture = GradientImage(color);
+                        originalRect.x = GetGOIconStartX(originalRect, nestlevel);
+                        GUI.DrawTexture(originalRect, texture);
+                    }
+                    break;
+                case DrawMode.FILL:
+                    {
+                        DrawFullItem(originalRect, color);
+                    }
+                    break;
+                case DrawMode.SEMI:
+                    {
+                        DrawSelection(originalRect, color);
+                    }
+                    break;
+            }
         }
 
         public static void DrawFullItem(Rect originalRect, Color color)
@@ -82,6 +99,12 @@ namespace sHierarchy
         public static float GetGOStartX(Rect originalRect, int nestLevel)
         {
             return GetStartX(originalRect, nestLevel) + ROW_HEIGHT + (ROW_HEIGHT / 2.0f) - 1;
+        }
+
+        public static float GetGOIconStartX(Rect originalRect, int nestLevel)
+        {
+            float goStart = GetGOStartX(originalRect, nestLevel);
+            return goStart + 16;
         }
 
         static bool FoundBranchColor(int nestLevel)
@@ -194,6 +217,64 @@ namespace sHierarchy
             }
 
             return false;
+        }
+
+        public static Texture2D GradientImage(Color start, bool up = false)
+        {
+            const float width = 16.0f;
+            const float height = 16.0f;
+
+            Texture2D texture = new Texture2D((int)width, (int)height, TextureFormat.ARGB32, false);
+            texture.alphaIsTransparency = true;
+            texture.filterMode = FilterMode.Bilinear;
+            texture.wrapMode = TextureWrapMode.Clamp;
+            texture.hideFlags = HideFlags.HideAndDontSave;
+
+            Gradient gradient = new Gradient();
+
+            GradientColorKey[] DARKNESS_COLOR_KEY = {
+                new GradientColorKey(start, 0),
+                new GradientColorKey(start, 1),
+            };
+            GradientAlphaKey[] DARKNESS_ALPHA_KEY = {
+                new GradientAlphaKey(start.a, 0),
+                new GradientAlphaKey(0, data.tree.gradientLength),
+            };
+
+            gradient.SetKeys(DARKNESS_COLOR_KEY, DARKNESS_ALPHA_KEY);
+
+            if (up)
+            {
+                float yStep = 1.0f / height;
+
+                for (int y = 0; y < Mathf.CeilToInt(height); ++y)
+                {
+                    Color color = gradient.Evaluate(y * yStep);
+
+                    for (int x = 0; x < Mathf.CeilToInt(width); ++x)
+                    {
+                        texture.SetPixel(Mathf.CeilToInt(x), Mathf.CeilToInt(y), color);
+                    }
+                }
+            }
+            else
+            {
+                float inv = 1f / (width - 1);
+
+                for (int y = 0; y < height; ++y)
+                {
+                    for (int x = 0; x < width; ++x)
+                    {
+                        var t = x * inv;
+                        Color col = gradient.Evaluate(t);
+                        texture.SetPixel(x, y, col);
+                    }
+                }
+            }
+
+            texture.Apply();
+
+            return texture;
         }
     }
 }
