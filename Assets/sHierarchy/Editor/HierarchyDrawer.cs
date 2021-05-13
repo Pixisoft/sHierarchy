@@ -471,7 +471,8 @@ namespace sHierarchy
             else
                 HierarchyUtil.FocusComponent(instanceID, t);
 
-            clickComponent = true;
+            if (!selected)
+                clickComponent = true;
         }
 
         private static void DrawComponents(int instanceID, Rect selectionRect)
