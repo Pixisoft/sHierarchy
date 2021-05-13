@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 
+### 2021-05-13
+
+* Render gameobject icon on the left instead the right.
+* Add feature render `component` and `script` icons on the right.
+* Add focus ability when clicking on the icon.
+
 ### 2021-05-05
 
 * Fix bug, instance ID overlaps with tags.
