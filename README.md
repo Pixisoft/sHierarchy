@@ -5,7 +5,9 @@
 
 # sHierarchy
 
-N/A
+<p align="center">
+  <img src="./etc/showcase.gif" />
+</p>
 
 ## License
 
