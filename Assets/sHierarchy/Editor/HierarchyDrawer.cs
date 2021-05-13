@@ -421,14 +421,33 @@ namespace sHierarchy
             {
                 if (content.image.name != "d_GameObject Icon" && content.image.name != "d_Prefab Icon")
                 {
-                    float x = HierarchyRenderer.GetGOStartX(selectionRect, currentItem.nestingLevel);
-
-                    Rect rect = new Rect(x, selectionRect.yMin, ROW_HEIGHT, ROW_HEIGHT);
-
-                    GUI.DrawTexture(rect, content.image);
                     HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, (Texture2D)content.image);
                 }
             }
+        }
+
+        private static void OnClick_Component(int instanceID, Type t)
+        {
+            GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            if (go == null)
+                return;
+
+            bool selected = Selection.activeGameObject == go;
+            Selection.activeGameObject = go;
+
+            Type check = currentItem.types[0];
+            if (check == t && currentItem.types.Count > 1)
+                check = currentItem.types[1];
+
+            bool otherExpanded = HierarchyUtil.IsExpanded(instanceID, check);
+            bool selfExpanded = HierarchyUtil.IsExpanded(instanceID, t);
+
+            if (!selfExpanded || !selected)
+                HierarchyUtil.FocusComponent(instanceID, t);
+            else if (!otherExpanded)
+                HierarchyUtil.ExpandComponents(instanceID, true);
+            else
+                HierarchyUtil.FocusComponent(instanceID, t);
         }
 
         private static void DrawComponents(int instanceID, Rect selectionRect)
@@ -447,23 +466,11 @@ namespace sHierarchy
                 float offset = offsetX + (ROW_HEIGHT * temp_iconsDrawedCount);
                 float x = selectionRect.xMax - offset;
                 Rect rect = new Rect(x, selectionRect.yMin, ROW_HEIGHT, ROW_HEIGHT);
-                GUI.DrawTexture(rect, image);
-                GUI.Label(rect, new GUIContent("", null, t.Name));
+                HierarchyUtil.DrawTextureTooltip(rect, image, t.Name);
+
                 if (GUI.Button(rect, "", "Label"))
                 {
-                    Type check = currentItem.types[0];
-                    if (check == t && currentItem.types.Count > 1)
-                        check = currentItem.types[1];
-
-                    bool otherExpanded = HierarchyUtil.IsExpanded(instanceID, check);
-                    bool selfExpanded = HierarchyUtil.IsExpanded(instanceID, t);
-
-                    if (!selfExpanded)
-                        HierarchyUtil.FocusComponent(instanceID, t);
-                    else if (!otherExpanded)
-                        HierarchyUtil.ExpandComponents(instanceID, true);
-                    else
-                        HierarchyUtil.FocusComponent(instanceID, t);
+                    OnClick_Component(instanceID, t);
                 }
 
                 ++temp_iconsDrawedCount;
