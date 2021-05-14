@@ -40,7 +40,7 @@ P.S. This can be useful when debugging";
 
         /* Functions */
 
-        public string FormKey(string name) { return HierarchyUtil.FormKey("instanceID.") + name; }
+        public override string FormKey(string name) { return HierarchyUtil.FormKey("instanceID.") + name; }
 
         public override void Init()
         {

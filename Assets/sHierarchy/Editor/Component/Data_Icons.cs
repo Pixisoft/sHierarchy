@@ -36,7 +36,7 @@ namespace sHierarchy
 
         /* Functions */
 
-        public string FormKey(string name) { return HierarchyUtil.FormKey("icons.") + name; }
+        public override string FormKey(string name) { return HierarchyUtil.FormKey("icons.") + name; }
 
         public override void Init()
         {

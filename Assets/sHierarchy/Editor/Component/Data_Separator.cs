@@ -41,7 +41,7 @@ namespace sHierarchy
 
         /* Functions */
 
-        public string FormKey(string name) { return HierarchyUtil.FormKey("separator.") + name; }
+        public override string FormKey(string name) { return HierarchyUtil.FormKey("separator.") + name; }
 
         public override void Init()
         {

@@ -57,7 +57,7 @@ namespace sHierarchy
 
         /* Functions */
 
-        public string FormKey(string name) { return HierarchyUtil.FormKey("root.") + name; }
+        public override string FormKey(string name) { return HierarchyUtil.FormKey("root.") + name; }
 
         public override void Init()
         {

@@ -50,7 +50,7 @@ namespace sHierarchy
 
         /* Functions */
 
-        public string FormKey(string name) { return HierarchyUtil.FormKey("preview.") + name; }
+        public override string FormKey(string name) { return HierarchyUtil.FormKey("preview.") + name; }
 
         public override void Init()
         {

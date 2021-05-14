@@ -31,6 +31,7 @@ namespace sHierarchy
     {
         public bool enabled = true;
 
+        public abstract string FormKey(string name);
         public abstract void Init();
         public abstract void Draw();
         public abstract void SavePref();
