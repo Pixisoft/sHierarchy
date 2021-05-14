@@ -7,7 +7,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### 2021-05-14
 
-* Now has gradient color for colorized item.
+* Add gradient color for colorized item.
+* Add render enable/disable component using alpha channel and it's customize option.
 
 ### 2021-05-13
 
