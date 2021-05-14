@@ -263,16 +263,26 @@ namespace sHierarchy
 
         #region Tooltip
 
+        private static GUIContent CreateGUIContent(string name, string tooltip = "")
+        {
+            var gc = new GUIContent(name);
+            if (tooltip != "") gc.tooltip = tooltip;
+            return gc;
+        }
+
         public static bool Toggle(string name, bool val, string tooltip = "")
         {
-            if (tooltip == "") return EditorGUILayout.Toggle(name, val);
-            return EditorGUILayout.Toggle(new GUIContent(name, tooltip), val);
+            return EditorGUILayout.Toggle(CreateGUIContent(name, tooltip), val);
         }
 
         public static float Slider(string name, float val, float leftValue, float rightValue, string tooltip = "")
         {
-            if (tooltip == "") return EditorGUILayout.Slider(name, val, leftValue, rightValue);
-            return EditorGUILayout.Slider(new GUIContent(name, tooltip), val, leftValue, rightValue);
+            return EditorGUILayout.Slider(CreateGUIContent(name, tooltip), val, leftValue, rightValue);
+        }
+
+        public static Enum EnumPopup(string name, Enum val, string tooltip = "")
+        {
+            return EditorGUILayout.EnumPopup(CreateGUIContent(name, tooltip), val);
         }
 
         #endregion

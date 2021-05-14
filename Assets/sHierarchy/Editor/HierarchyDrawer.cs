@@ -408,7 +408,7 @@ namespace sHierarchy
                     32, selectionRect.y - data.tree.dividerHeight / 2f,
                     selectionRect.width + (selectionRect.x - 32),
                     data.tree.dividerHeight);
-                EditorGUI.DrawRect(boldGroupRect, Color.black * .3f);
+                EditorGUI.DrawRect(boldGroupRect, data.tree.dividerColor * .3f);
             }
         }
 
