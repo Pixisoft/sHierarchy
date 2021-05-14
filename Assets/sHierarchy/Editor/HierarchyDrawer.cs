@@ -481,7 +481,7 @@ namespace sHierarchy
                 return;
 
             temp_iconsDrawedCount = (data.tag.enabled) ? 1 : 0;
-            float offsetX_const = (data.tag.enabled) ? 10 : 5;
+            float offsetX_const = (data.tag.enabled) ? 11 : 5;
             float offsetX = offsetX_const + maxTagLength + maxInstanceIDLength;
 
             foreach (Type t in currentItem.types)
