@@ -211,8 +211,8 @@ namespace sHierarchy
                 if (data.separator.enabled)
                 {
                     newInfo.isSeparator = String.Compare(go.tag, "EditorOnly", StringComparison.Ordinal) == 0  // gameobject has EditorOnly tag
-                                          && (!string.IsNullOrEmpty(go.name) && !string.IsNullOrEmpty(data.separator.startString)
-                                          && go.name.StartsWith(data.separator.startString));  // and also starts with '>'
+                                          && (!string.IsNullOrEmpty(go.name) && !string.IsNullOrEmpty(data.separator.prefix)
+                                          && go.name.StartsWith(data.separator.prefix));  // and also starts with '>'
                 }
 
                 if (data.components.enabled)
@@ -342,7 +342,7 @@ namespace sHierarchy
         private static void DrawSeparators(int instanceID, Rect selectionRect)
         {
             // EditorOnly objects are only removed from build if they're not childrens
-            if (!data.separator.enabled || data.separator.color.a <= 0 || !currentItem.isSeparator || currentItem.nestingLevel != 0)
+            if (!data.separator.enabled || data.separator.color.a <= 0 || !currentItem.isSeparator)
                 return;
 
             // Adds color on top of the label
@@ -361,7 +361,7 @@ namespace sHierarchy
             if (selectionRect.x >= 60)
             {
                 // Group
-                if (data.tree.colorizedItem && !drawedPrefabOverlay && currentItem.topParentHasChild)
+                if (data.tree.colorizedItem && !drawedPrefabOverlay && currentItem.topParentHasChild && !currentItem.isSeparator)
                 {
                     HierarchyRenderer.DrawNestGroupOverlay(selectionRect, currentItem.nestingLevel);
                 }
