@@ -27,7 +27,8 @@ namespace sHierarchy
     {
         /* Variables */
 
-        private const string INFO = @"";
+        private const string INFO = 
+            @"";
 
         public bool foldout = false;
 

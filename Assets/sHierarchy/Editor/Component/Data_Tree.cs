@@ -44,7 +44,8 @@ namespace sHierarchy
         private static SerializedObject serializedObject = null;
         private static SerializedProperty propBranches = null;
 
-        private const string INFO = @"";
+        private const string INFO = 
+            @"";
 
         public bool foldout = false;
 

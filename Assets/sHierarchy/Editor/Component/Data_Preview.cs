@@ -30,7 +30,8 @@ namespace sHierarchy
     {
         /* Variables */
 
-        private const string INFO = @"Preview GameObject in the preview window in insecptor";
+        private const string INFO = 
+            @"Preview GameObject in the preview window in insecptor";
 
         public bool foldout = false;
 

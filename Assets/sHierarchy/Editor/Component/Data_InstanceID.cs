@@ -27,7 +27,8 @@ namespace sHierarchy
     {
         /* Variables */
 
-        private const string INFO = @"Instance ID is the unique identifier for each GameObject.
+        private const string INFO = 
+            @"Instance ID is the unique identifier for each GameObject.
 
 P.S. This can be useful when debugging";
 
