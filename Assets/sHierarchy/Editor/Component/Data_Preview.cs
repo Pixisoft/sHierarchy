@@ -30,6 +30,8 @@ namespace sHierarchy
     {
         /* Variables */
 
+        private const string INFO = @"Preview GameObject in the preview window in insecptor";
+
         public bool foldout = false;
 
         public bool enabled = true;
@@ -70,6 +72,8 @@ namespace sHierarchy
 
             HierarchyUtil.CreateGroup(() =>
             {
+                HierarchyUtil.CreateInfo(INFO);
+
                 this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
                     @"Enable/Disable all features from this section");
 

@@ -27,6 +27,10 @@ namespace sHierarchy
     {
         /* Variables */
 
+        private const string INFO = @"Instance ID is the unique identifier for each GameObject.
+
+P.S. This can be useful when debugging";
+
         public bool foldout = false;
 
         public bool enabled = false;
@@ -53,6 +57,8 @@ namespace sHierarchy
 
             HierarchyUtil.CreateGroup(() =>
             {
+                HierarchyUtil.CreateInfo(INFO);
+
                 this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
                     @"Enable/Disable all features from this section");
 

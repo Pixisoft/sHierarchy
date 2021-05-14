@@ -44,6 +44,8 @@ namespace sHierarchy
         private static SerializedObject serializedObject = null;
         private static SerializedProperty propBranches = null;
 
+        private const string INFO = @"";
+
         public bool foldout = false;
 
         public bool enabled = true;
@@ -114,6 +116,8 @@ namespace sHierarchy
 
             HierarchyUtil.CreateGroup(() =>
             {
+                HierarchyUtil.CreateInfo(INFO);
+
                 this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
                     @"Enable/Disable all features from this section");
 

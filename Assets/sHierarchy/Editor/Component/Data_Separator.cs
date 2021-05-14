@@ -59,10 +59,10 @@ namespace sHierarchy
             if (!foldout)
                 return;
 
-            HierarchyUtil.CreateInfo(INFO);
-
             HierarchyUtil.CreateGroup(() =>
             {
+                HierarchyUtil.CreateInfo(INFO);
+
                 this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
                     @"Enable/Disable all features from this section");
 
