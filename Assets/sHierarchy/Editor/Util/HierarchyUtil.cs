@@ -92,6 +92,18 @@ namespace sHierarchy
             EditorGUI.indentLevel--;
         }
 
+        public static void CreateInfo(string desc)
+        {
+            if (desc == "") 
+                return;
+
+            GUILayout.BeginHorizontal(EditorStyles.helpBox);
+            {
+                GUILayout.Label(desc);
+            }
+            GUILayout.EndHorizontal();
+        }
+
         #region Color
         public static Color GetColor(string key, Color defaultValue)
         {
@@ -140,11 +152,20 @@ namespace sHierarchy
             return win.titleContent.text == name;
         }
 
+        #region Default UI
+
         public static void Button(string text, EmptyFunction func)
         {
             if (GUILayout.Button(text, GUILayout.Width(50)))
                 func.Invoke();
         }
+
+        public static void LabelField(string text)
+        {
+            EditorGUILayout.LabelField(text, EditorStyles.boldLabel);
+        }
+
+        #endregion
 
         private static float InstanceIDLength(int instanceID)
         {
@@ -210,6 +231,8 @@ namespace sHierarchy
             return image;
         }
 
+        #region Expand Components in Inspector
+
         public static void ExpandComponents(GameObject go, bool act)
         {
             foreach (var comp in go.GetComponents<Component>())
@@ -247,6 +270,8 @@ namespace sHierarchy
             return IsExpanded(go, current);
         }
 
+        #endregion
+
         public static void DrawTextureTooltip(Rect rect, Texture tex, string tooltip)
         {
             GUI.DrawTexture(rect, tex);
@@ -283,6 +308,16 @@ namespace sHierarchy
         public static Enum EnumPopup(string name, Enum val, string tooltip = "")
         {
             return EditorGUILayout.EnumPopup(CreateGUIContent(name, tooltip), val);
+        }
+
+        public static string TextField(string name, string val, string tooltip = "")
+        {
+            return EditorGUILayout.TextField(CreateGUIContent(name, tooltip), val);
+        }
+
+        public static Color ColorField(string name, Color val, string tooltip = "")
+        {
+            return EditorGUILayout.ColorField(CreateGUIContent(name, tooltip), val);
         }
 
         #endregion

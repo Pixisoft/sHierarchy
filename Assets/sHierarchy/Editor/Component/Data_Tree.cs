@@ -136,7 +136,7 @@ namespace sHierarchy
                     });
                 });
 
-                EditorGUILayout.LabelField("Item", EditorStyles.boldLabel);
+                HierarchyUtil.LabelField("Item");
 
                 HierarchyUtil.CreateGroup(() =>
                 {
@@ -180,7 +180,7 @@ namespace sHierarchy
                     });
                 });
 
-                EditorGUILayout.LabelField("Divider", EditorStyles.boldLabel);
+                HierarchyUtil.LabelField("Divider");
 
                 HierarchyUtil.CreateGroup(() =>
                 {

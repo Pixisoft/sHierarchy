@@ -28,10 +28,13 @@ namespace sHierarchy
     {
         /* Variables */
 
+        private const string INFO =
+            @"Separator requires the tag `EditorOnly` and PREFIX string to match.";
+
         public bool foldout = false;
 
         public bool enabled = true;
-        public string startString = ">";
+        public string prefix = ">";
         public Color color = new Color(0, 1, 1, 0.15f);
         public bool drawFill = true;
 
@@ -43,8 +46,8 @@ namespace sHierarchy
 
         public void Init()
         {
-            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
-            this.startString = EditorPrefs.GetString(FormKey("startString"), ">");
+            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
+            this.prefix = EditorPrefs.GetString(FormKey("prefix"), this.prefix);
             this.color = HierarchyUtil.GetColor(FormKey("color"), this.color);
             this.drawFill = EditorPrefs.GetBool(FormKey("drawFill"), this.drawFill);
         }
@@ -56,28 +59,40 @@ namespace sHierarchy
             if (!foldout)
                 return;
 
+            HierarchyUtil.CreateInfo(INFO);
+
             HierarchyUtil.CreateGroup(() =>
             {
                 this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
                     @"Enable/Disable all features from this section");
-                this.startString = EditorGUILayout.TextField("Start String", this.startString);
+
                 HierarchyUtil.BeginHorizontal(() =>
                 {
-                    this.color = EditorGUILayout.ColorField("Color", this.color);
+                    this.prefix = HierarchyUtil.TextField("Prefix", this.prefix);
+                    HierarchyUtil.Button("Reset", ResetPrefix);
+                });
+
+                HierarchyUtil.BeginHorizontal(() =>
+                {
+                    this.color = HierarchyUtil.ColorField("Color", this.color,
+                        @"Color of the separator");
                     HierarchyUtil.Button("Reset", ResetColor);
                 });
-                this.drawFill = EditorGUILayout.Toggle("Draw Fill", this.drawFill);
+
+                this.drawFill = HierarchyUtil.Toggle("Draw Fill", this.drawFill,
+                    @"Draw separator from start all the way to the end");
             });
         }
 
         public void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
-            EditorPrefs.SetString(FormKey("startString"), this.startString);
+            EditorPrefs.SetString(FormKey("prefix"), this.prefix);
             HierarchyUtil.SetColor(FormKey("color"), this.color);
             EditorPrefs.SetBool(FormKey("drawFill"), this.drawFill);
         }
 
+        private void ResetPrefix() { this.prefix = ">"; }
         private void ResetColor() { this.color = new Color(0, 1, 1, 0.15f); }
     }
 }

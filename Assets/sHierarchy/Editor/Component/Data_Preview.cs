@@ -86,7 +86,7 @@ namespace sHierarchy
                     this.autoRotate = EditorGUILayout.Toggle("Auto Rotate", this.autoRotate);
                 });
 
-                EditorGUILayout.LabelField("Light", EditorStyles.boldLabel);
+                HierarchyUtil.LabelField("Light");
 
                 HierarchyUtil.CreateGroup(() =>
                 {
