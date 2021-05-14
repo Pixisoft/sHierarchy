@@ -480,6 +480,14 @@ namespace sHierarchy
             if (!data.components.enabled)
                 return;
 
+            // --- Dev Start ----
+
+            GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            if (go == null)
+                return;
+
+            // --- Dev End ----
+
             temp_iconsDrawedCount = (data.tag.enabled) ? 1 : 0;
             float offsetX_const = (data.tag.enabled) ? 10 : 5;
             float offsetX = offsetX_const + maxTagLength + maxInstanceIDLength;
@@ -491,7 +499,23 @@ namespace sHierarchy
                 float offset = offsetX + (ROW_HEIGHT * temp_iconsDrawedCount);
                 float x = selectionRect.xMax - offset;
                 Rect rect = new Rect(x, selectionRect.yMin, ROW_HEIGHT, ROW_HEIGHT);
-                HierarchyUtil.DrawTextureTooltip(rect, image, t.Name);
+
+                // --- Dev Start ----
+
+                if (t.IsSubclassOf(typeof(Behaviour)))
+                {
+                    Behaviour bh = go.GetComponent(t) as Behaviour;
+                    if (bh.enabled)
+                        HierarchyUtil.DrawTextureTooltip(rect, image, t.Name);
+                    else
+                        HierarchyUtil.DrawTextureTooltip(rect, image, t.Name, 0.5f);
+                }
+                else
+                {
+                    HierarchyUtil.DrawTextureTooltip(rect, image, t.Name);
+                }
+
+                // --- Dev End ----
 
                 if (data.components.focus && GUI.Button(rect, "", "Label"))
                     OnClick_Component(instanceID, t);
