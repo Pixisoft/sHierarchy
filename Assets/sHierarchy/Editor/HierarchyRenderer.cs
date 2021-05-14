@@ -21,6 +21,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System;
 
 namespace sHierarchy
 {
@@ -133,7 +134,7 @@ namespace sHierarchy
         public static void DrawHalfVerticalLineFrom(Rect originalRect, bool startsOnTop, int nestLevel, Color color)
         {
             color = (data.tree.colorizedLine) ? color : data.tree.baseLevelColor;
-            color.a = data.tree.lineAlpa;
+            color.a = data.tree.lineAlpha;
 
             Rect rect = new Rect(
                     GetStartX(originalRect, nestLevel) + barOffsetX,
@@ -148,7 +149,7 @@ namespace sHierarchy
         public static void DrawHorizontalLineFrom(Rect originalRect, int nestLevel, bool hasChilds)
         {
             Color color = (data.tree.colorizedLine) ? GetNestColor(nestLevel) : data.tree.baseLevelColor;
-            color.a = data.tree.lineAlpa;
+            color.a = data.tree.lineAlpha;
 
             // Vertical rect, starts from the very left and then proceeds to te right
             Rect rect = new Rect(
@@ -163,7 +164,7 @@ namespace sHierarchy
         public static void DrawDottedLine(Rect originalRect, int nestLevel, float offsetX = barOffsetX)
         {
             Color color = (data.tree.colorizedLine) ? GetNestColor(nestLevel) : data.tree.baseLevelColor;
-            color.a = data.tree.lineAlpa;
+            color.a = data.tree.lineAlpha;
 
             float x = GetStartX(originalRect, nestLevel) + offsetX;
             float y = originalRect.y;
@@ -275,6 +276,42 @@ namespace sHierarchy
             texture.Apply();
 
             return texture;
+        }
+
+        /// <summary>
+        /// Draw component texture with flag `enabled`.
+        /// </summary>
+        private static void DrawEnableComponentTexture(Type t, Rect rect, Texture image, bool enabled)
+        {
+            // If we are drawing behbaviour, we draw with alpha channel weather
+            // the component is enabled.
+            if (enabled)
+                HierarchyUtil.DrawTextureTooltip(rect, image, t.Name);
+            else
+                HierarchyUtil.DrawTextureTooltip(rect, image, t.Name, data.components.disableAlpa);
+        }
+
+        public static void DrawComponent(Type t, GameObject go, Rect rect, Texture image)
+        {
+            if (t.IsSubclassOf(typeof(Behaviour)))
+            {
+                var comp = go.GetComponent(t) as Behaviour;
+                DrawEnableComponentTexture(t, rect, image, comp.enabled);
+            }
+            else if (t.IsSubclassOf(typeof(Collider)))
+            {
+                var comp = go.GetComponent(t) as Collider;
+                DrawEnableComponentTexture(t, rect, image, comp.enabled);
+            }
+            else if (t.IsSubclassOf(typeof(Renderer)))
+            {
+                var comp = go.GetComponent(t) as Renderer;
+                DrawEnableComponentTexture(t, rect, image, comp.enabled);
+            }
+            else
+            {
+                HierarchyUtil.DrawTextureTooltip(rect, image, t.Name);
+            }
         }
     }
 }

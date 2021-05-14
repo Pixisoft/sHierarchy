@@ -275,6 +275,7 @@ namespace sHierarchy
 
         private static int temp_iconsDrawedCount = -1;
         public static InstanceInfo currentItem;
+        public static GameObject currentGO;
         private static bool drawedPrefabOverlay = false;
 
         private static bool clickComponent = false;
@@ -283,6 +284,10 @@ namespace sHierarchy
         {
             // skips early if item is not registered or not valid
             if (!sceneGameObjects.ContainsKey(instanceID))
+                return;
+
+            currentGO = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            if (currentGO == null)
                 return;
 
             currentItem = sceneGameObjects[instanceID];
@@ -436,8 +441,7 @@ namespace sHierarchy
                 return;
 
             // Draws the gameobject icon, if present
-            var go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
-            var content = EditorGUIUtility.ObjectContent(go, null);
+            var content = EditorGUIUtility.ObjectContent(currentGO, null);
 
             if (content.image && !string.IsNullOrEmpty(content.image.name))
             {
@@ -450,12 +454,8 @@ namespace sHierarchy
 
         private static void OnClick_Component(int instanceID, Type t)
         {
-            GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
-            if (go == null)
-                return;
-
-            bool selected = Selection.activeGameObject == go;
-            Selection.activeGameObject = go;
+            bool selected = Selection.activeGameObject == currentGO;
+            Selection.activeGameObject = currentGO;
 
             Type check = currentItem.types[0];
             if (check == t && currentItem.types.Count > 1)
@@ -480,14 +480,6 @@ namespace sHierarchy
             if (!data.components.enabled)
                 return;
 
-            // --- Dev Start ----
-
-            GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
-            if (go == null)
-                return;
-
-            // --- Dev End ----
-
             temp_iconsDrawedCount = (data.tag.enabled) ? 1 : 0;
             float offsetX_const = (data.tag.enabled) ? 10 : 5;
             float offsetX = offsetX_const + maxTagLength + maxInstanceIDLength;
@@ -500,22 +492,7 @@ namespace sHierarchy
                 float x = selectionRect.xMax - offset;
                 Rect rect = new Rect(x, selectionRect.yMin, ROW_HEIGHT, ROW_HEIGHT);
 
-                // --- Dev Start ----
-
-                if (t.IsSubclassOf(typeof(Behaviour)))
-                {
-                    Behaviour bh = go.GetComponent(t) as Behaviour;
-                    if (bh.enabled)
-                        HierarchyUtil.DrawTextureTooltip(rect, image, t.Name);
-                    else
-                        HierarchyUtil.DrawTextureTooltip(rect, image, t.Name, 0.5f);
-                }
-                else
-                {
-                    HierarchyUtil.DrawTextureTooltip(rect, image, t.Name);
-                }
-
-                // --- Dev End ----
+                HierarchyRenderer.DrawComponent(t, currentGO, rect, image);
 
                 if (data.components.focus && GUI.Button(rect, "", "Label"))
                     OnClick_Component(instanceID, t);
@@ -529,18 +506,14 @@ namespace sHierarchy
             if (!data.tag.enabled)
                 return;
 
-            var go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
-            if (go == null)
-                return;
-
-            string fullStr = go.tag;
+            string fullStr = currentGO.tag;
             float offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
 
             float x = selectionRect.xMax - offset + ROW_HEIGHT - 1 - maxInstanceIDLength;
             Rect rect = new Rect(x, selectionRect.y, selectionRect.width, selectionRect.height);
 
             GUIStyle style = new GUIStyle();
-            style.normal.textColor = (go.tag == "Untagged") ? data.tag.colorUntagged : data.tag.color;
+            style.normal.textColor = (currentGO.tag == "Untagged") ? data.tag.colorUntagged : data.tag.color;
 
             GUI.Label(rect, fullStr, style);
         }

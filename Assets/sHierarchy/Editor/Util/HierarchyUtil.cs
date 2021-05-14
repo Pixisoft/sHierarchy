@@ -261,11 +261,21 @@ namespace sHierarchy
             GUI.color = prevColor;
         }
 
+        #region Tooltip
+
         public static bool Toggle(string name, bool val, string tooltip = "")
         {
             if (tooltip == "") return EditorGUILayout.Toggle(name, val);
             return EditorGUILayout.Toggle(new GUIContent(name, tooltip), val);
         }
+
+        public static float Slider(string name, float val, float leftValue, float rightValue, string tooltip = "")
+        {
+            if (tooltip == "") return EditorGUILayout.Slider(name, val, leftValue, rightValue);
+            return EditorGUILayout.Slider(new GUIContent(name, tooltip), val, leftValue, rightValue);
+        }
+
+        #endregion
     }
 }
 #endif
