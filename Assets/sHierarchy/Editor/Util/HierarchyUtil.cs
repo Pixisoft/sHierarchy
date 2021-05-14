@@ -253,6 +253,14 @@ namespace sHierarchy
             GUI.Label(rect, new GUIContent("", null, tooltip));  // add tooltip
         }
 
+        public static void DrawTextureTooltip(Rect rect, Texture tex, string tooltip, float alpha)
+        {
+            Color prevColor = GUI.color;
+            GUI.color = new Color(prevColor.r, prevColor.g, prevColor.b, alpha);
+            DrawTextureTooltip(rect, tex, tooltip);
+            GUI.color = prevColor;
+        }
+
         public static bool Toggle(string name, bool val, string tooltip = "")
         {
             if (tooltip == "") return EditorGUILayout.Toggle(name, val);
