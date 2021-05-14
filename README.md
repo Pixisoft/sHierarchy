@@ -9,6 +9,10 @@
   <img src="./etc/showcase.png" />
 </p>
 
+## Features
+
+* Does not pollut your project (no files are generated)
+
 ## License
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software/algorithm and associated
