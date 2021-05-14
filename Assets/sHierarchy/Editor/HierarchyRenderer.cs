@@ -296,17 +296,17 @@ namespace sHierarchy
             if (t.IsSubclassOf(typeof(Behaviour)))
             {
                 var comp = go.GetComponent(t) as Behaviour;
-                DrawEnableComponentTexture(t, rect, image, comp.enabled);
+                if (comp != null) DrawEnableComponentTexture(t, rect, image, comp.enabled);
             }
             else if (t.IsSubclassOf(typeof(Collider)))
             {
                 var comp = go.GetComponent(t) as Collider;
-                DrawEnableComponentTexture(t, rect, image, comp.enabled);
+                if (comp != null) DrawEnableComponentTexture(t, rect, image, comp.enabled);
             }
             else if (t.IsSubclassOf(typeof(Renderer)))
             {
                 var comp = go.GetComponent(t) as Renderer;
-                DrawEnableComponentTexture(t, rect, image, comp.enabled);
+                if (comp != null) DrawEnableComponentTexture(t, rect, image, comp.enabled);
             }
             else
             {
