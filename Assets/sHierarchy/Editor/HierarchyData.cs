@@ -39,8 +39,18 @@ namespace sHierarchy
         public Data_Icons icons = new Data_Icons();
         public Data_Components components = new Data_Components();
         public Data_InstanceID instanceID = new Data_InstanceID();
-
         public Data_Preview preview = new Data_Preview();
+
+        private const bool f_alternatingBG = true;
+        private const bool f_prefabsData = true;
+        private const bool f_separator = true;
+        private const bool f_tree = true;
+        private const bool f_log = true;
+        private const bool f_icons = true;
+        private const bool f_components = true;
+        private const bool f_tag = true;
+        private const bool f_instanceID = true;
+        private const bool f_preview = true;
 
         /* Setter & Getter */
 
@@ -55,17 +65,7 @@ namespace sHierarchy
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
             this.updateInPlayMode = EditorPrefs.GetBool(FormKey("updateInPlayMode"), this.updateInPlayMode);
 
-            alternatingBG.Init();
-            prefabsData.Init();
-            separator.Init();
-            tree.Init();
-            log.Init();
-            icons.Init();
-            components.Init();
-            tag.Init();
-            instanceID.Init();
-
-            preview.Init();
+            ExecuteAll(HierarchyComponentFunctions.INIT);
         }
 
         public void Draw()
@@ -73,17 +73,7 @@ namespace sHierarchy
             this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
             this.updateInPlayMode = EditorGUILayout.Toggle("Update In Play Mode", this.updateInPlayMode);
 
-            alternatingBG.Draw();
-            prefabsData.Draw();
-            separator.Draw();
-            tree.Draw();
-            log.Draw();
-            icons.Draw();
-            components.Draw();
-            tag.Draw();
-            instanceID.Draw();
-
-            preview.Draw();
+            ExecuteAll(HierarchyComponentFunctions.DRAW);
         }
 
         public void SavePref()
@@ -91,17 +81,34 @@ namespace sHierarchy
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
             EditorPrefs.SetBool(FormKey("updateInPlayMode"), this.updateInPlayMode);
 
-            alternatingBG.SavePref();
-            prefabsData.SavePref();
-            separator.SavePref();
-            tree.SavePref();
-            log.SavePref();
-            icons.SavePref();
-            components.SavePref();
-            tag.SavePref();
-            instanceID.SavePref();
+            ExecuteAll(HierarchyComponentFunctions.SAVE_PREF);
+        }
 
-            preview.SavePref();
+        private static void Execute(HierarchyComponent hc, HierarchyComponentFunctions fnc,bool flag)
+        {
+            if (!flag) return;
+
+            switch (fnc)
+            {
+                case HierarchyComponentFunctions.INIT: hc.Init(); break;
+                case HierarchyComponentFunctions.DRAW: hc.Draw(); break;
+                case HierarchyComponentFunctions.SAVE_PREF: hc.SavePref(); break;
+            }
+        }
+
+        private void ExecuteAll(HierarchyComponentFunctions fnc)
+        {
+            Execute(alternatingBG, fnc, f_alternatingBG);
+            Execute(prefabsData, fnc, f_prefabsData);
+            Execute(separator, fnc, f_separator);
+            Execute(tree, fnc, f_tree);
+            Execute(log, fnc, f_log);
+            Execute(icons, fnc, f_icons);
+            Execute(components, fnc, f_components);
+            Execute(tag, fnc, f_tag);
+            Execute(instanceID, fnc, f_instanceID);
+
+            Execute(preview, fnc, f_preview);
         }
     }
 }

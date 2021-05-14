@@ -34,6 +34,7 @@ namespace sHierarchy
         public bool foldout = false;
 
         public bool enabled = true;
+
         public bool focus = true;
 
         public float disableAlpa = 0.5f;

@@ -34,6 +34,7 @@ namespace sHierarchy
         public bool foldout = false;
 
         public bool enabled = true;
+
         public string prefix = ">";
         public Color color = new Color(0, 1, 1, 0.15f);
         public bool drawFill = true;

@@ -36,6 +36,7 @@ namespace sHierarchy
         public bool foldout = false;
 
         public bool enabled = true;
+
         public float rotateSpeed = 15f;
         public bool autoRotate = true;
         public float distance = 1.1f;  // how far apart from preview object

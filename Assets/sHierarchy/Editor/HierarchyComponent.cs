@@ -22,6 +22,11 @@ using UnityEditor;
 
 namespace sHierarchy
 {
+    public enum HierarchyComponentFunctions
+    {
+        INIT, DRAW, SAVE_PREF,
+    };
+
     public interface HierarchyComponent
     {
         void Init();

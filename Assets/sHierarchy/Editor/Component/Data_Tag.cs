@@ -33,6 +33,7 @@ namespace sHierarchy
         public bool foldout = false;
 
         public bool enabled = true;
+
         public Color colorUntagged = Color.gray;
         public Color color = new Color(0.71f, 0.71f, 0.71f);
 

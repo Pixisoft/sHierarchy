@@ -27,7 +27,7 @@ namespace sHierarchy
         /* Variables */
 
         private const string INFO = 
-            @"";
+            @"Show log/warning/error icon after the name of the GameObject";
 
         public bool foldout = false;
 

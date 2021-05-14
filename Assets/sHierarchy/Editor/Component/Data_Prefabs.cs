@@ -40,7 +40,8 @@ namespace sHierarchy
 
         public bool foldout = false;
 
-        public bool enabled;
+        public bool enabled = true;
+
         public Prefab[] prefabs = new Prefab[0];
 
         /* Setter & Getters */

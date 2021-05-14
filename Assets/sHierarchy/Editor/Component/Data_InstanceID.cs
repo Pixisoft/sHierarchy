@@ -34,7 +34,8 @@ P.S. This can be useful when debugging";
 
         public bool foldout = false;
 
-        public bool enabled = false;
+        public bool enabled = true;
+
         public Color color = Color.gray;
 
         /* Setter & Getter */

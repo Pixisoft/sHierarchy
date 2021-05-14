@@ -29,11 +29,12 @@ namespace sHierarchy
         /* Variables */
 
         private const string INFO = 
-            @"";
+            @"Draw the row shading";
 
         public bool foldout = false;
 
         public bool enabled = true;
+
         public Color color = new Color(0, 0, 0, .08f);
         public bool drawFill = true;
 
