@@ -70,7 +70,8 @@ namespace sHierarchy
 
             HierarchyUtil.CreateGroup(() =>
             {
-                this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
+                this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
+                    @"Enable/Disable all features from this section");
 
                 EditorGUILayout.LabelField("Rotate", EditorStyles.boldLabel);
 
@@ -79,7 +80,6 @@ namespace sHierarchy
                     HierarchyUtil.BeginHorizontal(() =>
                     {
                         this.rotateSpeed = EditorGUILayout.Slider("Rotate Speed", this.rotateSpeed, 0, 30);
-
                         HierarchyUtil.Button("Reset", ResetRotateSpeed);
                     });
 
@@ -93,14 +93,12 @@ namespace sHierarchy
                     HierarchyUtil.BeginHorizontal(() =>
                     {
                         this.lightRotation = EditorGUILayout.Vector3Field("Rotation", this.lightRotation);
-
                         HierarchyUtil.Button("Reset", ResetLightRotation);
                     });
 
                     HierarchyUtil.BeginHorizontal(() =>
                     {
                         this.lightIntensity = EditorGUILayout.FloatField("Intensity", this.lightIntensity);
-
                         HierarchyUtil.Button("Reset", ResetLightIntensity);
                     });
                 });
@@ -108,7 +106,6 @@ namespace sHierarchy
                 HierarchyUtil.BeginHorizontal(() =>
                 {
                     this.distance = EditorGUILayout.Slider("Distance", this.distance, 0, 10);
-
                     HierarchyUtil.Button("Reset", ResetDistance);
                 });
 

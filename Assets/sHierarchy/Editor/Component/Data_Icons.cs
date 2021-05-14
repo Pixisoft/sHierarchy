@@ -51,7 +51,8 @@ namespace sHierarchy
 
             HierarchyUtil.CreateGroup(() =>
             {
-                this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
+                this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
+                    @"Enable/Disable all features from this section");
             });
         }
 

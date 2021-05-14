@@ -55,19 +55,18 @@ namespace sHierarchy
 
             HierarchyUtil.CreateGroup(() =>
             {
-                this.enabled = EditorGUILayout.Toggle("Enabled", this.enabled);
+                this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
+                    @"Enable/Disable all features from this section");
 
                 HierarchyUtil.BeginHorizontal(() =>
                 {
                     this.colorUntagged = EditorGUILayout.ColorField("Untagged Color", this.colorUntagged);
-
                     HierarchyUtil.Button("Reset", ResetUntaggedColor);
                 });
 
                 HierarchyUtil.BeginHorizontal(() =>
                 {
                     this.color = EditorGUILayout.ColorField("Color", this.color);
-
                     HierarchyUtil.Button("Reset", ResetColor);
                 });
             });

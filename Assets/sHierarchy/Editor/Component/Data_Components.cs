@@ -33,6 +33,8 @@ namespace sHierarchy
         public bool enabled = true;
         public bool focus = true;
 
+        public float disableAlpa = 0.5f;
+
         /* Setter & Getters */
 
         /* Functions */
@@ -43,6 +45,7 @@ namespace sHierarchy
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
             this.focus = EditorPrefs.GetBool(FormKey("focus"), true);
+            this.disableAlpa = EditorPrefs.GetFloat(FormKey("disableAlpa"), this.disableAlpa);
         }
 
         public void Draw()
@@ -54,9 +57,17 @@ namespace sHierarchy
 
             HierarchyUtil.CreateGroup(() =>
             {
-                this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
+                this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
+                    @"Enable/Disable all features from this section");
                 this.focus = HierarchyUtil.Toggle("Folding", this.focus, 
                     @"Focus the component after clicking the icon");
+
+                HierarchyUtil.BeginHorizontal(() =>
+                {
+                    this.disableAlpa = HierarchyUtil.Slider("Disable Alpha", this.disableAlpa, 0.1f, 0.9f,
+                        @"Alpha for disabled components");
+                    HierarchyUtil.Button("Reset", ResetDisableAlpha);
+                });
             });
         }
 
@@ -64,7 +75,10 @@ namespace sHierarchy
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
             EditorPrefs.SetBool(FormKey("focus"), this.focus);
+            EditorPrefs.SetFloat(FormKey("disableAlpa"), this.disableAlpa);
         }
+
+        private void ResetDisableAlpha() { this.disableAlpa = 0.5f; }
     }
 }
 #endif

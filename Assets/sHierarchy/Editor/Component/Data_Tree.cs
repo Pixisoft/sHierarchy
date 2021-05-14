@@ -52,7 +52,7 @@ namespace sHierarchy
         public float dividerHeight = 1;
         public Color baseLevelColor = Color.gray;
         public float overlayAlpha = 0.12f;
-        public float lineAlpa = 0.8f;
+        public float lineAlpha = 0.8f;
         public float lineWidth = 1.0f;
         private int branchesLen = 0;
 
@@ -76,7 +76,7 @@ namespace sHierarchy
             this.baseLevelColor = HierarchyUtil.GetColor(FormKey("baseLevelColor"), this.baseLevelColor);
             this.branchesLen = EditorPrefs.GetInt(FormKey("branches.Length"), this.branchesLen);
             this.overlayAlpha = EditorPrefs.GetFloat(FormKey("overlayAlpha"), this.overlayAlpha);
-            this.lineAlpa = EditorPrefs.GetFloat(FormKey("lineAlpa"), this.lineAlpa);
+            this.lineAlpha = EditorPrefs.GetFloat(FormKey("lineAlpha"), this.lineAlpha);
             this.lineWidth = EditorPrefs.GetFloat(FormKey("lineWidth"), this.lineWidth);
             this.drawMode = (DrawMode)EditorPrefs.GetInt(FormKey("drawMode"), (int)this.drawMode);
             this.gradientLength = EditorPrefs.GetFloat(FormKey("dividegradientLengthrHeight"), this.gradientLength);
@@ -93,7 +93,8 @@ namespace sHierarchy
 
             HierarchyUtil.CreateGroup(() =>
             {
-                this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
+                this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
+                    @"Enable/Disable all features from this section");
                 this.colorizedLine = EditorGUILayout.Toggle("Colorized Line", this.colorizedLine);
                 this.colorizedItem = EditorGUILayout.Toggle("Coloried Item", this.colorizedItem);
                 this.dividerHeight = EditorGUILayout.Slider("Divider Height", this.dividerHeight, 0.0f, 3.0f);
@@ -101,7 +102,6 @@ namespace sHierarchy
                 HierarchyUtil.BeginHorizontal(() =>
                 {
                     this.baseLevelColor = EditorGUILayout.ColorField("Base Level Color", this.baseLevelColor);
-
                     HierarchyUtil.Button("Reset", ResetBaseLevelColor);
                 });
 
@@ -124,7 +124,7 @@ namespace sHierarchy
 
                 HierarchyUtil.BeginHorizontal(() =>
                 {
-                    this.lineAlpa = EditorGUILayout.Slider("Line Alpha", this.lineAlpa, 0.0f, 1.0f);
+                    this.lineAlpha = EditorGUILayout.Slider("Line Alpha", this.lineAlpha, 0.0f, 1.0f);
                     HierarchyUtil.Button("Reset", ResetLineAlpha);
                 });
 
@@ -161,7 +161,7 @@ namespace sHierarchy
                     HierarchyUtil.SetColor(FormKey("branches" + index), instance.branches[index]);
             }
             EditorPrefs.SetFloat(FormKey("overlayAlpha"), this.overlayAlpha);
-            EditorPrefs.SetFloat(FormKey("lineAlpa"), this.lineAlpa);
+            EditorPrefs.SetFloat(FormKey("lineAlpha"), this.lineAlpha);
             EditorPrefs.SetFloat(FormKey("lineWidth"), this.lineWidth);
             EditorPrefs.SetInt(FormKey("drawMode"), (int)this.drawMode);
             EditorPrefs.SetFloat(FormKey("gradientLength"), this.gradientLength);
@@ -187,19 +187,19 @@ namespace sHierarchy
         {
             instance.branches = new Color[]
             {
-                new Color(1, 0, 0, lineAlpa),
-                new Color(1, 0.5f, 0, lineAlpa),
-                new Color(1, 1, 0, lineAlpa),
-                new Color(0, 1, 0, lineAlpa),
-                new Color(0, 0, 1, lineAlpa),
-                new Color(0.5f, 0, 1, lineAlpa),
-                new Color(1, 0, 1, lineAlpa),
+                new Color(1, 0, 0, lineAlpha),
+                new Color(1, 0.5f, 0, lineAlpha),
+                new Color(1, 1, 0, lineAlpha),
+                new Color(0, 1, 0, lineAlpha),
+                new Color(0, 0, 1, lineAlpha),
+                new Color(0.5f, 0, 1, lineAlpha),
+                new Color(1, 0, 1, lineAlpha),
             };
             branchesLen = instance.branches.Length;
             SavePref();
         }
 
-        private void ResetLineAlpha() { this.lineAlpa = 0.8f; }
+        private void ResetLineAlpha() { this.lineAlpha = 0.8f; }
         private void ResetLineWidth() { this.lineWidth = 1.0f; }
         private void ResetGradientLength() { this.gradientLength = 0.8f; }
     }

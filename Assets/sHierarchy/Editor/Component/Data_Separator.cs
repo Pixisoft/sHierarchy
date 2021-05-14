@@ -58,12 +58,12 @@ namespace sHierarchy
 
             HierarchyUtil.CreateGroup(() =>
             {
-                this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
+                this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
+                    @"Enable/Disable all features from this section");
                 this.startString = EditorGUILayout.TextField("Start String", this.startString);
                 HierarchyUtil.BeginHorizontal(() =>
                 {
                     this.color = EditorGUILayout.ColorField("Color", this.color);
-
                     HierarchyUtil.Button("Reset", ResetColor);
                 });
                 this.drawFill = EditorGUILayout.Toggle("Draw Fill", this.drawFill);
