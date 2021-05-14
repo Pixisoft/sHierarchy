@@ -85,8 +85,11 @@ namespace sHierarchy
 
         private static void Execute(HierarchyComponent hc, HierarchyComponentFunctions fnc, bool flag)
         {
-            hc.enabled = flag;
-            if (!flag) return;
+            if (!flag)
+            {
+                hc.enabled = flag;
+                return;
+            }
 
             switch (fnc)
             {
