@@ -27,7 +27,6 @@ namespace sHierarchy
     {
         /* Variables */
 
-        public bool enabled = true;
         public bool updateInPlayMode = true;
 
         public Data_AlternatingBG alternatingBG = new Data_AlternatingBG();
@@ -60,7 +59,7 @@ namespace sHierarchy
 
         public string FormKey(string name) { return HierarchyUtil.FormKey("root.") + name; }
 
-        public void Init()
+        public override void Init()
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
             this.updateInPlayMode = EditorPrefs.GetBool(FormKey("updateInPlayMode"), this.updateInPlayMode);
@@ -68,7 +67,7 @@ namespace sHierarchy
             ExecuteAll(HierarchyComponentFunctions.INIT);
         }
 
-        public void Draw()
+        public override void Draw()
         {
             this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
             this.updateInPlayMode = EditorGUILayout.Toggle("Update In Play Mode", this.updateInPlayMode);
@@ -76,7 +75,7 @@ namespace sHierarchy
             ExecuteAll(HierarchyComponentFunctions.DRAW);
         }
 
-        public void SavePref()
+        public override void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
             EditorPrefs.SetBool(FormKey("updateInPlayMode"), this.updateInPlayMode);
@@ -84,8 +83,9 @@ namespace sHierarchy
             ExecuteAll(HierarchyComponentFunctions.SAVE_PREF);
         }
 
-        private static void Execute(HierarchyComponent hc, HierarchyComponentFunctions fnc,bool flag)
+        private static void Execute(HierarchyComponent hc, HierarchyComponentFunctions fnc, bool flag)
         {
+            hc.enabled = flag;
             if (!flag) return;
 
             switch (fnc)

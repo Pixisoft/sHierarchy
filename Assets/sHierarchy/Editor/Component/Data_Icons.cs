@@ -32,20 +32,18 @@ namespace sHierarchy
 
         public bool foldout = false;
 
-        public bool enabled = true;
-
         /* Setter & Getters */
 
         /* Functions */
 
         public string FormKey(string name) { return HierarchyUtil.FormKey("icons.") + name; }
 
-        public void Init()
+        public override void Init()
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
         }
 
-        public void Draw()
+        public override void Draw()
         {
             foldout = EditorGUILayout.Foldout(foldout, "Icons");
 
@@ -61,7 +59,7 @@ namespace sHierarchy
             });
         }
 
-        public void SavePref()
+        public override void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
         }

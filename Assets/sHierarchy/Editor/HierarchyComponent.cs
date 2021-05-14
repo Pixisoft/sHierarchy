@@ -27,11 +27,13 @@ namespace sHierarchy
         INIT, DRAW, SAVE_PREF,
     };
 
-    public interface HierarchyComponent
+    public abstract class HierarchyComponent
     {
-        void Init();
-        void Draw();
-        void SavePref();
+        public bool enabled = true;
+
+        public abstract void Init();
+        public abstract void Draw();
+        public abstract void SavePref();
     }
 }
 #endif

@@ -33,8 +33,6 @@ namespace sHierarchy
 
         public bool foldout = false;
 
-        public bool enabled = true;
-
         public Color color = new Color(0, 0, 0, .08f);
         public bool drawFill = true;
 
@@ -44,14 +42,14 @@ namespace sHierarchy
 
         public string FormKey(string name) { return HierarchyUtil.FormKey("alterBG.") + name; }
 
-        public void Init()
+        public override void Init()
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
             this.color = HierarchyUtil.GetColor(FormKey("color"), this.color);
             this.drawFill = EditorPrefs.GetBool(FormKey("drawFill"), this.drawFill);
         }
 
-        public void Draw()
+        public override void Draw()
         {
             foldout = EditorGUILayout.Foldout(foldout, "Alternating Background");
 
@@ -75,7 +73,7 @@ namespace sHierarchy
             });
         }
 
-        public void SavePref()
+        public override void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
             HierarchyUtil.SetColor(FormKey("color"), this.color);

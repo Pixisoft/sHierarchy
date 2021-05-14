@@ -33,8 +33,6 @@ namespace sHierarchy
 
         public bool foldout = false;
 
-        public bool enabled = true;
-
         public bool focus = true;
 
         public float disableAlpa = 0.5f;
@@ -45,14 +43,14 @@ namespace sHierarchy
 
         public string FormKey(string name) { return HierarchyUtil.FormKey("components.") + name; }
 
-        public void Init()
+        public override void Init()
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
             this.focus = EditorPrefs.GetBool(FormKey("focus"), true);
             this.disableAlpa = EditorPrefs.GetFloat(FormKey("disableAlpa"), this.disableAlpa);
         }
 
-        public void Draw()
+        public override void Draw()
         {
             foldout = EditorGUILayout.Foldout(foldout, "Components");
 
@@ -78,7 +76,7 @@ namespace sHierarchy
             });
         }
 
-        public void SavePref()
+        public override void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
             EditorPrefs.SetBool(FormKey("focus"), this.focus);

@@ -33,8 +33,6 @@ namespace sHierarchy
 
         public bool foldout = false;
 
-        public bool enabled = true;
-
         public string prefix = ">";
         public Color color = new Color(0, 1, 1, 0.15f);
         public bool drawFill = true;
@@ -45,7 +43,7 @@ namespace sHierarchy
 
         public string FormKey(string name) { return HierarchyUtil.FormKey("separator.") + name; }
 
-        public void Init()
+        public override void Init()
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
             this.prefix = EditorPrefs.GetString(FormKey("prefix"), this.prefix);
@@ -53,7 +51,7 @@ namespace sHierarchy
             this.drawFill = EditorPrefs.GetBool(FormKey("drawFill"), this.drawFill);
         }
 
-        public void Draw()
+        public override void Draw()
         {
             foldout = EditorGUILayout.Foldout(foldout, "Separator");
 
@@ -85,7 +83,7 @@ namespace sHierarchy
             });
         }
 
-        public void SavePref()
+        public override void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
             EditorPrefs.SetString(FormKey("prefix"), this.prefix);

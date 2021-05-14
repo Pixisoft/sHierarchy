@@ -34,8 +34,6 @@ P.S. This can be useful when debugging";
 
         public bool foldout = false;
 
-        public bool enabled = true;
-
         public Color color = Color.gray;
 
         /* Setter & Getter */
@@ -44,13 +42,13 @@ P.S. This can be useful when debugging";
 
         public string FormKey(string name) { return HierarchyUtil.FormKey("instanceID.") + name; }
 
-        public void Init()
+        public override void Init()
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
             this.color = HierarchyUtil.GetColor(FormKey("color"), this.color);
         }
 
-        public void Draw()
+        public override void Draw()
         {
             foldout = EditorGUILayout.Foldout(foldout, "Instance ID");
 
@@ -72,7 +70,7 @@ P.S. This can be useful when debugging";
             });
         }
 
-        public void SavePref()
+        public override void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
             HierarchyUtil.SetColor(FormKey("color"), this.color);

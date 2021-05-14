@@ -40,8 +40,6 @@ namespace sHierarchy
 
         public bool foldout = false;
 
-        public bool enabled = true;
-
         public Prefab[] prefabs = new Prefab[0];
 
         /* Setter & Getters */
@@ -50,12 +48,12 @@ namespace sHierarchy
 
         public string FormKey(string name) { return HierarchyUtil.FormKey("prefabs.") + name; }
 
-        public void Init()
+        public override void Init()
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
         }
 
-        public void Draw()
+        public override void Draw()
         {
             foldout = EditorGUILayout.Foldout(foldout, "Prefabs Data");
 
@@ -71,7 +69,7 @@ namespace sHierarchy
             });
         }
 
-        public void SavePref()
+        public override void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
         }

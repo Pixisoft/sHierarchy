@@ -35,8 +35,6 @@ namespace sHierarchy
 
         public bool foldout = false;
 
-        public bool enabled = true;
-
         public float rotateSpeed = 15f;
         public bool autoRotate = true;
         public float distance = 1.1f;  // how far apart from preview object
@@ -54,7 +52,7 @@ namespace sHierarchy
 
         public string FormKey(string name) { return HierarchyUtil.FormKey("preview.") + name; }
 
-        public void Init()
+        public override void Init()
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
             this.rotateSpeed = EditorPrefs.GetFloat(FormKey("rotateSpeed"), this.rotateSpeed);
@@ -65,7 +63,7 @@ namespace sHierarchy
             this.skybox = EditorPrefs.GetBool(FormKey("skybox"), this.skybox);
         }
 
-        public void Draw()
+        public override void Draw()
         {
             foldout = EditorGUILayout.Foldout(foldout, "Preview");
 
@@ -119,7 +117,7 @@ namespace sHierarchy
             });
         }
 
-        public void SavePref()
+        public override void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
             EditorPrefs.SetFloat(FormKey("rotateSpeed"), this.rotateSpeed);

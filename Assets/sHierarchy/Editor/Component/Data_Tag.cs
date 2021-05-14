@@ -32,8 +32,6 @@ namespace sHierarchy
 
         public bool foldout = false;
 
-        public bool enabled = true;
-
         public Color colorUntagged = Color.gray;
         public Color color = new Color(0.71f, 0.71f, 0.71f);
 
@@ -43,14 +41,14 @@ namespace sHierarchy
 
         public string FormKey(string name) { return HierarchyUtil.FormKey("tag.") + name; }
 
-        public void Init()
+        public override void Init()
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
             this.colorUntagged = HierarchyUtil.GetColor(FormKey("colorUntagged"), this.colorUntagged);
             this.color = HierarchyUtil.GetColor(FormKey("color"), this.color);
         }
 
-        public void Draw()
+        public override void Draw()
         {
             foldout = EditorGUILayout.Foldout(foldout, "Tag");
 
@@ -78,7 +76,7 @@ namespace sHierarchy
             });
         }
 
-        public void SavePref()
+        public override void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
             HierarchyUtil.SetColor(FormKey("colorUntagged"), this.colorUntagged);

@@ -49,8 +49,6 @@ namespace sHierarchy
 
         public bool foldout = false;
 
-        public bool enabled = true;
-
         // --- Bar ----
 
         public bool colorizedLine = false;
@@ -81,7 +79,7 @@ namespace sHierarchy
 
         public string FormKey(string name) { return HierarchyUtil.FormKey("tree.") + name; }
 
-        public void Init()
+        public override void Init()
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
             // Bar
@@ -108,7 +106,7 @@ namespace sHierarchy
             DynamicRefresh();
         }
 
-        public void Draw()
+        public override void Draw()
         {
             foldout = EditorGUILayout.Foldout(foldout, "Tree");
 
@@ -205,7 +203,7 @@ namespace sHierarchy
             });
         }
 
-        public void SavePref()
+        public override void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
 
