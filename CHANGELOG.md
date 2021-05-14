@@ -9,6 +9,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 * Add gradient color for colorized item.
 * Add render enable/disable component using alpha channel and it's customize option.
+* Add programming interface to control features' enable/disable flag.
 
 ### 2021-05-13
 
