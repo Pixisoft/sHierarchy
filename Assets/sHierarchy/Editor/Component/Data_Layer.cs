@@ -33,6 +33,9 @@ namespace sHierarchy
         private const string FOLD_NAME = "Layer";
         public bool foldout = false;
 
+        public Color colorDefault = Color.gray;
+        public Color color = new Color(0.71f, 0.71f, 0.71f);
+
         /* Setter & Getter */
 
         /* Functions */
@@ -41,7 +44,13 @@ namespace sHierarchy
 
         public override void Init()
         {
+            {
+                this.enabled = false;
+            }
+
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
+            this.colorDefault = HierarchyUtil.GetColor(FormKey("colorDefault"), this.colorDefault);
+            this.color = HierarchyUtil.GetColor(FormKey("color"), this.color);
         }
 
         public override void Draw()
@@ -57,13 +66,30 @@ namespace sHierarchy
 
                 this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
                     @"Enable/Disable all features from this section");
+
+                HierarchyUtil.BeginHorizontal(() =>
+                {
+                    this.colorDefault = EditorGUILayout.ColorField("Default Color", this.colorDefault);
+                    HierarchyUtil.Button("Reset", ResetDefaultColor);
+                });
+
+                HierarchyUtil.BeginHorizontal(() =>
+                {
+                    this.color = EditorGUILayout.ColorField("Color", this.color);
+                    HierarchyUtil.Button("Reset", ResetColor);
+                });
             });
         }
 
         public override void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
+            HierarchyUtil.SetColor(FormKey("colorDefault"), this.colorDefault);
+            HierarchyUtil.SetColor(FormKey("color"), this.color);
         }
+
+        private void ResetDefaultColor() { this.colorDefault = Color.gray; }
+        private void ResetColor() { this.color = new Color(0.71f, 0.71f, 0.71f); }
     }
 }
 #endif

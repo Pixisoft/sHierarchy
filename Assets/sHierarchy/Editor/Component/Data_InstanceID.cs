@@ -45,6 +45,10 @@ P.S. This can be useful when debugging";
 
         public override void Init()
         {
+            {
+                this.enabled = false;
+            }
+
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
             this.color = HierarchyUtil.GetColor(FormKey("color"), this.color);
         }
