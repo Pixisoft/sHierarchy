@@ -169,44 +169,38 @@ namespace sHierarchy
 
         private static float InstanceIDLength(int instanceID)
         {
-            float len = 0.0f;
             string fullStr = instanceID.ToString();
-            len = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
-            return len;
+            return GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
         }
 
-        public static float MaxInstanceIDLength(int[] instanceIDs)
+        public static float MaxIntLength(int[] instanceIDs, bool flag)
         {
-            if (!HierarchyData.instance.instanceID.enabled)
-                return 0.0f;
+            if (!flag) return 0.0f;
 
             float len = 0.0f;
 
             foreach (int instanceID in instanceIDs)
             {
-                len = InstanceIDLength(instanceID);
+                len = Mathf.Max(InstanceIDLength(instanceID), len);
             }
 
             return len;
         }
 
-        private static float TagLength(string tag)
+        private static float LabelLength(string label)
         {
-            float len = 0.0f;
-            len = GUI.skin.label.CalcSize(new GUIContent(tag)).x;
-            return len;
+            return GUI.skin.label.CalcSize(new GUIContent(label)).x;
         }
 
-        public static float MaxTagLength(string[] tags)
+        public static float MaxLabelLength(string[] labels, bool flag)
         {
-            if (!HierarchyData.instance.tag.enabled)
-                return 0.0f;
+            if (!flag) return 0.0f;
 
             float len = 0.0f;
 
-            foreach (string tag in tags)
+            foreach (string label in labels)
             {
-                len = TagLength(tag.Trim());
+                len = Mathf.Max(LabelLength(label.Trim()), len);
             }
 
             return len;

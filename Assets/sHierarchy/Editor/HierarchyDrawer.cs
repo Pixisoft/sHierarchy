@@ -50,10 +50,13 @@ namespace sHierarchy
         private static Dictionary<int, Color> prefabColors = new Dictionary<int, Color>();
 
         private static HashSet<string> tags = new HashSet<string>();
-        private static float maxTagLength = 0.0f;
+        private static float MAX_TAG_LEN = 0.0f;
+
+        private static HashSet<string> layers = new HashSet<string>();
+        private static float MAX_LAYER_LEN = 0.0f;
 
         private static HashSet<int> instanceIDs = new HashSet<int>();
-        private static float maxInstanceIDLength = 0.0f;
+        private static float MAX_INSTID_LEN = 0.0f;
 
         #region Menu Items
 
@@ -149,6 +152,8 @@ namespace sHierarchy
 
             sceneGameObjects.Clear();
             tags.Clear();
+            layers.Clear();
+            instanceIDs.Clear();
 
             GameObject[] sceneRoots;
             Scene tempScene;
@@ -199,6 +204,7 @@ namespace sHierarchy
                 newInfo.goName = go.name;
 
                 tags.Add(go.tag);
+                layers.Add(LayerMask.LayerToName(go.layer));
                 instanceIDs.Add(instanceID);
 
                 if (data.prefabsData.enabled)
@@ -294,9 +300,10 @@ namespace sHierarchy
 
             /* Initialzie draw variables */
             {
-                ROW_HEIGHT = GUI.skin.label.lineHeight + 1;
-                maxTagLength = HierarchyUtil.MaxTagLength(tags.ToArray());
-                maxInstanceIDLength = HierarchyUtil.MaxInstanceIDLength(instanceIDs.ToArray());
+                ROW_HEIGHT = GUI.skin.label.lineHeight + 1;  // default is 16 pixels
+                MAX_TAG_LEN = HierarchyUtil.MaxLabelLength(tags.ToArray(), data.tag.enabled);
+                MAX_LAYER_LEN = HierarchyUtil.MaxLabelLength(layers.ToArray(), data.layer.enabled);
+                MAX_INSTID_LEN = HierarchyUtil.MaxIntLength(instanceIDs.ToArray(), data.instanceID.enabled);
             }
 
             DrawAlternatingBG(instanceID, selectionRect);
@@ -307,6 +314,7 @@ namespace sHierarchy
             DrawIcons(instanceID, selectionRect);
             DrawComponents(instanceID, selectionRect);
             DrawTag(instanceID, selectionRect);
+            DrawLayer(instanceID, selectionRect);
             DrawInstanceID(instanceID, selectionRect);
         }
 
@@ -480,9 +488,9 @@ namespace sHierarchy
             if (!data.components.enabled)
                 return;
 
-            temp_iconsDrawedCount = (data.tag.enabled) ? 1 : 0;
-            float offsetX_const = (data.tag.enabled) ? 11 : 5;
-            float offsetX = offsetX_const + maxTagLength + maxInstanceIDLength;
+            temp_iconsDrawedCount = 0;
+            float offsetX_const = 3;
+            float offsetX = offsetX_const + MAX_TAG_LEN + MAX_LAYER_LEN + MAX_INSTID_LEN;
 
             foreach (Type t in currentItem.types)
             {
@@ -509,11 +517,28 @@ namespace sHierarchy
             string fullStr = currentGO.tag;
             float offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
 
-            float x = selectionRect.xMax - offset + ROW_HEIGHT - 1 - maxInstanceIDLength;
-            Rect rect = new Rect(x, selectionRect.y, selectionRect.width, selectionRect.height);
+            Rect rect = selectionRect;
+            rect.x = selectionRect.xMax - offset + (ROW_HEIGHT - 1) - MAX_LAYER_LEN - MAX_INSTID_LEN;
 
             GUIStyle style = new GUIStyle();
-            style.normal.textColor = (currentGO.tag == "Untagged") ? data.tag.colorUntagged : data.tag.color;
+            style.normal.textColor = (fullStr == "Untagged") ? data.tag.colorUntagged : data.tag.color;
+
+            GUI.Label(rect, fullStr, style);
+        }
+
+        private static void DrawLayer(int instanceID, Rect selectionRect)
+        {
+            if (!data.layer.enabled)
+                return;
+
+            string fullStr = LayerMask.LayerToName(currentGO.layer);
+            float offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
+
+            Rect rect = selectionRect;
+            rect.x = selectionRect.xMax - offset + (ROW_HEIGHT - 1) - MAX_INSTID_LEN;
+
+            GUIStyle style = new GUIStyle();
+            style.normal.textColor = (fullStr == "Default") ? data.layer.colorDefault : data.layer.color;
 
             GUI.Label(rect, fullStr, style);
         }
@@ -525,7 +550,7 @@ namespace sHierarchy
 
             string fullStr = instanceID.ToString();
 
-            float offset = maxInstanceIDLength - ROW_HEIGHT + 1;
+            float offset = MAX_INSTID_LEN - ROW_HEIGHT + 1;
             float x = selectionRect.xMax - offset;
             Rect rect = new Rect(x, selectionRect.y, selectionRect.width, selectionRect.height);
 
