@@ -19,5 +19,8 @@ sHierarchy/Scenes/
 sHierarchy/Scripts/
 sHierarchy/Sprites/
 
+# Ignore asset store plugin
+AssetStoreTools/
+
 # Ignore testing plugins
 TextMesh Pro/
