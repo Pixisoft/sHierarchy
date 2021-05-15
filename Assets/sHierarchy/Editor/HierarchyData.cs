@@ -34,9 +34,10 @@ namespace sHierarchy
         public Data_Separator separator = new Data_Separator();
         public Data_Tree tree = new Data_Tree();
         public Data_Log log = new Data_Log();
-        public Data_Tag tag = new Data_Tag();
         public Data_Icons icons = new Data_Icons();
         public Data_Components components = new Data_Components();
+        public Data_Tag tag = new Data_Tag();
+        public Data_Layer layer = new Data_Layer();
         public Data_InstanceID instanceID = new Data_InstanceID();
         public Data_Preview preview = new Data_Preview();
 
@@ -48,6 +49,7 @@ namespace sHierarchy
         private const bool f_icons = true;
         private const bool f_components = true;
         private const bool f_tag = true;
+        private const bool f_layer = true;
         private const bool f_instanceID = true;
         private const bool f_preview = true;
 
@@ -109,6 +111,7 @@ namespace sHierarchy
             Execute(icons, fnc, f_icons);
             Execute(components, fnc, f_components);
             Execute(tag, fnc, f_tag);
+            Execute(layer, fnc, f_layer);
             Execute(instanceID, fnc, f_instanceID);
 
             Execute(preview, fnc, f_preview);
