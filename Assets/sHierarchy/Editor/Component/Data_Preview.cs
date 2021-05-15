@@ -33,6 +33,7 @@ namespace sHierarchy
         private const string INFO = 
             @"Preview GameObject in the preview window in insecptor";
 
+        private const string FOLD_NAME = "Separator";
         public bool foldout = false;
 
         public float rotateSpeed = 15f;

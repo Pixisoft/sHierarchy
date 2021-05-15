@@ -30,6 +30,7 @@ namespace sHierarchy
         private const string INFO = 
             @"Replace default GameObject icon with meaningful icon on the top left of the inspector";
 
+        private const string FOLD_NAME = "Icons";
         public bool foldout = false;
 
         /* Setter & Getters */
@@ -45,7 +46,7 @@ namespace sHierarchy
 
         public override void Draw()
         {
-            foldout = EditorGUILayout.Foldout(foldout, "Icons");
+            foldout = EditorGUILayout.Foldout(foldout, FOLD_NAME);
 
             if (!foldout)
                 return;

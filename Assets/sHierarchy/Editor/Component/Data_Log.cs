@@ -29,6 +29,7 @@ namespace sHierarchy
         private const string INFO = 
             @"Show log/warning/error icon after the name of the GameObject";
 
+        private const string FOLD_NAME = "Log";
         public bool foldout = false;
 
         /* Setter & Getter */
@@ -44,7 +45,7 @@ namespace sHierarchy
 
         public override void Draw()
         {
-            foldout = EditorGUILayout.Foldout(foldout, "Log");
+            foldout = EditorGUILayout.Foldout(foldout, FOLD_NAME);
 
             if (!foldout)
                 return;

@@ -47,6 +47,7 @@ namespace sHierarchy
         private const string INFO = 
             @"";
 
+        private const string FOLD_NAME = "Tree";
         public bool foldout = false;
 
         // --- Bar ----
@@ -108,7 +109,7 @@ namespace sHierarchy
 
         public override void Draw()
         {
-            foldout = EditorGUILayout.Foldout(foldout, "Tree");
+            foldout = EditorGUILayout.Foldout(foldout, FOLD_NAME);
 
             if (!foldout)
                 return;

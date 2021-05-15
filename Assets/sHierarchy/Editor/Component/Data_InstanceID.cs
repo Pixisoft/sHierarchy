@@ -32,6 +32,7 @@ namespace sHierarchy
 
 P.S. This can be useful when debugging";
 
+        private const string FOLD_NAME = "Instance ID";
         public bool foldout = false;
 
         public Color color = Color.gray;
@@ -50,7 +51,7 @@ P.S. This can be useful when debugging";
 
         public override void Draw()
         {
-            foldout = EditorGUILayout.Foldout(foldout, "Instance ID");
+            foldout = EditorGUILayout.Foldout(foldout, FOLD_NAME);
 
             if (!foldout)
                 return;

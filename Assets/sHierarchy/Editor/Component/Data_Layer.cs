@@ -23,32 +23,25 @@ using UnityEngine;
 
 namespace sHierarchy
 {
-    [System.Serializable]
-    public class Data_Components : HierarchyComponent
+    public class Data_Layer : HierarchyComponent
     {
         /* Variables */
 
-        private const string INFO = 
+        private const string INFO =
             @"";
 
-        private const string FOLD_NAME = "Components";
+        private const string FOLD_NAME = "Layer";
         public bool foldout = false;
 
-        public bool focus = true;
-
-        public float disableAlpa = 0.5f;
-
-        /* Setter & Getters */
+        /* Setter & Getter */
 
         /* Functions */
 
-        public override string FormKey(string name) { return HierarchyUtil.FormKey("components.") + name; }
+        public override string FormKey(string name) { return HierarchyUtil.FormKey("layer.") + name; }
 
         public override void Init()
         {
-            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
-            this.focus = EditorPrefs.GetBool(FormKey("focus"), true);
-            this.disableAlpa = EditorPrefs.GetFloat(FormKey("disableAlpa"), this.disableAlpa);
+            this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
         }
 
         public override void Draw()
@@ -64,27 +57,13 @@ namespace sHierarchy
 
                 this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
                     @"Enable/Disable all features from this section");
-
-                this.focus = HierarchyUtil.Toggle("Folding", this.focus, 
-                    @"Focus the component after clicking the icon");
-
-                HierarchyUtil.BeginHorizontal(() =>
-                {
-                    this.disableAlpa = HierarchyUtil.Slider("Disable Alpha", this.disableAlpa, 0.1f, 0.9f,
-                        @"Alpha for disabled components");
-                    HierarchyUtil.Button("Reset", ResetDisableAlpha);
-                });
             });
         }
 
         public override void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
-            EditorPrefs.SetBool(FormKey("focus"), this.focus);
-            EditorPrefs.SetFloat(FormKey("disableAlpa"), this.disableAlpa);
         }
-
-        private void ResetDisableAlpha() { this.disableAlpa = 0.5f; }
     }
 }
 #endif

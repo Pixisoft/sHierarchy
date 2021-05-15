@@ -38,6 +38,7 @@ namespace sHierarchy
         private const string INFO = 
             @"";
 
+        private const string FOLD_NAME = "Prefabs Data";
         public bool foldout = false;
 
         public Prefab[] prefabs = new Prefab[0];
@@ -55,7 +56,7 @@ namespace sHierarchy
 
         public override void Draw()
         {
-            foldout = EditorGUILayout.Foldout(foldout, "Prefabs Data");
+            foldout = EditorGUILayout.Foldout(foldout, FOLD_NAME);
 
             if (!foldout)
                 return;

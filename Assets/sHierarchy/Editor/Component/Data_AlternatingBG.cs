@@ -31,6 +31,7 @@ namespace sHierarchy
         private const string INFO = 
             @"Draw the row shading";
 
+        private const string FOLD_NAME = "Alternating Background";
         public bool foldout = false;
 
         public Color color = new Color(0, 0, 0, .08f);
@@ -51,7 +52,7 @@ namespace sHierarchy
 
         public override void Draw()
         {
-            foldout = EditorGUILayout.Foldout(foldout, "Alternating Background");
+            foldout = EditorGUILayout.Foldout(foldout, FOLD_NAME);
 
             if (!foldout)
                 return;

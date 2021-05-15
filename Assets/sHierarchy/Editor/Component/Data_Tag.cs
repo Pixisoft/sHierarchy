@@ -30,6 +30,7 @@ namespace sHierarchy
         private const string INFO = 
             @"";
 
+        private const string FOLD_NAME = "Tag";
         public bool foldout = false;
 
         public Color colorUntagged = Color.gray;
@@ -50,7 +51,7 @@ namespace sHierarchy
 
         public override void Draw()
         {
-            foldout = EditorGUILayout.Foldout(foldout, "Tag");
+            foldout = EditorGUILayout.Foldout(foldout, FOLD_NAME);
 
             if (!foldout)
                 return;
