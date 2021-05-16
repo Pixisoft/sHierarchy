@@ -11,7 +11,9 @@
 
 ## Features
 
-* Does not pollut your project (no files are generated)
+* Show log/warning/error icon
+* Clean, no files are generated
+* Clean, no image files
 
 ## License
 

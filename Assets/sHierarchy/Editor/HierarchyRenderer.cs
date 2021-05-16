@@ -197,6 +197,13 @@ namespace sHierarchy
 
         public static bool DrawLogIcon(GameObject go, Rect selectionRect, Dictionary<string, string> log, LogType type, int iconLevel)
         {
+            if (type == LogType.Log && data.log.hideLog)
+                return false;
+            if (type == LogType.Warning && data.log.hideWarning)
+                return false;
+            if (type == LogType.Error && data.log.hideError)
+                return false;
+
             foreach (KeyValuePair<string, string> entry in log)
             {
                 string t = entry.Key;

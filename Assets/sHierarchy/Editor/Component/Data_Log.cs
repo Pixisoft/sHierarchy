@@ -32,6 +32,10 @@ namespace sHierarchy
         private const string FOLD_NAME = "Log";
         public bool foldout = false;
 
+        public bool hideLog = false;
+        public bool hideWarning = false;
+        public bool hideError = false;
+
         /* Setter & Getter */
 
         /* Functions */
@@ -41,6 +45,9 @@ namespace sHierarchy
         public override void Init()
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
+            this.hideLog = EditorPrefs.GetBool(FormKey("hideLog"), this.hideLog);
+            this.hideWarning = EditorPrefs.GetBool(FormKey("hideWarning"), this.hideWarning);
+            this.hideError = EditorPrefs.GetBool(FormKey("hideError"), this.hideError);
         }
 
         public override void Draw()
@@ -56,12 +63,22 @@ namespace sHierarchy
 
                 this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
                     @"Enable/Disable all features from this section");
+
+                this.hideLog = HierarchyUtil.Toggle("Hide Log", this.hideLog,
+                    @"Hide log");
+                this.hideWarning = HierarchyUtil.Toggle("Hide Warning", this.hideWarning,
+                    @"Hide warning");
+                this.hideError = HierarchyUtil.Toggle("Hide Error", this.hideError,
+                    @"Hide error");
             });
         }
 
         public override void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
+            EditorPrefs.SetBool(FormKey("hideLog"), this.hideLog);
+            EditorPrefs.SetBool(FormKey("hideWarning"), this.hideWarning);
+            EditorPrefs.SetBool(FormKey("hideError"), this.hideError);
         }
     }
 }
