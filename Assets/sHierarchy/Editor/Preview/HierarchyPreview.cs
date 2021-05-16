@@ -64,12 +64,15 @@ namespace sHierarchy
         public override void Cleanup()
         {
             base.Cleanup();
+            CleanupInternal();
+        }
 
-            if (mPreviewRenderer != null)
-            {
-                mPreviewRenderer.Cleanup();
-                mPreviewRenderer = null;
-            }
+        private static void CleanupInternal()
+        {
+            if (mPreviewRenderer == null)
+                return;
+            mPreviewRenderer.Cleanup();
+            mPreviewRenderer = null;
         }
 
         public override void OnPreviewGUI(Rect r, GUIStyle background)
@@ -112,6 +115,8 @@ namespace sHierarchy
         {
             if (mPreviewRenderer == null)  // Initialize once
             {
+                CleanupInternal();
+
                 mPreviewRenderer = new PreviewRenderUtility();
                 mPreviewRenderer.camera.nearClipPlane = 0.01f;
                 mPreviewRenderer.camera.farClipPlane = 10000;  // Just set far plane to very far
