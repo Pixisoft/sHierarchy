@@ -21,13 +21,14 @@
  */
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace sHierarchy
 {
     [Serializable]
     public struct InstanceInfo
     {
-        public List<Type> types;  // types of each components
+        public List<Component> components;  // types of each components
         public bool isSeparator;
         public string goName;
         public int prefabInstanceID;

@@ -194,7 +194,7 @@ namespace sHierarchy
             if (!sceneGameObjects.ContainsKey(instanceID))  // processes the gameobject only if it wasn't processed already
             {
                 InstanceInfo newInfo = new InstanceInfo();
-                newInfo.types = new List<Type>();
+                newInfo.components = new List<Component>();
                 newInfo.isLastElement = isLastChild;
                 newInfo.nestingLevel = nestingLevel;
                 newInfo.nestingGroup = nestingGroup;
@@ -231,10 +231,10 @@ namespace sHierarchy
                     {
                         if (c == null)
                         {
-                            newInfo.types.Add(null);  // missing
+                            newInfo.components.Add(null);  // missing
                             continue;
                         }
-                        newInfo.types.Add(c.GetType());
+                        newInfo.components.Add(c);
                     }
 
                     #endregion
@@ -470,11 +470,12 @@ namespace sHierarchy
             bool selected = Selection.activeGameObject == currentGO;
             Selection.activeGameObject = currentGO;
 
-            Type check = currentItem.types[0];
-            if (check == t && currentItem.types.Count > 1)
-                check = currentItem.types[1];
+            var check = currentItem.components[0];
+            var checkType = check.GetType();
+            if (checkType == t && currentItem.components.Count > 1)
+                checkType = currentItem.components[1].GetType();
 
-            bool otherExpanded = HierarchyUtil.IsExpanded(instanceID, check);
+            bool otherExpanded = HierarchyUtil.IsExpanded(instanceID, checkType);
             bool selfExpanded = HierarchyUtil.IsExpanded(instanceID, t);
 
             if (!selfExpanded || !selected)
@@ -497,9 +498,11 @@ namespace sHierarchy
             float offsetX_const = 3;
             float offsetX = offsetX_const + MAX_TAG_LEN + MAX_LAYER_LEN + MAX_INSTID_LEN;
 
-            foreach (Type t in currentItem.types)
+            foreach (Component comp in currentItem.components)
             {
-                var image = HierarchyUtil.TypeTexture(t);
+                // When component is null, meaning there is broken link
+                var t = (comp == null) ? null : comp.GetType();
+                var image = HierarchyUtil.TypeTexture(comp, t);
 
                 float offset = offsetX + (ROW_HEIGHT * temp_iconsDrawedCount);
                 float x = selectionRect.xMax - offset;

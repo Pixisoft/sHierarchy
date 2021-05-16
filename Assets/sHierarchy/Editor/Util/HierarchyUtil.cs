@@ -218,9 +218,9 @@ namespace sHierarchy
             return tex;
         }
 
-        public static Texture TypeTexture(Type t)
+        public static Texture TypeTexture(Component comp, Type t)
         {
-            var image = EditorGUIUtility.ObjectContent(null, t).image;
+            var image = EditorGUIUtility.ObjectContent(comp, t).image;
             if (image == null) image = ScriptTexture(t);
             // default icon
             if (image == null) image = EditorGUIUtility.IconContent(DEFAULT_COMPONENT_ICON).image;
