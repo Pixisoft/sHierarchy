@@ -28,7 +28,7 @@ namespace sHierarchy
     [Serializable]
     public struct InstanceInfo
     {
-        public List<Component> components;  // types of each components
+        public List<Component> components;  // components on GameObject
         public bool isSeparator;
         public string goName;
         public int prefabInstanceID;

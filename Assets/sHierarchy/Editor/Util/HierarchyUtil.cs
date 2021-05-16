@@ -35,7 +35,7 @@ namespace sHierarchy
 
         private const string NAME = "sHierarchy";
 
-        private const string DEFAULT_COMPONENT_ICON = "d__Help@2x";
+        private const string COMP_ICON_BROKEN = "Warning@2x";
 
         /* Setter & Getters */
 
@@ -206,24 +206,11 @@ namespace sHierarchy
             return len;
         }
 
-        private static Texture ScriptTexture(Type t)
-        {
-            Texture tex = null;
-            if (t == null)  // Broken links
-                tex = EditorGUIUtility.IconContent("Warning@2x").image;
-            else if (t.IsSubclassOf(typeof(MonoBehaviour)))
-                tex = EditorGUIUtility.IconContent("cs Script Icon").image;
-            else if (t.IsSubclassOf(typeof(ScriptableObject)))
-                tex = EditorGUIUtility.IconContent("d_ScriptableObject Icon").image;
-            return tex;
-        }
-
         public static Texture TypeTexture(Component comp, Type t)
         {
             var image = EditorGUIUtility.ObjectContent(comp, t).image;
-            if (image == null) image = ScriptTexture(t);
-            // default icon
-            if (image == null) image = EditorGUIUtility.IconContent(DEFAULT_COMPONENT_ICON).image;
+            // icon for broken link
+            if (image == null) image = EditorGUIUtility.IconContent(COMP_ICON_BROKEN).image;
             return image;
         }
 
