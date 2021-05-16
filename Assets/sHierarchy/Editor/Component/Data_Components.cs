@@ -29,7 +29,7 @@ namespace sHierarchy
         /* Variables */
 
         private const string INFO = 
-            @"";
+            @"Show components icon on the right";
 
         private const string FOLD_NAME = "Components";
         public bool foldout = false;
