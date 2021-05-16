@@ -27,8 +27,8 @@ namespace sHierarchy
     {
         /* Variables */
 
-        private const string INFO = 
-            @"";
+        private const string INFO =
+            @"Show the tag name";
 
         private const string FOLD_NAME = "Tag";
         public bool foldout = false;

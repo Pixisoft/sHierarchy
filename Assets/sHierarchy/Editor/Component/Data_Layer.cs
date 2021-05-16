@@ -28,7 +28,7 @@ namespace sHierarchy
         /* Variables */
 
         private const string INFO =
-            @"";
+            @"Show the layer name";
 
         private const string FOLD_NAME = "Layer";
         public bool foldout = false;
