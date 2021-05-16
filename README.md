@@ -15,6 +15,8 @@
 * Show log/warning/error icon
 * Clean, no files are generated
 * Clean, no image files
+* Lightweight, no other dependencies
+* No redundant workflow
 
 ## License
 
