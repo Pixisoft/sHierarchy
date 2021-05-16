@@ -1813,7 +1813,7 @@ GameObject:
   - component: {fileID: 831512934}
   - component: {fileID: 831512933}
   m_Layer: 0
-  m_Name: missing script
+  m_Name: missing component
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
