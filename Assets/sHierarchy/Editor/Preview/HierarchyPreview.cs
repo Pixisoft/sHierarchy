@@ -278,7 +278,10 @@ namespace sHierarchy
         private static void EnableCustomComponents(GameObject go, bool active)
         {
             foreach (var component in go.GetComponents<MonoBehaviour>())
+            {
+                if (component == null) continue;
                 component.enabled = active;
+            }
 
             for (int index = 0; index < go.transform.childCount; ++index)
                 EnableCustomComponents(go.transform.GetChild(index).gameObject, active);

@@ -229,6 +229,11 @@ namespace sHierarchy
 
                     foreach (var c in comps)
                     {
+                        if (c == null)
+                        {
+                            newInfo.types.Add(null);  // missing
+                            continue;
+                        }
                         newInfo.types.Add(c.GetType());
                     }
 

@@ -300,6 +300,12 @@ namespace sHierarchy
 
         public static void DrawComponent(Type t, GameObject go, Rect rect, Texture image)
         {
+            if (t == null)
+            {
+                HierarchyUtil.DrawTextureTooltip(rect, image, "Missing component");
+                return;
+            }
+
             if (t.IsSubclassOf(typeof(Behaviour)))
             {
                 var comp = go.GetComponent(t) as Behaviour;

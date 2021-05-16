@@ -209,7 +209,9 @@ namespace sHierarchy
         private static Texture ScriptTexture(Type t)
         {
             Texture tex = null;
-            if (t.IsSubclassOf(typeof(MonoBehaviour)))
+            if (t == null)  // Broken links
+                tex = EditorGUIUtility.IconContent("Warning@2x").image;
+            else if (t.IsSubclassOf(typeof(MonoBehaviour)))
                 tex = EditorGUIUtility.IconContent("cs Script Icon").image;
             else if (t.IsSubclassOf(typeof(ScriptableObject)))
                 tex = EditorGUIUtility.IconContent("d_ScriptableObject Icon").image;
