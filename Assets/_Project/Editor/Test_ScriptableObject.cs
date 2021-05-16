@@ -1,3 +1,4 @@
+#if (UNITY_EDITOR)
 /**
  * Copyright (c) 2021 Jen-Chieh Shen
  * 
@@ -17,20 +18,20 @@
  * 
  * For any other use, please ask for permission by contacting the author.
  */
-using System.Collections;
-using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace sHierarchy.Test
 {
-    public class Test_RipComponents : MonoBehaviour
+    [CustomEditor(typeof(Test_IconScript))]
+    public class Test_ScriptableObject : Editor
     {
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                Test_Util.EnableCustomComponents(this.gameObject, false);
-            }
-        }
+        /* Variables */
+
+        /* Setter & Getter */
+
+        /* Functions */
+
     }
 }
+#endif

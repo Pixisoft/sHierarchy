@@ -25,8 +25,7 @@ using UnityEditor;
 
 namespace sHierarchy.Test
 {
-    public class Test_IconScript
-        : MonoBehaviour
+    public class Test_IconScript : MonoBehaviour
     {
         /* Variables */
 
