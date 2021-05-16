@@ -11,6 +11,7 @@
 
 ## Features
 
+* Show enable/disable state of each components
 * Show log/warning/error icon
 * Clean, no files are generated
 * Clean, no image files
