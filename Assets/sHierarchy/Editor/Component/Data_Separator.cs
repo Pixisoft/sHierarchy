@@ -29,7 +29,7 @@ namespace sHierarchy
         /* Variables */
 
         private const string INFO =
-            @"Separator requires the tag `EditorOnly` and PREFIX string to match.";
+            @"Separator requires the tag `EditorOnly` and PREFIX string to match";
 
         private const string FOLD_NAME = "Separator";
         public bool foldout = false;
