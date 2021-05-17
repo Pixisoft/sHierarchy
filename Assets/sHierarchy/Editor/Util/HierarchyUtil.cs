@@ -257,6 +257,19 @@ namespace sHierarchy
 
         public static void DrawTextureTooltip(Rect rect, Texture tex, string tooltip)
         {
+            /* Recalculate the height base on constant width, 16 px. */
+            {
+                float width = HierarchyDrawer.ROW_HEIGHT;
+                rect.width = width;
+                rect.height = tex.height * width / tex.width;
+            }
+            /* shift y to center */
+            {
+                float height = HierarchyDrawer.ROW_HEIGHT;
+                float texCenter = rect.height / 2.0f;
+                float yDiff = (height / 2.0f) - texCenter;
+                rect.y += yDiff;
+            }
             GUI.DrawTexture(rect, tex);
             GUI.Label(rect, new GUIContent("", null, tooltip));  // add tooltip
         }
