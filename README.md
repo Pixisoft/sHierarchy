@@ -14,7 +14,7 @@
 * Show enable/disable state of each components
 * Show log/warning/error icon
 * Clean, no files are generated
-* Clean, no image files
+* Clean, no other resource files
 * Lightweight, no other dependencies
 * No redundant workflow
 
