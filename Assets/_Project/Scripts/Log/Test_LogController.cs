@@ -25,20 +25,13 @@ using UnityEditor;
 
 namespace sHierarchy.Test
 {
-    public class Test_IconScript : MonoBehaviour
+    public class Test_LogController : MonoBehaviour
     {
         /* Variables */
 
         /* Setter & Getter */
 
         /* Functions */
-
-        private void Start()
-        {
-            SpriteRenderer sr = this.GetComponent<SpriteRenderer>();
-
-            sr.sprite = null;
-        }
 
         private void Update()
         {

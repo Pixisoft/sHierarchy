@@ -1,4 +1,3 @@
-#if (UNITY_EDITOR)
 /**
  * Copyright (c) 2021 Jen-Chieh Shen
  * 
@@ -18,13 +17,11 @@
  * 
  * For any other use, please ask for permission by contacting the author.
  */
-using UnityEditor;
 using UnityEngine;
 
 namespace sHierarchy.Test
 {
-    [CustomEditor(typeof(Test_LogController))]
-    public class Test_ScriptableObject : Editor
+    public class Test_MissingComponentException : MonoBehaviour
     {
         /* Variables */
 
@@ -32,6 +29,10 @@ namespace sHierarchy.Test
 
         /* Functions */
 
+        private void Start()
+        {
+            SpriteRenderer sr = this.GetComponent<SpriteRenderer>();
+            sr.sprite = null;  // cause the error here
+        }
     }
 }
-#endif
