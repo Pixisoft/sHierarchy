@@ -58,36 +58,6 @@ namespace sHierarchy
         private static HashSet<int> instanceIDs = new HashSet<int>();
         private static float MAX_INSTID_LEN = 0.0f;
 
-        #region Menu Items
-
-        #region Internal
-
-        [MenuItem("sHierarchy/Preferences", priority = 1)]
-        public static void InitializeOrCreate()
-        {
-            SettingsService.OpenUserPreferences("Preferences/sHierarchy");
-        }
-
-        #endregion
-
-        #region Links
-
-        [MenuItem("sHierarchy/📝 Repository", priority = 50)]
-        static void m_OpenBlog()
-        {
-            Application.OpenURL("https://github.com/jcs090218/sHierarchy");
-        }
-
-        [MenuItem("sHierarchy/🐦 Twitter", priority = 51)]
-        static void m_OpenTwitter()
-        {
-            Application.OpenURL("https://twitter.com/jenchieh94");
-        }
-
-        #endregion
-
-        #endregion
-
         #region Initialization/Helpers
 
         /// <summary>
