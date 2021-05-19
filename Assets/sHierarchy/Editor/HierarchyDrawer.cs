@@ -102,7 +102,6 @@ namespace sHierarchy
                 // Prevents registering events multiple times
                 EditorApplication.hierarchyChanged -= RetrieveDataFromScene;
                 EditorApplication.hierarchyWindowItemOnGUI -= DrawCore;
-                Selection.selectionChanged -= SelectionChanged;
             }
 
             #endregion
@@ -117,7 +116,6 @@ namespace sHierarchy
 
                 EditorApplication.hierarchyChanged += RetrieveDataFromScene;
                 EditorApplication.hierarchyWindowItemOnGUI += DrawCore;
-                Selection.selectionChanged += SelectionChanged;
 
                 #endregion
 
@@ -264,32 +262,12 @@ namespace sHierarchy
             #endregion
         }
 
-        static void SelectionChanged()
-        {
-            if (!data.components.enabled || !data.components.focus)
-                return;
-
-            if (clickComponent)
-            {
-                clickComponent = false;
-                return;
-            }
-
-            GameObject ago = Selection.activeGameObject;
-            if (ago == null)
-                return;
-
-            HierarchyUtil.ExpandComponents(ago, true);
-        }
-
         #region Drawing
 
         private static int temp_iconsDrawedCount = -1;
         public static InstanceInfo currentItem;
         public static GameObject currentGO;
         private static bool drawedPrefabOverlay = false;
-
-        private static bool clickComponent = false;
 
         private static void DrawCore(int instanceID, Rect selectionRect)
         {
@@ -470,6 +448,9 @@ namespace sHierarchy
             bool selected = Selection.activeGameObject == currentGO;
             Selection.activeGameObject = currentGO;
 
+            if (!selected)
+                return;
+
             var check = currentItem.components[0];
             var checkType = check.GetType();
             if (checkType == t && currentItem.components.Count > 1)
@@ -484,9 +465,6 @@ namespace sHierarchy
                 HierarchyUtil.ExpandComponents(instanceID, true);
             else
                 HierarchyUtil.FocusComponent(instanceID, t);
-
-            if (!selected)
-                clickComponent = true;
         }
 
         private static void DrawComponents(int instanceID, Rect selectionRect)
