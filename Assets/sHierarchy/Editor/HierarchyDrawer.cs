@@ -273,17 +273,16 @@ namespace sHierarchy
 
         private static void DrawAlternatingBG(int instanceID, Rect selectionRect)
         {
-            if (!data.alternatingBG.enabled)
+            if (!data.alterRowShading.enabled)
                 return;
 
             var isOdd = Mathf.FloorToInt(((selectionRect.y - 4) / ROW_HEIGHT) % 2) != 0;
             if (isOdd) return;
 
-            if (data.alternatingBG.drawFill)
-                HierarchyRenderer.DrawFullItem(selectionRect, data.alternatingBG.color);
+            if (data.alterRowShading.drawFill)
+                HierarchyRenderer.DrawFullItem(selectionRect, data.alterRowShading.color);
             else
-                HierarchyRenderer.DrawSelection(selectionRect, data.alternatingBG.color);
-
+                HierarchyRenderer.DrawSelection(selectionRect, data.alterRowShading.color);
         }
 
         private static void DrawPrefabBG(int instanceID, Rect selectionRect)

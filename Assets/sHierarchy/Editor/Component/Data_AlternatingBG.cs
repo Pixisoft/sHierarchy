@@ -24,14 +24,14 @@ using UnityEngine;
 namespace sHierarchy
 {
     [System.Serializable]
-    public class Data_AlternatingBG : HierarchyComponent
+    public class Data_AlternateRowShading : HierarchyComponent
     {
         /* Variables */
 
-        private const string INFO = 
-            @"Draw the row shading";
+        private const string INFO =
+            @"Draw Row Shading";
 
-        private const string FOLD_NAME = "Alternating Background";
+        private const string FOLD_NAME = "Alternate Row Shading";
         public bool foldout = false;
 
         public Color color = new Color(0, 0, 0, .08f);
@@ -41,7 +41,7 @@ namespace sHierarchy
 
         /* Functions */
 
-        public override string FormKey(string name) { return HierarchyUtil.FormKey("alterBG.") + name; }
+        public override string FormKey(string name) { return HierarchyUtil.FormKey("ARS.") + name; }
 
         public override void Init()
         {
