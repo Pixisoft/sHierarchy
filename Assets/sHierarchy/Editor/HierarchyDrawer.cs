@@ -63,6 +63,14 @@ namespace sHierarchy
 
         private static bool IsMainStage() { return STAGE_NAME == "MainStage"; }
 
+        private static void Repaint()
+        {
+            if (IsMainStage())
+                EditorApplication.RepaintHierarchyWindow();
+            else
+                SceneView.RepaintAll();
+        }
+
         #region Initialization/Helpers
 
         /// <summary>
@@ -95,7 +103,7 @@ namespace sHierarchy
                 RetrieveDataFromHierarchy();
             }
 
-            EditorApplication.RepaintHierarchyWindow();
+            Repaint();
         }
 
         #endregion
@@ -113,9 +121,10 @@ namespace sHierarchy
             else
             {
                 PrefabStage ps = PrefabStageUtility.GetCurrentPrefabStage();
+                GameObject prefabGO = ps.prefabContentsRoot;
 
                 if (data.updateInPrefabIsoMode)
-                    RetrieveFromGameObjects(new GameObject[] { ps.prefabContentsRoot });
+                    RetrieveFromGameObjects(new GameObject[] { prefabGO });
             }
         }
 
@@ -184,6 +193,8 @@ namespace sHierarchy
                 newInfo.topParentHasChild = topParentHasChild;
                 newInfo.goName = go.name;
 
+                // We minus 1 when inside prefab isolation mode since
+                // there is no scene root in that view.
                 if (!IsMainStage())
                     --newInfo.nestingLevel;
 
