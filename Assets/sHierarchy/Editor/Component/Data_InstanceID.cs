@@ -27,10 +27,8 @@ namespace sHierarchy
     {
         /* Variables */
 
-        private const string INFO = 
-            @"Instance ID is the unique identifier for each GameObject.
-
-P.S. This can be useful when debugging";
+        private const string INFO =
+            @"Show game object instance ID";
 
         private const string FOLD_NAME = "Instance ID";
         public bool foldout = false;

@@ -27,8 +27,8 @@ namespace sHierarchy
     {
         /* Variables */
 
-        private const string INFO = 
-            @"Replace default GameObject icon with meaningful icon on the top left of the inspector";
+        private const string INFO =
+            @"Replace default GameObject icon on the top left of the inspector";
 
         private const string FOLD_NAME = "Icons";
         public bool foldout = false;

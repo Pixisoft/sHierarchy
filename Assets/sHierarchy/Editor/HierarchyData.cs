@@ -29,7 +29,7 @@ namespace sHierarchy
 
         public bool updateInPlayMode = true;
 
-        public Data_AlternatingBG alternatingBG = new Data_AlternatingBG();
+        public Data_AlternateRowShading alterRowShading = new Data_AlternateRowShading();
         public Data_Prefabs prefabsData = new Data_Prefabs();
         public Data_Separator separator = new Data_Separator();
         public Data_Tree tree = new Data_Tree();
@@ -103,7 +103,7 @@ namespace sHierarchy
 
         private void ExecuteAll(HierarchyComponentFunctions fnc)
         {
-            Execute(alternatingBG, fnc, f_alternatingBG);
+            Execute(alterRowShading, fnc, f_alternatingBG);
             Execute(prefabsData, fnc, f_prefabsData);
             Execute(separator, fnc, f_separator);
             Execute(tree, fnc, f_tree);
