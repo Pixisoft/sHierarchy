@@ -17,6 +17,7 @@
 * Clean, no other resource files
 * Lightweight, no other dependencies
 * No redundant workflow
+* Work in Prefab Mode
 
 ## License
 
