@@ -30,7 +30,6 @@ namespace sHierarchy
         public bool updateInPlayMode = true;
 
         public Data_AlternateRowShading alterRowShading = new Data_AlternateRowShading();
-        public Data_Prefabs prefabsData = new Data_Prefabs();
         public Data_Separator separator = new Data_Separator();
         public Data_Tree tree = new Data_Tree();
         public Data_Log log = new Data_Log();
@@ -42,7 +41,6 @@ namespace sHierarchy
         public Data_Preview preview = new Data_Preview();
 
         private const bool f_alternatingBG = true;
-        private const bool f_prefabsData = true;
         private const bool f_separator = true;
         private const bool f_tree = true;
         private const bool f_log = true;
@@ -104,7 +102,6 @@ namespace sHierarchy
         private void ExecuteAll(HierarchyComponentFunctions fnc)
         {
             Execute(alterRowShading, fnc, f_alternatingBG);
-            Execute(prefabsData, fnc, f_prefabsData);
             Execute(separator, fnc, f_separator);
             Execute(tree, fnc, f_tree);
             Execute(log, fnc, f_log);
