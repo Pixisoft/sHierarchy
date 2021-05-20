@@ -23,6 +23,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Experimental.SceneManagement;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -34,15 +36,6 @@ namespace sHierarchy
         /* Variables */
 
         public static float ROW_HEIGHT = 15;
-
-        /* Setter & Getter */
-
-        /* Functions */
-
-        static HierarchyDrawer()
-        {
-            Initialize();
-        }
 
         private static bool initialized = false;
         private static HierarchyData data { get { return HierarchyPreferences.data; } }
@@ -57,6 +50,19 @@ namespace sHierarchy
         private static HashSet<int> instanceIDs = new HashSet<int>();
         private static float MAX_INSTID_LEN = 0.0f;
 
+        private static string STAGE_NAME = "";
+
+        /* Setter & Getter */
+
+        /* Functions */
+
+        static HierarchyDrawer()
+        {
+            Initialize();
+        }
+
+        private static bool IsMainStage() { return STAGE_NAME == "MainStage"; }
+
         #region Initialization/Helpers
 
         /// <summary>
@@ -69,7 +75,7 @@ namespace sHierarchy
             if (initialized)
             {
                 // Prevents registering events multiple times
-                EditorApplication.hierarchyChanged -= RetrieveDataFromScene;
+                EditorApplication.hierarchyChanged -= RetrieveDataFromHierarchy;
                 EditorApplication.hierarchyWindowItemOnGUI -= DrawCore;
             }
 
@@ -81,18 +87,37 @@ namespace sHierarchy
             {
                 #region Registers events
 
-                EditorApplication.hierarchyChanged += RetrieveDataFromScene;
+                EditorApplication.hierarchyChanged += RetrieveDataFromHierarchy;
                 EditorApplication.hierarchyWindowItemOnGUI += DrawCore;
 
                 #endregion
 
-                RetrieveDataFromScene();
+                RetrieveDataFromHierarchy();
             }
 
             EditorApplication.RepaintHierarchyWindow();
         }
 
         #endregion
+
+        static void RetrieveDataFromHierarchy()
+        {
+            Stage stage = StageUtility.GetCurrentStage();
+
+            STAGE_NAME = stage.name;
+
+            if (IsMainStage())
+            {
+                RetrieveDataFromScene();
+            }
+            else
+            {
+                PrefabStage ps = PrefabStageUtility.GetCurrentPrefabStage();
+
+                if (data.updateInPrefabIsoMode)
+                    RetrieveFromGameObjects(new GameObject[] { ps.prefabContentsRoot });
+            }
+        }
 
         /// <summary>
         /// Updates the list of objects to draw, icons etc.
@@ -125,18 +150,21 @@ namespace sHierarchy
                 if (alpha)
                     sceneRoots = sceneRoots.OrderBy(go => go.name).ToArray();
 
-                // Analyzes all scene's gameObjects
-                for (int j = 0; j < sceneRoots.Length; ++j)
-                {
-                    var go = sceneRoots[j];
+                RetrieveFromGameObjects(sceneRoots);
+            }
+        }
 
-                    AnalyzeGoWithChildren(
-                        sceneRoots[j],
-                        nestingLevel: 0,
-                        sceneRoots[j].transform.childCount > 0,
-                        j,
-                        j == (sceneRoots.Length - 1));
-                }
+        static void RetrieveFromGameObjects(GameObject[] gos)
+        {
+            // Analyzes all scene's gameObjects
+            for (int j = 0; j < gos.Length; ++j)
+            {
+                AnalyzeGoWithChildren(
+                    gos[j],
+                    nestingLevel: 0,
+                    gos[j].transform.childCount > 0,
+                    j,
+                    j == (gos.Length - 1));
             }
         }
 
@@ -156,13 +184,19 @@ namespace sHierarchy
                 newInfo.topParentHasChild = topParentHasChild;
                 newInfo.goName = go.name;
 
+                if (!IsMainStage())
+                    --newInfo.nestingLevel;
+
                 tags.Add(go.tag);
                 layers.Add(LayerMask.LayerToName(go.layer));
                 instanceIDs.Add(instanceID);
 
-                var prefab = PrefabUtility.GetCorrespondingObjectFromSource(go);
-                if (prefab)
-                    newInfo.prefabInstanceID = prefab.GetInstanceID();
+                /* Prefab Data */
+                {
+                    var prefab = PrefabUtility.GetCorrespondingObjectFromSource(go);
+                    if (prefab)
+                        newInfo.prefabInstanceID = prefab.GetInstanceID();
+                }
 
                 if (data.separator.enabled)
                 {

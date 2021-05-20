@@ -28,6 +28,7 @@ namespace sHierarchy
         /* Variables */
 
         public bool updateInPlayMode = true;
+        public bool updateInPrefabIsoMode = true;
 
         public Data_AlternateRowShading alterRowShading = new Data_AlternateRowShading();
         public Data_Separator separator = new Data_Separator();
@@ -63,6 +64,7 @@ namespace sHierarchy
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
             this.updateInPlayMode = EditorPrefs.GetBool(FormKey("updateInPlayMode"), this.updateInPlayMode);
+            this.updateInPlayMode = EditorPrefs.GetBool(FormKey("updateInPrefabIsoMode"), this.updateInPrefabIsoMode);
 
             ExecuteAll(HierarchyComponentFunctions.INIT);
         }
@@ -70,7 +72,8 @@ namespace sHierarchy
         public override void Draw()
         {
             this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
-            this.updateInPlayMode = EditorGUILayout.Toggle("Update In Play Mode", this.updateInPlayMode);
+            this.updateInPlayMode = EditorGUILayout.Toggle("Update in Play Mode", this.updateInPlayMode);
+            this.updateInPrefabIsoMode = EditorGUILayout.Toggle("Update in Prefab Isolation Mode", this.updateInPrefabIsoMode);
 
             ExecuteAll(HierarchyComponentFunctions.DRAW);
         }
@@ -79,6 +82,7 @@ namespace sHierarchy
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
             EditorPrefs.SetBool(FormKey("updateInPlayMode"), this.updateInPlayMode);
+            EditorPrefs.SetBool(FormKey("updateInPrefabIsoMode"), this.updateInPrefabIsoMode);
 
             ExecuteAll(HierarchyComponentFunctions.SAVE_PREF);
         }
