@@ -10,6 +10,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 * Add handler for broken link in component icon.
 * Fix issue, for incorrect script icon.
 * Fix issue, recalculate the height base on the constant width in 16 pixels.
+* Rename `Alternating Background` to proper name `Alternate Row Shading`.
 
 ### 0.1.2
 
