@@ -47,7 +47,6 @@ namespace sHierarchy
         private static bool initialized = false;
         private static HierarchyData data { get { return HierarchyPreferences.data; } }
         private static Dictionary<int, InstanceInfo> sceneGameObjects = new Dictionary<int, InstanceInfo>();
-        private static Dictionary<int, Color> prefabColors = new Dictionary<int, Color>();
 
         private static HashSet<string> tags = new HashSet<string>();
         private static float MAX_TAG_LEN = 0.0f;
@@ -76,8 +75,6 @@ namespace sHierarchy
 
             #endregion
 
-            initialized = false;
-
             initialized = true;
 
             if (data.enabled)
@@ -90,18 +87,6 @@ namespace sHierarchy
                 #endregion
 
                 RetrieveDataFromScene();
-
-                prefabColors.Clear();
-                foreach (var prefab in data.prefabsData.prefabs)
-                {
-                    if (prefab.color.a <= 0) continue;
-                    if (!prefab.gameObject) continue;
-
-                    int instanceID = prefab.gameObject.GetInstanceID();
-                    if (prefabColors.ContainsKey(instanceID)) continue;
-
-                    prefabColors.Add(instanceID, prefab.color);
-                }
             }
 
             EditorApplication.RepaintHierarchyWindow();
@@ -175,12 +160,9 @@ namespace sHierarchy
                 layers.Add(LayerMask.LayerToName(go.layer));
                 instanceIDs.Add(instanceID);
 
-                if (data.prefabsData.enabled)
-                {
-                    var prefab = PrefabUtility.GetCorrespondingObjectFromSource(go);
-                    if (prefab)
-                        newInfo.prefabInstanceID = prefab.GetInstanceID();
-                }
+                var prefab = PrefabUtility.GetCorrespondingObjectFromSource(go);
+                if (prefab)
+                    newInfo.prefabInstanceID = prefab.GetInstanceID();
 
                 if (data.separator.enabled)
                 {
@@ -237,7 +219,9 @@ namespace sHierarchy
         private static int temp_iconsDrawedCount = -1;
         public static InstanceInfo currentItem;
         public static GameObject currentGO;
-        private static bool drawedPrefabOverlay = false;
+
+        // Right boundary
+        private static float RIGHT_BOUNDARY = 0.0f;
 
         private static void DrawCore(int instanceID, Rect selectionRect)
         {
@@ -257,14 +241,20 @@ namespace sHierarchy
                 MAX_TAG_LEN = HierarchyUtil.MaxLabelLength(tags.ToArray(), data.tag.enabled);
                 MAX_LAYER_LEN = HierarchyUtil.MaxLabelLength(layers.ToArray(), data.layer.enabled);
                 MAX_INSTID_LEN = HierarchyUtil.MaxIntLength(instanceIDs.ToArray(), data.instanceID.enabled);
+
+                RIGHT_BOUNDARY = 0.0f;  // reset
+                if (currentItem.prefabInstanceID != default(int))
+                    RIGHT_BOUNDARY += ROW_HEIGHT;
             }
 
+            //-- Full
             DrawAlternatingBG(instanceID, selectionRect);
-            DrawPrefabBG(instanceID, selectionRect);
             DrawTree(instanceID, selectionRect);
             DrawSeparators(instanceID, selectionRect);
-            DrawLog(instanceID, selectionRect);
+            //-- Left
             DrawIcons(instanceID, selectionRect);
+            DrawLog(instanceID, selectionRect);
+            //-- Right
             DrawComponents(instanceID, selectionRect);
             DrawTag(instanceID, selectionRect);
             DrawLayer(instanceID, selectionRect);
@@ -283,20 +273,6 @@ namespace sHierarchy
                 HierarchyRenderer.DrawFullItem(selectionRect, data.alterRowShading.color);
             else
                 HierarchyRenderer.DrawSelection(selectionRect, data.alterRowShading.color);
-        }
-
-        private static void DrawPrefabBG(int instanceID, Rect selectionRect)
-        {
-            drawedPrefabOverlay = false;
-
-            if (!data.prefabsData.enabled || prefabColors.Count <= 0)
-                return;
-
-            if (prefabColors.ContainsKey(currentItem.prefabInstanceID))
-            {
-                EditorGUI.DrawRect(selectionRect, prefabColors[currentItem.prefabInstanceID]);
-                drawedPrefabOverlay = true;
-            }
         }
 
         private static void DrawSeparators(int instanceID, Rect selectionRect)
@@ -321,7 +297,7 @@ namespace sHierarchy
             if (selectionRect.x >= 60)
             {
                 // Group
-                if (data.tree.colorizedItem && !drawedPrefabOverlay && currentItem.topParentHasChild && !currentItem.isSeparator)
+                if (data.tree.colorizedItem && currentItem.topParentHasChild && !currentItem.isSeparator)
                 {
                     HierarchyRenderer.DrawNestGroupOverlay(selectionRect, currentItem.nestingLevel);
                 }
@@ -372,6 +348,23 @@ namespace sHierarchy
             }
         }
 
+        private static void DrawIcons(int instanceID, Rect selectionRect)
+        {
+            if (!data.icons.enabled)
+                return;
+
+            // Draws the gameobject icon, if present
+            var content = EditorGUIUtility.ObjectContent(currentGO, null);
+
+            if (content.image && !string.IsNullOrEmpty(content.image.name))
+            {
+                if (content.image.name != "d_GameObject Icon" && content.image.name != "d_Prefab Icon")
+                {
+                    HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, (Texture2D)content.image);
+                }
+            }
+        }
+
         private static void DrawLog(int instanceID, Rect selectionRect)
         {
             if (!data.log.enabled)
@@ -393,23 +386,6 @@ namespace sHierarchy
             bool drawnWarn = HierarchyRenderer.DrawLogIcon(go, selectionRect, warn, LogType.Warning, iconLevel);
             if (drawnWarn) ++iconLevel;
             HierarchyRenderer.DrawLogIcon(go, selectionRect, error, LogType.Error, iconLevel);
-        }
-
-        private static void DrawIcons(int instanceID, Rect selectionRect)
-        {
-            if (!data.icons.enabled)
-                return;
-
-            // Draws the gameobject icon, if present
-            var content = EditorGUIUtility.ObjectContent(currentGO, null);
-
-            if (content.image && !string.IsNullOrEmpty(content.image.name))
-            {
-                if (content.image.name != "d_GameObject Icon" && content.image.name != "d_Prefab Icon")
-                {
-                    HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, (Texture2D)content.image);
-                }
-            }
         }
 
         private static void OnClick_Component(int instanceID, Type t)
@@ -443,7 +419,7 @@ namespace sHierarchy
 
             temp_iconsDrawedCount = 0;
             float offsetX_const = 3;
-            float offsetX = offsetX_const + MAX_TAG_LEN + MAX_LAYER_LEN + MAX_INSTID_LEN;
+            float offsetX = RIGHT_BOUNDARY + offsetX_const + MAX_TAG_LEN + MAX_LAYER_LEN + MAX_INSTID_LEN;
 
             foreach (Component comp in currentItem.components)
             {
@@ -473,7 +449,7 @@ namespace sHierarchy
             float offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
 
             Rect rect = selectionRect;
-            rect.x = selectionRect.xMax - offset + (ROW_HEIGHT - 1) - MAX_LAYER_LEN - MAX_INSTID_LEN;
+            rect.x = selectionRect.xMax - RIGHT_BOUNDARY - offset + (ROW_HEIGHT - 1) - MAX_LAYER_LEN - MAX_INSTID_LEN;
 
             GUIStyle style = new GUIStyle();
             style.normal.textColor = (fullStr == "Untagged") ? data.tag.colorUntagged : data.tag.color;
@@ -490,7 +466,7 @@ namespace sHierarchy
             float offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
 
             Rect rect = selectionRect;
-            rect.x = selectionRect.xMax - offset + (ROW_HEIGHT - 1) - MAX_INSTID_LEN;
+            rect.x = selectionRect.xMax - RIGHT_BOUNDARY - offset + (ROW_HEIGHT - 1) - MAX_INSTID_LEN;
 
             GUIStyle style = new GUIStyle();
             style.normal.textColor = (fullStr == "Default") ? data.layer.colorDefault : data.layer.color;
@@ -505,7 +481,7 @@ namespace sHierarchy
 
             string fullStr = instanceID.ToString();
 
-            float offset = MAX_INSTID_LEN - ROW_HEIGHT + 1;
+            float offset = MAX_INSTID_LEN - ROW_HEIGHT + 1 + RIGHT_BOUNDARY;
             float x = selectionRect.xMax - offset;
             Rect rect = new Rect(x, selectionRect.y, selectionRect.width, selectionRect.height);
 
