@@ -12,6 +12,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 * Fix issue, recalculate the height base on the constant width in 16 pixels.
 * Rename `Alternating Background` to proper name `Alternate Row Shading`.
 * Support prefab isolation mode.
+* Add offset for prefab button on the right.
 
 ### 0.1.2
 
