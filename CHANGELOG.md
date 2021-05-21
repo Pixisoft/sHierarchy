@@ -13,6 +13,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 * Rename `Alternating Background` to proper name `Alternate Row Shading`.
 * Support prefab isolation mode.
 * Add offset for prefab button on the right.
+* Add utility function for saving/loading generic data type.
+* Add utility function for loading data structure, `Dictionary`.
+* Add ability to render gradient color with tag name.
 
 ### 0.1.2
 
