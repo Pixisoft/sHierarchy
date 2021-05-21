@@ -490,16 +490,30 @@ namespace sHierarchy
             if (!data.tag.enabled)
                 return;
 
-            string fullStr = currentGO.tag;
-            float offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
+            string tag = currentGO.tag;
 
-            Rect rect = selectionRect;
-            rect.x = selectionRect.xMax - RIGHT_BOUNDARY - offset + (ROW_HEIGHT - 1) - MAX_LAYER_LEN - MAX_INSTID_LEN;
+            /* Draw text */
+            {
+                float offset = GUI.skin.label.CalcSize(new GUIContent(tag)).x;
 
-            GUIStyle style = new GUIStyle();
-            style.normal.textColor = (fullStr == "Untagged") ? data.tag.colorUntagged : data.tag.color;
+                Rect rect = selectionRect;
+                rect.x = selectionRect.xMax - RIGHT_BOUNDARY - offset + (ROW_HEIGHT - 1) - MAX_LAYER_LEN - MAX_INSTID_LEN;
 
-            GUI.Label(rect, fullStr, style);
+                GUIStyle style = new GUIStyle();
+                style.normal.textColor = (tag == "Untagged") ? data.tag.textColorUntagged : data.tag.textColor;
+
+                GUI.Label(rect, tag, style);
+            }
+
+            /* Draw item ovelay */
+            {
+                Color color = data.tag.GetColorByTag(tag);
+                bool invertDirection = data.tag.invertDirection;
+                float startTime = data.tag.gradientLength;
+
+                HierarchyRenderer.DrawOverlayByDrawMode(
+                    selectionRect, currentItem.nestingLevel, color, DrawMode.GRADIENT, startTime, invertDirection);
+            }
         }
 
         private static void DrawLayer(int instanceID, Rect selectionRect)
@@ -507,16 +521,16 @@ namespace sHierarchy
             if (!data.layer.enabled)
                 return;
 
-            string fullStr = LayerMask.LayerToName(currentGO.layer);
-            float offset = GUI.skin.label.CalcSize(new GUIContent(fullStr)).x;
+            string layer = LayerMask.LayerToName(currentGO.layer);
+            float offset = GUI.skin.label.CalcSize(new GUIContent(layer)).x;
 
             Rect rect = selectionRect;
             rect.x = selectionRect.xMax - RIGHT_BOUNDARY - offset + (ROW_HEIGHT - 1) - MAX_INSTID_LEN;
 
             GUIStyle style = new GUIStyle();
-            style.normal.textColor = (fullStr == "Default") ? data.layer.colorDefault : data.layer.color;
+            style.normal.textColor = (layer == "Default") ? data.layer.colorDefault : data.layer.color;
 
-            GUI.Label(rect, fullStr, style);
+            GUI.Label(rect, layer, style);
         }
 
         private static void DrawInstanceID(int instanceID, Rect selectionRect)

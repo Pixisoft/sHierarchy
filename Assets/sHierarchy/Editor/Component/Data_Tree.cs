@@ -23,13 +23,6 @@ using UnityEngine;
 
 namespace sHierarchy
 {
-    public enum DrawMode
-    {
-        GRADIENT = 1,
-        FILL = 2,
-        SEMI = 3,
-    }
-
     public class Container_TreeData : ScriptableObject
     {
         public Color[] branches = new Color[0];
@@ -58,9 +51,9 @@ namespace sHierarchy
 
         // --- Item ----
 
-        public bool colorizedItem = true;
+        public bool colorizedItem = false;
         public DrawMode drawMode = DrawMode.GRADIENT;
-        public float gradientLength = 0.8f;
+        public float gradientLength = 0.6f;
         public Color baseLevelColor = Color.gray;
         public float overlayAlpha = 0.12f;
 
@@ -93,7 +86,7 @@ namespace sHierarchy
             {
                 this.colorizedItem = EditorPrefs.GetBool(FormKey("colorizedItem"), this.colorizedItem);
                 this.drawMode = (DrawMode)EditorPrefs.GetInt(FormKey("drawMode"), (int)this.drawMode);
-                this.gradientLength = EditorPrefs.GetFloat(FormKey("dividegradientLengthrHeight"), this.gradientLength);
+                this.gradientLength = EditorPrefs.GetFloat(FormKey("gradientLength"), this.gradientLength);
                 this.baseLevelColor = HierarchyUtil.GetColor(FormKey("baseLevelColor"), this.baseLevelColor);
                 this.branchesLen = EditorPrefs.GetInt(FormKey("branches.Length"), this.branchesLen);
                 this.overlayAlpha = EditorPrefs.GetFloat(FormKey("overlayAlpha"), this.overlayAlpha);
@@ -121,7 +114,7 @@ namespace sHierarchy
                 this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
                     @"Enable/Disable all features from this section");
 
-                EditorGUILayout.LabelField("Bar", EditorStyles.boldLabel);
+                HierarchyUtil.LabelField("Bar");
 
                 HierarchyUtil.CreateGroup(() =>
                 {
@@ -277,7 +270,7 @@ namespace sHierarchy
 
         private void ResetLineAlpha() { this.lineAlpha = 0.8f; }
         private void ResetLineWidth() { this.lineWidth = 1.0f; }
-        private void ResetGradientLength() { this.gradientLength = 0.8f; }
+        private void ResetGradientLength() { this.gradientLength = 0.6f; }
     }
 }
 #endif

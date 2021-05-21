@@ -40,18 +40,19 @@ namespace sHierarchy
 
         /* Functions */
 
-        public static void DrawNestGroupOverlay(Rect originalRect, int nestlevel)
+        public static void DrawOverlayByDrawMode(Rect originalRect, int nestlevel, Color color, DrawMode drawMode, float startTime, bool invertDirection = false)
         {
-            Color color = GetNestColor(nestlevel);
-            color.a = (FoundBranchColor(nestlevel)) ? 0 : data.tree.overlayAlpha;
+            if (color.a == 0.0f) return;
 
-            switch (data.tree.drawMode)
+            switch (drawMode)
             {
                 case DrawMode.GRADIENT:
                     {
-                        Texture2D texture = GradientImage(color);
-                        originalRect.x = GetGOIconStartX(originalRect, nestlevel);
-                        GUI.DrawTexture(originalRect, texture);
+                        Rect fullRect = FullRect(originalRect);
+
+                        Texture2D texture = GradientImage(color, startTime, false, invertDirection);
+                        fullRect.x = GetGOIconStartX(originalRect, nestlevel);
+                        GUI.DrawTexture(fullRect, texture);
                     }
                     break;
                 case DrawMode.FILL:
@@ -67,11 +68,26 @@ namespace sHierarchy
             }
         }
 
-        public static void DrawFullItem(Rect originalRect, Color color)
+        public static void DrawNestGroupOverlay(Rect originalRect, int nestlevel)
+        {
+            Color color = GetNestColor(nestlevel);
+            color.a = (FoundBranchColor(nestlevel)) ? 0 : data.tree.overlayAlpha;
+            DrawMode drawMode = data.tree.drawMode;
+            float startTime = data.tree.gradientLength;
+
+            DrawOverlayByDrawMode(originalRect, nestlevel, color, drawMode, startTime);
+        }
+
+        public static Rect FullRect(Rect originalRect)
         {
             const int offset = 32;
-            originalRect = new Rect(offset, originalRect.y, originalRect.width + originalRect.x, originalRect.height);
-            EditorGUI.DrawRect(originalRect, color);
+            Rect rect = new Rect(offset, originalRect.y, originalRect.width + originalRect.x, originalRect.height);
+            return rect;
+        }
+
+        public static void DrawFullItem(Rect originalRect, Color color)
+        {
+            EditorGUI.DrawRect(FullRect(originalRect), color);
         }
 
         public static void DrawSelection(Rect originalRect, Color color)
@@ -227,7 +243,7 @@ namespace sHierarchy
             return false;
         }
 
-        public static Texture2D GradientImage(Color start, bool up = false)
+        public static Texture2D GradientImage(Color startColor, float startTime, bool up = false, bool invertDirection = false)
         {
             const float width = 16.0f;
             const float height = 16.0f;
@@ -240,13 +256,25 @@ namespace sHierarchy
 
             Gradient gradient = new Gradient();
 
+            float startAlpha = startColor.a;
+            float endAlpha = 0;
+
+            float startLen = 0;
+            float endLen = startTime;
+
+            if (invertDirection)
+            {
+                startLen = Mathf.Abs(1.0f - startTime);
+                endLen = 0;
+            }
+
             GradientColorKey[] DARKNESS_COLOR_KEY = {
-                new GradientColorKey(start, 0),
-                new GradientColorKey(start, 1),
+                new GradientColorKey(startColor, 0),
+                new GradientColorKey(startColor, 1),
             };
             GradientAlphaKey[] DARKNESS_ALPHA_KEY = {
-                new GradientAlphaKey(start.a, 0),
-                new GradientAlphaKey(0, data.tree.gradientLength),
+                new GradientAlphaKey(startAlpha, startLen),
+                new GradientAlphaKey(endAlpha, endLen),
             };
 
             gradient.SetKeys(DARKNESS_COLOR_KEY, DARKNESS_ALPHA_KEY);
