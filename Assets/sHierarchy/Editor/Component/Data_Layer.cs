@@ -114,7 +114,7 @@ namespace sHierarchy
                             HierarchyUtil.BeginHorizontal(() =>
                             {
                                 int oldSelection = itemColors.Keys.ElementAt(count);
-                                int currentSelection = EditorGUILayout.Popup(oldSelection, layers, GUILayout.Width(175));
+                                int currentSelection = HierarchyUtil.Popup(oldSelection, layers);
 
                                 Color col = HierarchyUtil.ColorField("", itemColors[oldSelection]);
 

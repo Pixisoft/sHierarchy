@@ -448,6 +448,11 @@ namespace sHierarchy
             return EditorGUILayout.ColorField(CreateGUIContent(name, tooltip), val);
         }
 
+        public static int Popup(int selectedIndex, string[] displayedOptions)
+        {
+            return EditorGUILayout.Popup(selectedIndex, displayedOptions, GUILayout.Width(175));
+        }
+
         #endregion
     }
 }
