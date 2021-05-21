@@ -18,9 +18,7 @@
  * 
  * For any other use, please ask for permission by contacting the author.
  */
-using System.Linq;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace sHierarchy
