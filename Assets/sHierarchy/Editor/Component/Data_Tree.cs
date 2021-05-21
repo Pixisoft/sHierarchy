@@ -61,9 +61,8 @@ namespace sHierarchy
 
         // --- Divider ----
 
-        public float dividerHeight = 1.0f;
-
         public Color dividerColor = Color.black;
+        public float dividerHeight = 0.0f;
 
         /* Setter & Getters */
 
@@ -241,7 +240,7 @@ namespace sHierarchy
             }
         }
 
-        private void ResetDividerHeight() { this.dividerHeight = 1.0f; }
+        private void ResetDividerHeight() { this.dividerHeight = 0.0f; }
         private void ResetDividerColor() { this.dividerColor = Color.black; }
 
         private void ResetBaseLevelColor()
