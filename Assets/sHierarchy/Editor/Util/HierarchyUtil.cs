@@ -333,11 +333,16 @@ namespace sHierarchy
             return len;
         }
 
+        public static Texture BrokenIcon()
+        {
+            return EditorGUIUtility.IconContent(COMP_ICON_BROKEN).image;
+        }
+
         public static Texture TypeTexture(Component comp, Type t)
         {
             var image = EditorGUIUtility.ObjectContent(comp, t).image;
             // icon for broken link
-            if (image == null) image = EditorGUIUtility.IconContent(COMP_ICON_BROKEN).image;
+            if (image == null) image = BrokenIcon();
             return image;
         }
 

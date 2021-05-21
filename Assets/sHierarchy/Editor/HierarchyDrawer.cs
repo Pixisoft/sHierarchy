@@ -410,10 +410,11 @@ namespace sHierarchy
 
             if (content.image && !string.IsNullOrEmpty(content.image.name))
             {
-                if (content.image.name != "d_GameObject Icon" && content.image.name != "d_Prefab Icon")
-                {
-                    HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, (Texture2D)content.image);
-                }
+                HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, content.image);
+            }
+            else
+            {
+                HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, HierarchyUtil.BrokenIcon());
             }
         }
 

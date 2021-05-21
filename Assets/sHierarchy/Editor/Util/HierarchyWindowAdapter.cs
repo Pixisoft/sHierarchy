@@ -93,6 +93,11 @@ namespace sHierarchy
             return _windowsCache;
         }
 
+        public static void ApplyIconByInstanceId(int instanceId, Texture icon)
+        {
+            ApplyIconByInstanceId(instanceId, (Texture2D)icon);
+        }
+
         public static void ApplyIconByInstanceId(int instanceId, Texture2D icon)
         {
             var hierarchyWindows = GetAllHierarchyWindows();
