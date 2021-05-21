@@ -43,8 +43,7 @@ namespace sHierarchy
 
         // --- Item ----
 
-        // tag -> color
-        public Dictionary<int, Color> itemColors = new Dictionary<int, Color>();
+        public Dictionary<int, Color> itemColors = new Dictionary<int, Color>();  // tag -> color
         public float gradientLength = 0.6f;
         public bool invertDirection = false;
 
@@ -119,7 +118,7 @@ namespace sHierarchy
                             HierarchyUtil.BeginHorizontal(() =>
                             {
                                 int oldSelection = itemColors.Keys.ElementAt(count);
-                                int currentSelection = EditorGUILayout.Popup(oldSelection, tags);
+                                int currentSelection = EditorGUILayout.Popup(oldSelection, tags, GUILayout.Width(175));
 
                                 Color col = HierarchyUtil.ColorField("", itemColors[oldSelection]);
 

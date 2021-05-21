@@ -274,7 +274,7 @@ namespace sHierarchy
 
         public static bool Button(string text)
         {
-            return GUILayout.Button(text, GUILayout.Width(50));
+            return GUILayout.Button(text, GUILayout.Width(60));
         }
 
         public static bool Button(string text, EmptyFunction func)

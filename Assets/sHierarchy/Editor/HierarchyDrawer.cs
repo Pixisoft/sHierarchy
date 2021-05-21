@@ -530,15 +530,29 @@ namespace sHierarchy
                 return;
 
             string layer = LayerMask.LayerToName(currentGO.layer);
-            float offset = GUI.skin.label.CalcSize(new GUIContent(layer)).x;
+            
+            /* Draw text */
+            {
+                float offset = GUI.skin.label.CalcSize(new GUIContent(layer)).x;
 
-            Rect rect = selectionRect;
-            rect.x = selectionRect.xMax - RIGHT_BOUNDARY - offset + (ROW_HEIGHT - 1) - MAX_INSTID_LEN;
+                Rect rect = selectionRect;
+                rect.x = selectionRect.xMax - RIGHT_BOUNDARY - offset + (ROW_HEIGHT - 1) - MAX_INSTID_LEN;
 
-            GUIStyle style = new GUIStyle();
-            style.normal.textColor = (layer == "Default") ? data.layer.colorDefault : data.layer.color;
+                GUIStyle style = new GUIStyle();
+                style.normal.textColor = (layer == "Default") ? data.layer.textColorDefault : data.layer.textColor;
 
-            GUI.Label(rect, layer, style);
+                GUI.Label(rect, layer, style);
+            }
+
+            /* Draw item ovelay */
+            {
+                Color color = data.layer.GetColorByLayer(layer);
+                bool invertDirection = data.layer.invertDirection;
+                float startTime = data.layer.gradientLength;
+
+                HierarchyRenderer.DrawOverlayByDrawMode(
+                    selectionRect, currentItem.nestingLevel, color, DrawMode.GRADIENT, startTime, invertDirection);
+            }
         }
 
         private static void DrawInstanceID(int instanceID, Rect selectionRect)
