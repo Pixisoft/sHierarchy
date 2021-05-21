@@ -20,7 +20,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -94,7 +93,7 @@ namespace sHierarchy
 
         public static void CreateInfo(string desc)
         {
-            if (desc == "") 
+            if (desc == "")
                 return;
 
             GUILayout.BeginHorizontal(EditorStyles.helpBox);
@@ -104,7 +103,25 @@ namespace sHierarchy
             GUILayout.EndHorizontal();
         }
 
-        #region Color
+        public static bool IsType<T, U>()
+        {
+            return (typeof(T) == typeof(U));
+        }
+
+        /// <summary>
+        /// Convert from generic T to any data type U.
+        /// 
+        /// See https://stackoverflow.com/questions/4092393/value-of-type-t-cannot-be-converted-to
+        /// </summary>
+        public static U ConvertType<T, U>(T data)
+        {
+            T newT1 = (T)(object)data;
+            U newT2 = (U)(object)newT1;
+            return newT2;
+        }
+
+        #region Preference Data Utility
+
         public static Color GetColor(string key, Color defaultValue)
         {
             Color color = defaultValue;
@@ -122,6 +139,107 @@ namespace sHierarchy
             EditorPrefs.SetFloat(key + ".b", value.b);
             EditorPrefs.SetFloat(key + ".a", value.a);
         }
+
+        public static Dictionary<K, V> GetDictionary<K, V>(string key, Dictionary<K, V> defaultValue)
+        {
+            int len = EditorPrefs.GetInt(key + ".length", 0);
+
+            Dictionary<K, V> newList = new Dictionary<K, V>();
+
+            for (int count = 0; count < len; ++count)
+            {
+                K entryKey = GetData(key + ".entry." + count, default(K));
+                V entryVal = GetData(key + ".value." + count, default(V));
+                newList.Add(entryKey, entryVal);
+            }
+
+            return newList;
+        }
+
+        public static void SetDictionary<K, V>(string key, Dictionary<K, V> value)
+        {
+            int len = value.Count;
+            EditorPrefs.SetInt(key + ".length", len);
+
+            int count = 0;
+            foreach (KeyValuePair<K, V> entry in value)
+            {
+                SetData(key + ".entry." + count, entry.Key);
+                SetData(key + ".value." + count, entry.Value);
+                ++count;
+            }
+        }
+
+        public static T GetData<T>(string key, T defaultValue) 
+        {
+            object result = null;
+
+            if (IsType<T, int>())
+            {
+                int val = ConvertType<T, int>(defaultValue);
+                result = EditorPrefs.GetInt(key, val);
+            }
+            else if (IsType<T, float>())
+            {
+                float val = ConvertType<T, float>(defaultValue);
+                result = EditorPrefs.GetFloat(key, val);
+            }
+            else if (IsType<T, bool>())
+            {
+                bool val = ConvertType<T, bool>(defaultValue);
+                result = EditorPrefs.GetBool(key, val);
+            }
+            else if (IsType<T, string>())
+            {
+                string val = ConvertType<T, string>(defaultValue);
+                result = EditorPrefs.GetString(key, val);
+            }
+            else if (IsType<T, Color>())
+            {
+                Color val = ConvertType<T, Color>(defaultValue);
+                result = GetColor(key, val);
+            }
+            else
+            {
+                Debug.LogError("Invalid data type, set: " + typeof(T) + " with default value of " + defaultValue);
+            }
+
+            return (T)Convert.ChangeType(result, typeof(T));
+        }
+
+        public static void SetData<T>(string key, T value)
+        {
+            if (IsType<T, int>())
+            {
+                int val = ConvertType<T, int>(value);
+                EditorPrefs.SetInt(key, val);
+            }
+            else if (IsType<T, float>())
+            {
+                float val = ConvertType<T, float>(value);
+                EditorPrefs.SetFloat(key, val);
+            }
+            else if (IsType<T, bool>())
+            {
+                bool val = ConvertType<T, bool>(value);
+                EditorPrefs.SetBool(key, val);
+            }
+            else if (IsType<T, string>())
+            {
+                string val = ConvertType<T, string>(value);
+                EditorPrefs.SetString(key, val);
+            }
+            else if (IsType<T, Color>())
+            {
+                Color val = ConvertType<T, Color>(value);
+                SetColor(key, val);
+            }
+            else
+            {
+                Debug.LogError("Invalid data type, set: " + typeof(T) + " with value of " + value);
+            }
+        }
+
         #endregion
 
         #region Vector3
@@ -154,10 +272,19 @@ namespace sHierarchy
 
         #region Default UI
 
-        public static void Button(string text, EmptyFunction func)
+        public static bool Button(string text)
         {
-            if (GUILayout.Button(text, GUILayout.Width(50)))
+            return GUILayout.Button(text, GUILayout.Width(50));
+        }
+
+        public static bool Button(string text, EmptyFunction func)
+        {
+            if (Button(text))
+            {
                 func.Invoke();
+                return true;
+            }
+            return false;
         }
 
         public static void LabelField(string text)
