@@ -108,6 +108,8 @@ namespace sHierarchy
 
         #endregion
 
+        private static bool EXISTS_PREFAB_ICON = false;
+
         static void RetrieveDataFromHierarchy()
         {
             Stage stage = StageUtility.GetCurrentStage();
@@ -141,6 +143,8 @@ namespace sHierarchy
             tags.Clear();
             layers.Clear();
             instanceIDs.Clear();
+
+            EXISTS_PREFAB_ICON = false;
 
             GameObject[] sceneRoots;
             Scene tempScene;
@@ -206,7 +210,10 @@ namespace sHierarchy
                 {
                     var prefab = PrefabUtility.GetCorrespondingObjectFromSource(go);
                     if (prefab)
+                    {
                         newInfo.prefabInstanceID = prefab.GetInstanceID();
+                        EXISTS_PREFAB_ICON = true;
+                    }
                 }
 
                 if (data.separator.enabled)
@@ -288,7 +295,7 @@ namespace sHierarchy
                 MAX_INSTID_LEN = HierarchyUtil.MaxIntLength(instanceIDs.ToArray(), data.instanceID.enabled);
 
                 RIGHT_BOUNDARY = 0.0f;  // reset
-                if (currentItem.prefabInstanceID != default(int))
+                if (EXISTS_PREFAB_ICON)
                     RIGHT_BOUNDARY += ROW_HEIGHT;
             }
 
