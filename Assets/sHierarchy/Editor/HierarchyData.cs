@@ -71,9 +71,12 @@ namespace sHierarchy
 
         public override void Draw()
         {
-            this.enabled = EditorGUILayout.Toggle("Enabeld", this.enabled);
-            this.updateInPlayMode = EditorGUILayout.Toggle("Update in Play Mode", this.updateInPlayMode);
-            this.updateInPrefabIsoMode = EditorGUILayout.Toggle("Update in Prefab Isolation Mode", this.updateInPrefabIsoMode);
+            this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
+                @"Enable the plugin sHierarchy");
+            this.updateInPlayMode = HierarchyUtil.Toggle("Update in Play Mode", this.updateInPlayMode,
+                @"Draw in Play Mode");
+            this.updateInPrefabIsoMode = HierarchyUtil.Toggle("Update in Prefab Isolation Mode", this.updateInPrefabIsoMode,
+                @"Draw in Prefab Isolation Mode");
 
             ExecuteAll(HierarchyComponentFunctions.DRAW);
         }
