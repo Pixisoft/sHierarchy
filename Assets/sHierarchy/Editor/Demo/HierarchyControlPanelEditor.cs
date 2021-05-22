@@ -53,12 +53,11 @@ namespace sHierarchy
 
         /* Functions */
 
+        public string FormKey(string name) { return HierarchyUtil.FormKey("ControlPanel.") + name; }
+
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-
-
-            instance = this;
 
             HierarchyUtil.CreateInfo(INFO);
 
@@ -93,9 +92,32 @@ namespace sHierarchy
                 "Preview", @"Enable feature Preview");
         }
 
+        private void OnEnable()
+        {
+            instance = this;
+
+            this.f_alterRowShading = EditorPrefs.GetBool(FormKey("f_alterRowShading"), this.f_alterRowShading);
+            this.f_separator = EditorPrefs.GetBool(FormKey("f_separator"), this.f_separator);
+            this.f_tree = EditorPrefs.GetBool(FormKey("f_tree"), this.f_tree);
+            this.f_log = EditorPrefs.GetBool(FormKey("f_log"), this.f_log);
+            this.f_components = EditorPrefs.GetBool(FormKey("f_components"), this.f_components);
+            this.f_tag = EditorPrefs.GetBool(FormKey("f_tag"), this.f_tag);
+            this.f_layer = EditorPrefs.GetBool(FormKey("f_layer"), this.f_layer);
+            this.f_instanceID = EditorPrefs.GetBool(FormKey("f_instanceID"), this.f_instanceID);
+            this.f_preview = EditorPrefs.GetBool(FormKey("f_preview"), this.f_preview);
+        }
+
         private void OnDisable()
         {
-            instance = null;
+            EditorPrefs.SetBool(FormKey("f_alterRowShading"), this.f_alterRowShading);
+            EditorPrefs.SetBool(FormKey("f_separator"), this.f_separator);
+            EditorPrefs.SetBool(FormKey("f_tree"), this.f_tree);
+            EditorPrefs.SetBool(FormKey("f_log"), this.f_log);
+            EditorPrefs.SetBool(FormKey("f_components"), this.f_components);
+            EditorPrefs.SetBool(FormKey("f_tag"), this.f_tag);
+            EditorPrefs.SetBool(FormKey("f_layer"), this.f_layer);
+            EditorPrefs.SetBool(FormKey("f_instanceID"), this.f_instanceID);
+            EditorPrefs.SetBool(FormKey("f_preview"), this.f_preview);
         }
 
         private static void DrawOption(bool flag, ref bool option, string label, string tooltip)
