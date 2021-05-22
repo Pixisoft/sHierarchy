@@ -71,12 +71,14 @@ namespace sHierarchy
 
         public override void Draw()
         {
+            const float spaces = 200;
+
             this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
-                @"Enable the plugin sHierarchy");
+                @"Enable the plugin sHierarchy", spaces);
             this.updateInPlayMode = HierarchyUtil.Toggle("Update in Play Mode", this.updateInPlayMode,
-                @"Draw in Play Mode");
+                @"Draw in Play Mode", spaces);
             this.updateInPrefabIsoMode = HierarchyUtil.Toggle("Update in Prefab Isolation Mode", this.updateInPrefabIsoMode,
-                @"Draw in Prefab Isolation Mode");
+                @"Draw in Prefab Mode", spaces);
 
             ExecuteAll(HierarchyComponentFunctions.DRAW);
         }
