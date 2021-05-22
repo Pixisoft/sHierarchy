@@ -423,9 +423,14 @@ namespace sHierarchy
             return gc;
         }
 
-        public static bool Toggle(string name, bool val, string tooltip = "")
+        public static bool Toggle(string name, bool val, string tooltip = "", float width = -1.0f)
         {
-            return EditorGUILayout.Toggle(CreateGUIContent(name, tooltip), val);
+            float originalValue = EditorGUIUtility.labelWidth;
+            if (width != -1.0f) 
+                EditorGUIUtility.labelWidth = width;
+            bool result = EditorGUILayout.Toggle(CreateGUIContent(name, tooltip), val);
+            EditorGUIUtility.labelWidth = originalValue;
+            return result;
         }
 
         public static float Slider(string name, float val, float leftValue, float rightValue, string tooltip = "")
