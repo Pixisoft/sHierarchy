@@ -70,6 +70,13 @@ namespace sHierarchy
 
         /* Functions */
 
+        public override bool GetEnabled()
+        {
+            var hcpe = HierarchyControlPanelEditor.instance;
+            if (hcpe != null) return hcpe.f_tree;
+            return this.enabled;
+        }
+
         public override string FormKey(string name) { return HierarchyUtil.FormKey("tree.") + name; }
 
         public override void Init()

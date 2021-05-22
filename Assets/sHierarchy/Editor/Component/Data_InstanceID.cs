@@ -39,6 +39,13 @@ namespace sHierarchy
 
         /* Functions */
 
+        public override bool GetEnabled()
+        {
+            var hcpe = HierarchyControlPanelEditor.instance;
+            if (hcpe != null) return hcpe.f_instanceID;
+            return this.enabled;
+        }
+
         public override string FormKey(string name) { return HierarchyUtil.FormKey("instanceID.") + name; }
 
         public override void Init()
