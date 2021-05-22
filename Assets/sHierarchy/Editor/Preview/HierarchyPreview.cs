@@ -75,6 +75,9 @@ namespace sHierarchy
 
         public override void OnPreviewGUI(Rect r, GUIStyle background)
         {
+            if (!HasPreviewGUI())
+                return;
+
             Draw();
         }
 
