@@ -77,8 +77,8 @@ namespace sHierarchy
                 @"Enable the plugin sHierarchy", spaces);
             this.updateInPlayMode = HierarchyUtil.Toggle("Update in Play Mode", this.updateInPlayMode,
                 @"Draw in Play Mode", spaces);
-            this.updateInPrefabIsoMode = HierarchyUtil.Toggle("Update in Prefab Isolation Mode", this.updateInPrefabIsoMode,
-                @"Draw in Prefab Mode", spaces);
+            this.updateInPrefabIsoMode = HierarchyUtil.Toggle("Update in Prefab Mode", this.updateInPrefabIsoMode,
+                @"Draw in Prefab Isolation Mode", spaces);
 
             ExecuteAll(HierarchyComponentFunctions.DRAW);
         }
