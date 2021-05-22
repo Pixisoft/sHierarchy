@@ -91,7 +91,7 @@ namespace sHierarchy
 
             initialized = true;
 
-            if (data.enabled)
+            if (data.GetEnabled())
             {
                 #region Registers events
 
@@ -216,14 +216,14 @@ namespace sHierarchy
                     }
                 }
 
-                if (data.separator.enabled)
+                if (data.separator.GetEnabled())
                 {
                     newInfo.isSeparator = String.Compare(go.tag, "EditorOnly", StringComparison.Ordinal) == 0  // gameobject has EditorOnly tag
                                           && (!string.IsNullOrEmpty(go.name) && !string.IsNullOrEmpty(data.separator.prefix)
                                           && go.name.StartsWith(data.separator.prefix));  // and also starts with '>'
                 }
 
-                if (data.components.enabled)
+                if (data.components.GetEnabled())
                 {
                     #region Components Information (icons)
 
@@ -290,9 +290,9 @@ namespace sHierarchy
             /* Initialzie draw variables */
             {
                 ROW_HEIGHT = GUI.skin.label.lineHeight + 1;  // default is 16 pixels
-                MAX_TAG_LEN = HierarchyUtil.MaxLabelLength(tags.ToArray(), data.tag.enabled);
-                MAX_LAYER_LEN = HierarchyUtil.MaxLabelLength(layers.ToArray(), data.layer.enabled);
-                MAX_INSTID_LEN = HierarchyUtil.MaxIntLength(instanceIDs.ToArray(), data.instanceID.enabled);
+                MAX_TAG_LEN = HierarchyUtil.MaxLabelLength(tags.ToArray(), data.tag.GetEnabled());
+                MAX_LAYER_LEN = HierarchyUtil.MaxLabelLength(layers.ToArray(), data.layer.GetEnabled());
+                MAX_INSTID_LEN = HierarchyUtil.MaxIntLength(instanceIDs.ToArray(), data.instanceID.GetEnabled());
 
                 RIGHT_BOUNDARY = 0.0f;  // reset
                 if (EXISTS_PREFAB_ICON)
@@ -315,7 +315,7 @@ namespace sHierarchy
 
         private static void DrawAlternatingBG(int instanceID, Rect selectionRect)
         {
-            if (!data.alterRowShading.enabled)
+            if (!data.alterRowShading.GetEnabled())
                 return;
 
             var isOdd = Mathf.FloorToInt(((selectionRect.y - 4) / ROW_HEIGHT) % 2) != 0;
@@ -330,7 +330,7 @@ namespace sHierarchy
         private static void DrawSeparators(int instanceID, Rect selectionRect)
         {
             // EditorOnly objects are only removed from build if they're not childrens
-            if (!data.separator.enabled || data.separator.color.a <= 0 || !currentItem.isSeparator)
+            if (!data.separator.GetEnabled() || data.separator.color.a <= 0 || !currentItem.isSeparator)
                 return;
 
             // Adds color on top of the label
@@ -342,7 +342,7 @@ namespace sHierarchy
 
         private static void DrawTree(int instanceID, Rect selectionRect)
         {
-            if (!data.tree.enabled || currentItem.nestingLevel < 0)
+            if (!data.tree.GetEnabled() || currentItem.nestingLevel < 0)
                 return;
 
             // prevents drawing when the hierarchy search mode is enabled
@@ -402,7 +402,7 @@ namespace sHierarchy
 
         private static void DrawIcons(int instanceID, Rect selectionRect)
         {
-            if (!data.icons.enabled)
+            if (!data.icons.GetEnabled())
                 return;
 
             // Draws the gameobject icon, if present
@@ -420,7 +420,7 @@ namespace sHierarchy
 
         private static void DrawLog(int instanceID, Rect selectionRect)
         {
-            if (!data.log.enabled)
+            if (!data.log.GetEnabled())
                 return;
 
             Dictionary<string, string> log = HierarchyLog.LogStorage(LogType.Log);
@@ -467,7 +467,7 @@ namespace sHierarchy
 
         private static void DrawComponents(int instanceID, Rect selectionRect)
         {
-            if (!data.components.enabled)
+            if (!data.components.GetEnabled())
                 return;
 
             temp_iconsDrawedCount = 0;
@@ -495,7 +495,7 @@ namespace sHierarchy
 
         private static void DrawTag(int instanceID, Rect selectionRect)
         {
-            if (!data.tag.enabled)
+            if (!data.tag.GetEnabled())
                 return;
 
             string tag = currentGO.tag;
@@ -526,7 +526,7 @@ namespace sHierarchy
 
         private static void DrawLayer(int instanceID, Rect selectionRect)
         {
-            if (!data.layer.enabled)
+            if (!data.layer.GetEnabled())
                 return;
 
             string layer = LayerMask.LayerToName(currentGO.layer);
@@ -557,7 +557,7 @@ namespace sHierarchy
 
         private static void DrawInstanceID(int instanceID, Rect selectionRect)
         {
-            if (!data.instanceID.enabled)
+            if (!data.instanceID.GetEnabled())
                 return;
 
             string fullStr = instanceID.ToString();

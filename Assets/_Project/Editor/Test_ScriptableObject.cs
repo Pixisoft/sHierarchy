@@ -19,7 +19,6 @@
  * For any other use, please ask for permission by contacting the author.
  */
 using UnityEditor;
-using UnityEngine;
 
 namespace sHierarchy.Test
 {

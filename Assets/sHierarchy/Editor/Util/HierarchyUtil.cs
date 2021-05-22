@@ -98,7 +98,7 @@ namespace sHierarchy
 
             GUILayout.BeginHorizontal(EditorStyles.helpBox);
             {
-                GUILayout.Label(desc);
+                GUILayout.Label(desc, EditorStyles.wordWrappedLabel);
             }
             GUILayout.EndHorizontal();
         }

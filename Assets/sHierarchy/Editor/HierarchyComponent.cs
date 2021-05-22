@@ -29,7 +29,10 @@ namespace sHierarchy
 
     public abstract class HierarchyComponent
     {
-        public bool enabled = true;
+        protected bool enabled = true;
+
+        public abstract bool GetEnabled();
+        public virtual void SetEnabled(bool val) { this.enabled = val; }
 
         public abstract string FormKey(string name);
         public abstract void Init();

@@ -41,19 +41,20 @@ namespace sHierarchy
         public Data_InstanceID instanceID = new Data_InstanceID();
         public Data_Preview preview = new Data_Preview();
 
-        private const bool f_alternatingBG = true;
-        private const bool f_separator = true;
-        private const bool f_tree = true;
-        private const bool f_log = true;
-        private const bool f_icons = true;
-        private const bool f_components = true;
-        private const bool f_tag = true;
-        private const bool f_layer = true;
-        private const bool f_instanceID = true;
-        private const bool f_preview = true;
+        public const bool f_alterRowShading = true;
+        public const bool f_separator = true;
+        public const bool f_tree = true;
+        public const bool f_log = true;
+        public const bool f_icons = true;
+        public const bool f_components = true;
+        public const bool f_tag = true;
+        public const bool f_layer = true;
+        public const bool f_instanceID = true;
+        public const bool f_preview = true;
 
         /* Setter & Getter */
 
+        public override bool GetEnabled() { return this.enabled; }
         public static HierarchyData instance { get { return HierarchyPreferences.data; } }
 
         /* Functions */
@@ -96,7 +97,7 @@ namespace sHierarchy
         {
             if (!flag)
             {
-                hc.enabled = flag;
+                hc.SetEnabled(flag);
                 return;
             }
 
@@ -110,7 +111,7 @@ namespace sHierarchy
 
         private void ExecuteAll(HierarchyComponentFunctions fnc)
         {
-            Execute(alterRowShading, fnc, f_alternatingBG);
+            Execute(alterRowShading, fnc, f_alterRowShading);
             Execute(separator, fnc, f_separator);
             Execute(tree, fnc, f_tree);
             Execute(log, fnc, f_log);

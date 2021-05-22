@@ -50,7 +50,7 @@ namespace sHierarchy
 
         public override bool HasPreviewGUI()
         {
-            if (!HierarchyData.instance.enabled || !HierarchyData.instance.preview.enabled ||
+            if (!HierarchyData.instance.GetEnabled() || !HierarchyData.instance.preview.GetEnabled() ||
                 Selection.activeGameObject == null || Selection.gameObjects.Length != 1)
                 return false;
 
