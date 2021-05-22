@@ -259,13 +259,16 @@ namespace sHierarchy
             float startAlpha = startColor.a;
             float endAlpha = 0;
 
-            float startLen = 0;
-            float endLen = startTime;
+            float start = 0;
+            float end = startTime;
 
             if (invertDirection)
             {
-                startLen = Mathf.Abs(1.0f - startTime);
-                endLen = 0;
+                startAlpha = 0;
+                endAlpha = startColor.a;
+
+                start = 1.0f - startTime;
+                end = 1;
             }
 
             GradientColorKey[] DARKNESS_COLOR_KEY = {
@@ -273,8 +276,8 @@ namespace sHierarchy
                 new GradientColorKey(startColor, 1),
             };
             GradientAlphaKey[] DARKNESS_ALPHA_KEY = {
-                new GradientAlphaKey(startAlpha, startLen),
-                new GradientAlphaKey(endAlpha, endLen),
+                new GradientAlphaKey(startAlpha, start),
+                new GradientAlphaKey(endAlpha, end),
             };
 
             gradient.SetKeys(DARKNESS_COLOR_KEY, DARKNESS_ALPHA_KEY);
