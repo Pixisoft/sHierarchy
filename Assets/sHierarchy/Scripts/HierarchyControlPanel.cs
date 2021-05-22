@@ -24,12 +24,7 @@ namespace sHierarchy
 {
     public class HierarchyControlPanel : MonoBehaviour
     {
-        /* Variables */
-
-        /* Setter & Getter */
-
-        /* Functions */
-
+        // Script will be used by `HierarchyControlPanelEditor`
     }
 }
 #endif
