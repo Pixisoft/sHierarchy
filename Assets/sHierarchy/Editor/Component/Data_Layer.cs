@@ -87,16 +87,21 @@ namespace sHierarchy
                 this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
                     @"Enable/Disable all features from this section");
 
-                HierarchyUtil.BeginHorizontal(() =>
-                {
-                    this.textColorDefault = EditorGUILayout.ColorField("Default Color", this.textColorDefault);
-                    HierarchyUtil.Button("Reset", ResetDefaultColor);
-                });
+                HierarchyUtil.LabelField("Text");
 
-                HierarchyUtil.BeginHorizontal(() =>
+                HierarchyUtil.CreateGroup(() =>
                 {
-                    this.textColor = EditorGUILayout.ColorField("Color", this.textColor);
-                    HierarchyUtil.Button("Reset", ResetColor);
+                    HierarchyUtil.BeginHorizontal(() =>
+                    {
+                        this.textColorDefault = EditorGUILayout.ColorField("Default Color", this.textColorDefault);
+                        HierarchyUtil.Button("Reset", ResetDefaultColor);
+                    });
+
+                    HierarchyUtil.BeginHorizontal(() =>
+                    {
+                        this.textColor = EditorGUILayout.ColorField("Color", this.textColor);
+                        HierarchyUtil.Button("Reset", ResetColor);
+                    });
                 });
 
                 HierarchyUtil.LabelField("Item");
@@ -187,7 +192,7 @@ namespace sHierarchy
             for (int index = 0; index <= 31; ++index)
             {
                 var layerN = LayerMask.LayerToName(index);
-                if (layerN.Length > 0) 
+                if (layerN.Length > 0)
                     layerNames.Add(layerN);
             }
             return layerNames.ToArray();
