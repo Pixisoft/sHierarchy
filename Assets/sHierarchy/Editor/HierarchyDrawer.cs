@@ -164,9 +164,7 @@ namespace sHierarchy
 
                 sceneRoots = tempScene.GetRootGameObjects();
 
-                // TODO: Find hierarchy sorting type...
-                bool alpha = false;
-                if (alpha)
+                if (ALPHA_SORTED)
                     sceneRoots = sceneRoots.OrderBy(go => go.name).ToArray();
 
                 RetrieveFromGameObjects(sceneRoots);
@@ -257,11 +255,14 @@ namespace sHierarchy
             #region Analyzes Childrens
 
             int childCount = go.transform.childCount;
+            GameObject[] childrens = HierarchyUtil.GetAllChilds(go);
+
+            if (ALPHA_SORTED)
+                childrens = childrens.OrderBy(go => go.name).ToArray();
+
             for (int j = 0; j < childCount; ++j)
             {
-                // TODO: This wouldn't work with alphabetic sorting
-
-                var child = go.transform.GetChild(j).gameObject;
+                var child = childrens[j];
 
                 AnalyzeGoWithChildren(
                     child,
@@ -283,6 +284,8 @@ namespace sHierarchy
         // Right boundary
         private static float RIGHT_BOUNDARY = 0.0f;
 
+        private static bool ALPHA_SORTED = false;
+
         private static void DrawCore(int instanceID, Rect selectionRect)
         {
             // skips early if item is not registered or not valid
@@ -297,6 +300,13 @@ namespace sHierarchy
 
             /* Initialzie draw variables */
             {
+                bool alphaSorted = HierarchyWindowAdapter.IsUsingAlphaSort();
+                if (ALPHA_SORTED != alphaSorted)
+                {
+                    ALPHA_SORTED = alphaSorted;
+                    RetrieveDataFromHierarchy();
+                }
+
                 ROW_HEIGHT = GUI.skin.label.lineHeight + 1;  // default is 16 pixels
                 MAX_TAG_LEN = HierarchyUtil.MaxLabelLength(tags.ToArray(), data.tag.GetEnabled());
                 MAX_LAYER_LEN = HierarchyUtil.MaxLabelLength(layers.ToArray(), data.layer.GetEnabled());

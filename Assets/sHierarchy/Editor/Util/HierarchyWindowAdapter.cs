@@ -43,6 +43,7 @@ namespace sHierarchy
         private static readonly FieldInfo TREE_VIEW_FIELD;
         private static readonly PropertyInfo TREE_VIEW_DATA_PROPERTY;
         private static readonly MethodInfo TREE_VIEW_ITEMS_METHOD;
+        private static readonly MethodInfo IsUsingAlphaSort_METHOD;
         private static readonly PropertyInfo TREE_VIEW_OBJECT_PROPERTY;
 
         // Windows cache
@@ -70,6 +71,7 @@ namespace sHierarchy
 
             var treeViewDataType = assembly.GetType("UnityEditor.GameObjectTreeViewDataSource");
             TREE_VIEW_ITEMS_METHOD = treeViewDataType.GetMethod("GetRows", INSTANCE_PUBLIC);
+            IsUsingAlphaSort_METHOD = treeViewDataType.GetMethod("IsUsingAlphaSort", INSTANCE_PRIVATE);
 
             var treeViewItem = assembly.GetType("UnityEditor.GameObjectTreeViewItem");
             TREE_VIEW_OBJECT_PROPERTY = treeViewItem.GetProperty("objectPPTR", INSTANCE_PUBLIC);
@@ -123,8 +125,20 @@ namespace sHierarchy
             var treeView = TREE_VIEW_FIELD.GetValue(sceneHierarchy);
             var treeViewData = TREE_VIEW_DATA_PROPERTY.GetValue(treeView, null);
             var treeViewItems = (IEnumerable<TreeViewItem>)TREE_VIEW_ITEMS_METHOD.Invoke(treeViewData, null);
-
             return treeViewItems;
+        }
+
+        public static bool IsUsingAlphaSort()
+        {
+            var hierarchyWindows = GetAllHierarchyWindows();
+            foreach (var window in hierarchyWindows)
+            {
+                var sceneHierarchy = SCENE_HIERARCHY_FIELD.GetValue(window);
+                var treeView = TREE_VIEW_FIELD.GetValue(sceneHierarchy);
+                var treeViewData = TREE_VIEW_DATA_PROPERTY.GetValue(treeView, null);
+                return (bool)IsUsingAlphaSort_METHOD.Invoke(treeViewData, null);
+            }
+            return false;
         }
     }
 }

@@ -466,6 +466,17 @@ namespace sHierarchy
         }
 
         #endregion
+
+        public static GameObject[] GetAllChilds(GameObject go)
+        {
+            var list = new List<GameObject>();
+            int count = go.transform.childCount;
+            for (int index = 0; index < count; ++index)
+            {
+                list.Add(go.transform.GetChild(index).gameObject);
+            }
+            return list.ToArray();
+        }
     }
 }
 #endif
