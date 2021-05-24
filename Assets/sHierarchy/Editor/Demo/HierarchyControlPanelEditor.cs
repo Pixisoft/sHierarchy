@@ -31,23 +31,12 @@ namespace sHierarchy
     [CustomEditor(typeof(HierarchyControlPanel))]
     public class HierarchyControlPanelEditor : Editor
     {
-        public static HierarchyControlPanelEditor instance = null;
-
         /* Variables */
 
         private const string INFO =
             @"If you have this component in the scene, then it won't respect the option from preference window";
 
-        public bool f_alterRowShading = true;
-        public bool f_separator = true;
-        public bool f_tree = true;
-        public bool f_log = true;
-        public bool f_icons = true;
-        public bool f_components = true;
-        public bool f_tag = true;
-        public bool f_layer = true;
-        public bool f_instanceID = true;
-        public bool f_preview = true;
+        private HierarchyControlPanel mTarget = null;
 
         /* Setter & Getter */
 
@@ -57,67 +46,67 @@ namespace sHierarchy
 
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
+            //base.OnInspectorGUI();
 
             HierarchyUtil.CreateInfo(INFO);
 
-            DrawOption(HierarchyData.f_alterRowShading, ref f_alterRowShading,
+            DrawOption(HierarchyData.f_alterRowShading, ref mTarget.f_alterRowShading,
                 "Alternate Row Shading", @"Enable feature Alternate Row Shading");
 
-            DrawOption(HierarchyData.f_separator, ref f_separator,
+            DrawOption(HierarchyData.f_separator, ref mTarget.f_separator,
                 "Separator", @"Enable feature Separator");
 
-            DrawOption(HierarchyData.f_tree, ref f_tree,
+            DrawOption(HierarchyData.f_tree, ref mTarget.f_tree,
                 "Tree", @"Enable feature Tree");
 
-            DrawOption(HierarchyData.f_log, ref f_log,
+            DrawOption(HierarchyData.f_log, ref mTarget.f_log,
                 "Logs", @"Enable feature Logs");
 
-            DrawOption(HierarchyData.f_icons, ref f_icons,
+            DrawOption(HierarchyData.f_icons, ref mTarget.f_icons,
                 "Icons", @"Enable feature Icons");
 
-            DrawOption(HierarchyData.f_components, ref f_components,
+            DrawOption(HierarchyData.f_components, ref mTarget.f_components,
                 "Components", @"Enable feature Components");
 
-            DrawOption(HierarchyData.f_tag, ref f_tag,
+            DrawOption(HierarchyData.f_tag, ref mTarget.f_tag,
                 "Tag", @"Enable feature Tag");
 
-            DrawOption(HierarchyData.f_layer, ref f_layer,
+            DrawOption(HierarchyData.f_layer, ref mTarget.f_layer,
                 "Layer", @"Enable feature Layer");
 
-            DrawOption(HierarchyData.f_instanceID, ref f_instanceID,
+            DrawOption(HierarchyData.f_instanceID, ref mTarget.f_instanceID,
                 "Instance ID", @"Enable feature Instance ID");
 
-            DrawOption(HierarchyData.f_preview, ref f_preview,
+            DrawOption(HierarchyData.f_preview, ref mTarget.f_preview,
                 "Preview", @"Enable feature Preview");
         }
 
         private void OnEnable()
         {
-            instance = this;
+            this.mTarget = (HierarchyControlPanel)this.target;
 
-            this.f_alterRowShading = EditorPrefs.GetBool(FormKey("f_alterRowShading"), this.f_alterRowShading);
-            this.f_separator = EditorPrefs.GetBool(FormKey("f_separator"), this.f_separator);
-            this.f_tree = EditorPrefs.GetBool(FormKey("f_tree"), this.f_tree);
-            this.f_log = EditorPrefs.GetBool(FormKey("f_log"), this.f_log);
-            this.f_components = EditorPrefs.GetBool(FormKey("f_components"), this.f_components);
-            this.f_tag = EditorPrefs.GetBool(FormKey("f_tag"), this.f_tag);
-            this.f_layer = EditorPrefs.GetBool(FormKey("f_layer"), this.f_layer);
-            this.f_instanceID = EditorPrefs.GetBool(FormKey("f_instanceID"), this.f_instanceID);
-            this.f_preview = EditorPrefs.GetBool(FormKey("f_preview"), this.f_preview);
+            mTarget.f_alterRowShading = EditorPrefs.GetBool(FormKey("f_alterRowShading"), mTarget.f_alterRowShading);
+            mTarget.f_separator = EditorPrefs.GetBool(FormKey("f_separator"), mTarget.f_separator);
+            mTarget.f_tree = EditorPrefs.GetBool(FormKey("f_tree"), mTarget.f_tree);
+            mTarget.f_log = EditorPrefs.GetBool(FormKey("f_log"), mTarget.f_log);
+            mTarget.f_components = EditorPrefs.GetBool(FormKey("f_components"), mTarget.f_components);
+            mTarget.f_tag = EditorPrefs.GetBool(FormKey("f_tag"), mTarget.f_tag);
+            mTarget.f_layer = EditorPrefs.GetBool(FormKey("f_layer"), mTarget.f_layer);
+            mTarget.f_instanceID = EditorPrefs.GetBool(FormKey("f_instanceID"), mTarget.f_instanceID);
+            mTarget.f_preview = EditorPrefs.GetBool(FormKey("f_preview"), mTarget.f_preview);
         }
 
         private void OnDisable()
         {
-            EditorPrefs.SetBool(FormKey("f_alterRowShading"), this.f_alterRowShading);
-            EditorPrefs.SetBool(FormKey("f_separator"), this.f_separator);
-            EditorPrefs.SetBool(FormKey("f_tree"), this.f_tree);
-            EditorPrefs.SetBool(FormKey("f_log"), this.f_log);
-            EditorPrefs.SetBool(FormKey("f_components"), this.f_components);
-            EditorPrefs.SetBool(FormKey("f_tag"), this.f_tag);
-            EditorPrefs.SetBool(FormKey("f_layer"), this.f_layer);
-            EditorPrefs.SetBool(FormKey("f_instanceID"), this.f_instanceID);
-            EditorPrefs.SetBool(FormKey("f_preview"), this.f_preview);
+            EditorPrefs.SetBool(FormKey("f_alterRowShading"), mTarget.f_alterRowShading);
+            EditorPrefs.SetBool(FormKey("f_separator"), mTarget.f_separator);
+            EditorPrefs.SetBool(FormKey("f_tree"), mTarget.f_tree);
+            EditorPrefs.SetBool(FormKey("f_log"), mTarget.f_log);
+            EditorPrefs.SetBool(FormKey("f_components"), mTarget.f_components);
+            EditorPrefs.SetBool(FormKey("f_tag"), mTarget.f_tag);
+            EditorPrefs.SetBool(FormKey("f_layer"), mTarget.f_layer);
+            EditorPrefs.SetBool(FormKey("f_instanceID"), mTarget.f_instanceID);
+            EditorPrefs.SetBool(FormKey("f_preview"), mTarget.f_preview);
         }
 
         private static void DrawOption(bool flag, ref bool option, string label, string tooltip)

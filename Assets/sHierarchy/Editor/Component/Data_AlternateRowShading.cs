@@ -43,7 +43,7 @@ namespace sHierarchy
 
         public override bool GetEnabled()
         {
-            var hcpe = HierarchyControlPanelEditor.instance;
+            var hcpe = HierarchyControlPanel.instance;
             if (hcpe != null) return hcpe.f_alterRowShading;
             return this.enabled;
         }

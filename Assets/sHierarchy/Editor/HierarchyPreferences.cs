@@ -33,11 +33,9 @@ namespace sHierarchy
 
         private static bool prefsLoaded = false;
 
-        private static HierarchyData mData = new HierarchyData();
-
         /* Setter & Getters */
 
-        public static HierarchyData data { get { return mData; } }
+        public static HierarchyData data { get; private set; } = new HierarchyData();
 
         /* Functions */
 
@@ -80,16 +78,16 @@ namespace sHierarchy
             if (prefsLoaded)
                 return;
 
-            mData = new HierarchyData();
+            data = new HierarchyData();
 
-            mData.Init();
+            data.Init();
 
             prefsLoaded = true;
         }
 
         private static void Draw()
         {
-            mData.Draw();
+            data.Draw();
         }
 
         private static void SavePref()
@@ -97,7 +95,7 @@ namespace sHierarchy
             if (!GUI.changed)
                 return;
 
-            mData.SavePref();
+            data.SavePref();
 
             HierarchyDrawer.Initialize();
             HierarchyPreview.Draw();
