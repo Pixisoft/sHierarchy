@@ -19,7 +19,7 @@
  * For any other use, please ask for permission by contacting the author.
  */
 using UnityEditor;
-using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace sHierarchy
 {
@@ -44,11 +44,13 @@ P.S. You would need to remove this component in order to make the current scene 
 
         /* Functions */
 
-        public string FormKey(string name) { return HierarchyUtil.FormKey("ControlPanel.") + name; }
-
         public override void OnInspectorGUI()
         {
             HierarchyUtil.CreateInfo(INFO);
+
+            this.mTarget = (HierarchyControlPanel)this.target;
+
+            EditorGUI.BeginChangeCheck();
 
             DrawOption(HierarchyData.f_alterRowShading, ref mTarget.f_alterRowShading,
                 "Alternate Row Shading", @"Enable feature Alternate Row Shading");
@@ -79,34 +81,11 @@ P.S. You would need to remove this component in order to make the current scene 
 
             DrawOption(HierarchyData.f_preview, ref mTarget.f_preview,
                 "Preview", @"Enable feature Preview");
-        }
 
-        private void OnEnable()
-        {
-            this.mTarget = (HierarchyControlPanel)this.target;
-
-            mTarget.f_alterRowShading = EditorPrefs.GetBool(FormKey("f_alterRowShading"), mTarget.f_alterRowShading);
-            mTarget.f_separator = EditorPrefs.GetBool(FormKey("f_separator"), mTarget.f_separator);
-            mTarget.f_tree = EditorPrefs.GetBool(FormKey("f_tree"), mTarget.f_tree);
-            mTarget.f_log = EditorPrefs.GetBool(FormKey("f_log"), mTarget.f_log);
-            mTarget.f_components = EditorPrefs.GetBool(FormKey("f_components"), mTarget.f_components);
-            mTarget.f_tag = EditorPrefs.GetBool(FormKey("f_tag"), mTarget.f_tag);
-            mTarget.f_layer = EditorPrefs.GetBool(FormKey("f_layer"), mTarget.f_layer);
-            mTarget.f_instanceID = EditorPrefs.GetBool(FormKey("f_instanceID"), mTarget.f_instanceID);
-            mTarget.f_preview = EditorPrefs.GetBool(FormKey("f_preview"), mTarget.f_preview);
-        }
-
-        private void OnDisable()
-        {
-            EditorPrefs.SetBool(FormKey("f_alterRowShading"), mTarget.f_alterRowShading);
-            EditorPrefs.SetBool(FormKey("f_separator"), mTarget.f_separator);
-            EditorPrefs.SetBool(FormKey("f_tree"), mTarget.f_tree);
-            EditorPrefs.SetBool(FormKey("f_log"), mTarget.f_log);
-            EditorPrefs.SetBool(FormKey("f_components"), mTarget.f_components);
-            EditorPrefs.SetBool(FormKey("f_tag"), mTarget.f_tag);
-            EditorPrefs.SetBool(FormKey("f_layer"), mTarget.f_layer);
-            EditorPrefs.SetBool(FormKey("f_instanceID"), mTarget.f_instanceID);
-            EditorPrefs.SetBool(FormKey("f_preview"), mTarget.f_preview);
+            if (EditorGUI.EndChangeCheck())
+            {
+                EditorUtility.SetDirty(mTarget);
+            }
         }
 
         private static void DrawOption(bool flag, ref bool option, string label, string tooltip)

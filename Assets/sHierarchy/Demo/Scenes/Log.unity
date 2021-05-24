@@ -203,7 +203,7 @@ GameObject:
   - component: {fileID: 988247576}
   - component: {fileID: 988247575}
   m_Layer: 0
-  m_Name: HierarchyControlPanel
+  m_Name: _
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -221,14 +221,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0de899740abb82e4fb20680040c924c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  f_alterRowShading: 1
-  f_separator: 1
-  f_tree: 1
+  f_alterRowShading: 0
+  f_separator: 0
+  f_tree: 0
   f_log: 1
-  f_icons: 1
-  f_components: 1
-  f_tag: 1
-  f_layer: 1
+  f_icons: 0
+  f_components: 0
+  f_tag: 0
+  f_layer: 0
   f_instanceID: 0
   f_preview: 0
 --- !u!4 &988247576
