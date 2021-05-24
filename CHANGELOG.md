@@ -17,6 +17,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 * Add utility function for loading data structure, `Dictionary`.
 * Add ability to render gradient color with tag name.
 * Add control panel for demo scenes.
+* Support sorting type, `Alphabetic Sorting`.
 
 ### 0.1.2
 
