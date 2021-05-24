@@ -89,7 +89,14 @@ namespace sHierarchy
         {
             GUILayout.Space(10);
 
-            data.Draw();
+            HierarchyUtil.BeginHorizontal(() => 
+            {
+                GUILayout.Space(10);
+
+                GUILayout.BeginVertical();
+                data.Draw();
+                GUILayout.EndVertical();
+            });
         }
 
         private static void SavePref()

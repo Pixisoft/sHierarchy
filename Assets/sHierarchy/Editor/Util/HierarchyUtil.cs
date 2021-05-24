@@ -61,6 +61,8 @@ namespace sHierarchy
         {
             BeginHorizontal(() =>
             {
+                GUILayout.Space(5);
+
                 BeginVertical(() =>
                 {
                     Indent(func);
@@ -98,7 +100,9 @@ namespace sHierarchy
 
             GUILayout.BeginHorizontal(EditorStyles.helpBox);
             {
+                GUILayout.Space(5);
                 GUILayout.Label(desc, EditorStyles.wordWrappedLabel);
+                GUILayout.Space(5);
             }
             GUILayout.EndHorizontal();
         }
