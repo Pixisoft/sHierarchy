@@ -304,6 +304,12 @@ namespace sHierarchy
                 if (ALPHA_SORTED != alphaSorted)
                 {
                     ALPHA_SORTED = alphaSorted;
+
+                    // This is bad since we retrieve data twice when the user
+                    // changes their hierarchy sorting type.
+                    //
+                    // Yet this may be okay since the user doesn't change 
+                    // the sorting type that often.
                     RetrieveDataFromHierarchy();
                 }
 
