@@ -124,6 +124,8 @@ namespace sHierarchy
 
                 HierarchyUtil.CreateGroup(() =>
                 {
+                    HierarchyUtil.CreateInfo("Line indicator on the left");
+
                     this.colorizedLine = HierarchyUtil.Toggle("Colorized Line", this.colorizedLine);
 
                     HierarchyUtil.BeginHorizontal(() =>
@@ -187,6 +189,8 @@ namespace sHierarchy
 
                 HierarchyUtil.CreateGroup(() =>
                 {
+                    HierarchyUtil.CreateInfo("Thin lines indicate each group of tree level");
+
                     HierarchyUtil.BeginHorizontal(() =>
                     {
                         this.dividerColor = EditorGUILayout.ColorField("Color", this.dividerColor);

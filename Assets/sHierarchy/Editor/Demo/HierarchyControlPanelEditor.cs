@@ -34,7 +34,9 @@ namespace sHierarchy
         /* Variables */
 
         private const string INFO =
-            @"If you have this component in the scene, then it won't respect the option from preference window";
+            @"If you have this component in the scene, then it will force enable/disable the feature even when you have set options from the preference window
+
+P.S. You would need to remove this component in order to make the current scene respect to the preferences window's options";
 
         private HierarchyControlPanel mTarget = null;
 
