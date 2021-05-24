@@ -18,7 +18,6 @@
  * 
  * For any other use, please ask for permission by contacting the author.
  */
-using JetBrains.Annotations;
 using UnityEngine;
 using UnityEditor;
 
@@ -60,7 +59,7 @@ namespace sHierarchy
             }
         }
 
-        [UsedImplicitly, SettingsProvider]
+        [SettingsProvider]
         static SettingsProvider Create_sHierarchSettings()
         {
             return new HP_SettingsProvider(settingsPreferencesKey, SettingsScope.User);
