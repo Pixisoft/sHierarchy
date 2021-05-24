@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 
+### 0.1.4
+
+* Update package manual.
+
 ### 0.1.3
 
 * Add handler for broken link in component icon.
