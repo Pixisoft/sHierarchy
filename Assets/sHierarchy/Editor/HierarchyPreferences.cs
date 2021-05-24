@@ -31,8 +31,6 @@ namespace sHierarchy
     {
         /* Variables */
 
-        public const string settingsPreferencesKey = "Preferences/sHierarchy";
-
         private static bool prefsLoaded = false;
 
         /* Setter & Getters */
@@ -47,9 +45,9 @@ namespace sHierarchy
         }
 
 #if UNITY_2018_3_OR_NEWER
-        private class HP_SettingsProvider : SettingsProvider
+        private class sHierarchyProvider : SettingsProvider
         {
-            public HP_SettingsProvider(string path, SettingsScope scopes = SettingsScope.User)
+            public sHierarchyProvider(string path, SettingsScope scopes = SettingsScope.User)
                 : base(path, scopes)
             { }
 
@@ -60,9 +58,9 @@ namespace sHierarchy
         }
 
         [SettingsProvider]
-        static SettingsProvider Create_sHierarchSettings()
+        static SettingsProvider Create_sHierarchyProvider()
         {
-            return new HP_SettingsProvider(settingsPreferencesKey, SettingsScope.User);
+            return new sHierarchyProvider("Preferences/sHierarchy", SettingsScope.User);
         }
 #else
         [PreferenceItem("sHierarchy")]
@@ -89,6 +87,8 @@ namespace sHierarchy
 
         private static void Draw()
         {
+            GUILayout.Space(10);
+
             data.Draw();
         }
 
