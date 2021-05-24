@@ -52,6 +52,8 @@ namespace sHierarchy
 
         private static string STAGE_NAME = "";
 
+        private static GameObject currentPrefab = null;
+
         /* Setter & Getter */
 
         /* Functions */
@@ -112,22 +114,37 @@ namespace sHierarchy
 
         static void RetrieveDataFromHierarchy()
         {
-            Stage stage = StageUtility.GetCurrentStage();
+            // TEMPORARY: fix for performance reasons while in play mode
+            if (!data.updateInPlayMode && Application.isPlaying)
+                return;
 
+            /* Reset */
+            {
+                sceneGameObjects.Clear();
+                tags.Clear();
+                layers.Clear();
+                instanceIDs.Clear();
+
+                EXISTS_PREFAB_ICON = false;
+                currentPrefab = null;
+            }
+
+            Stage stage = StageUtility.GetCurrentStage();
             STAGE_NAME = stage.name;
 
             if (IsMainStage())
-            {
                 RetrieveDataFromScene();
-            }
             else
-            {
-                PrefabStage ps = PrefabStageUtility.GetCurrentPrefabStage();
-                GameObject prefabGO = ps.prefabContentsRoot;
+                RetrieveDataFromPrefabMode();
+        }
 
-                if (data.updateInPrefabIsoMode)
-                    RetrieveFromGameObjects(new GameObject[] { prefabGO });
-            }
+        static void RetrieveDataFromPrefabMode()
+        {
+            PrefabStage ps = PrefabStageUtility.GetCurrentPrefabStage();
+            currentPrefab = ps.prefabContentsRoot;
+
+            if (data.updateInPrefabIsoMode)
+                RetrieveFromGameObjects(new GameObject[] { currentPrefab });
         }
 
         /// <summary>
@@ -135,17 +152,6 @@ namespace sHierarchy
         /// </summary>
         static void RetrieveDataFromScene()
         {
-            // TEMPORARY: fix for performance reasons while in play mode
-            if (!data.updateInPlayMode && Application.isPlaying)
-                return;
-
-            sceneGameObjects.Clear();
-            tags.Clear();
-            layers.Clear();
-            instanceIDs.Clear();
-
-            EXISTS_PREFAB_ICON = false;
-
             GameObject[] sceneRoots;
             Scene tempScene;
 
@@ -197,10 +203,12 @@ namespace sHierarchy
                 newInfo.topParentHasChild = topParentHasChild;
                 newInfo.goName = go.name;
 
-                // We minus 1 when inside prefab isolation mode since
-                // there is no scene root in that view.
-                if (!IsMainStage())
+                // We minus 1 when inside prefab isolation mode only when
+                // in the first level of Prefab Isolation Mode.
+                if (!IsMainStage() && currentPrefab && currentPrefab.transform.parent == null)
+                {
                     --newInfo.nestingLevel;
+                }
 
                 tags.Add(go.tag);
                 layers.Add(LayerMask.LayerToName(go.layer));
