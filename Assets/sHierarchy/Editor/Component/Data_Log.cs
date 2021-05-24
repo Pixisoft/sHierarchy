@@ -22,6 +22,7 @@ using UnityEditor;
 
 namespace sHierarchy
 {
+    [System.Serializable]
     public class Data_Log : HierarchyComponent
     {
         /* Variables */
@@ -42,8 +43,8 @@ namespace sHierarchy
 
         public override bool GetEnabled()
         {
-            var hcpe = HierarchyControlPanel.instance;
-            if (hcpe != null) return hcpe.f_log;
+            var hcp = HierarchyControlPanel.instance;
+            if (hcp != null) return hcp.enabled && hcp.f_log;
             return this.enabled;
         }
 

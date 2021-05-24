@@ -26,6 +26,7 @@ namespace sHierarchy
     /// <summary>
     /// Preview selected gameobject in Hierarch in Inspector window.
     /// </summary>
+    [System.Serializable]
     public class Data_Preview : HierarchyComponent
     {
         /* Variables */
@@ -53,8 +54,8 @@ namespace sHierarchy
 
         public override bool GetEnabled()
         {
-            var hcpe = HierarchyControlPanel.instance;
-            if (hcpe != null) return hcpe.f_preview;
+            var hcp = HierarchyControlPanel.instance;
+            if (hcp != null) return hcp.enabled && hcp.f_preview;
             return this.enabled;
         }
 

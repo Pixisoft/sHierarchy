@@ -72,8 +72,8 @@ namespace sHierarchy
 
         public override bool GetEnabled()
         {
-            var hcpe = HierarchyControlPanel.instance;
-            if (hcpe != null) return hcpe.f_tree;
+            var hcp = HierarchyControlPanel.instance;
+            if (hcp != null) return hcp.enabled && hcp.f_tree;
             return this.enabled;
         }
 

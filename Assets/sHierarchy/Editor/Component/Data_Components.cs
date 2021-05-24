@@ -19,7 +19,6 @@
  * For any other use, please ask for permission by contacting the author.
  */
 using UnityEditor;
-using UnityEngine;
 
 namespace sHierarchy
 {
@@ -44,8 +43,8 @@ namespace sHierarchy
 
         public override bool GetEnabled()
         {
-            var hcpe = HierarchyControlPanel.instance;
-            if (hcpe != null) return hcpe.f_components;
+            var hcp = HierarchyControlPanel.instance;
+            if (hcp != null) return hcp.enabled && hcp.f_components;
             return this.enabled;
         }
 
