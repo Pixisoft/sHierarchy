@@ -31,6 +31,8 @@ namespace sHierarchy
     {
         /* Variables */
 
+        public const string settingsPreferencesKey = "Preferences/sHierarchy";
+
         private static bool prefsLoaded = false;
 
         /* Setter & Getters */
@@ -60,7 +62,7 @@ namespace sHierarchy
         [SettingsProvider]
         static SettingsProvider HP_PrefCode()
         {
-            return new HP_SettingsProvider("Preferences/sHierarchy");
+            return new HP_SettingsProvider(settingsPreferencesKey, SettingsScope.User);
         }
 #else
         [PreferenceItem("sHierarchy")]

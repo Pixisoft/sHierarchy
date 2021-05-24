@@ -23,6 +23,7 @@ using UnityEditor;
 
 namespace sHierarchy
 {
+    [System.Serializable]
     public class HierarchyData : HierarchyComponent
     {
         /* Variables */
@@ -54,10 +55,16 @@ namespace sHierarchy
 
         /* Setter & Getter */
 
-        public override bool GetEnabled() { return this.enabled; }
         public static HierarchyData instance { get { return HierarchyPreferences.data; } }
 
         /* Functions */
+
+        public override bool GetEnabled()
+        {
+            var hcp = HierarchyControlPanel.instance;
+            if (hcp != null) return hcp.enabled;
+            return this.enabled;
+        }
 
         public override string FormKey(string name) { return HierarchyUtil.FormKey("root.") + name; }
 

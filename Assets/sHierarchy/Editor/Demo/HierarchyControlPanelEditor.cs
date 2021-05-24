@@ -46,8 +46,6 @@ namespace sHierarchy
 
         public override void OnInspectorGUI()
         {
-            //base.OnInspectorGUI();
-
             HierarchyUtil.CreateInfo(INFO);
 
             DrawOption(HierarchyData.f_alterRowShading, ref mTarget.f_alterRowShading,
