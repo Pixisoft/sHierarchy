@@ -79,9 +79,12 @@ namespace sHierarchy
             GUILayout.EndHorizontal();
         }
 
-        public static void BeginVertical(EmptyFunction func)
+        public static void BeginVertical(EmptyFunction func, string style = "box")
         {
-            GUILayout.BeginVertical("box");
+            if (style == "") 
+                GUILayout.BeginVertical();
+            else 
+                GUILayout.BeginVertical("box");
             func.Invoke();
             GUILayout.EndVertical();
         }

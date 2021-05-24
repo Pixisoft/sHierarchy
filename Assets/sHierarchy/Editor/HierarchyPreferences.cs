@@ -93,9 +93,10 @@ namespace sHierarchy
             {
                 GUILayout.Space(10);
 
-                GUILayout.BeginVertical();
-                data.Draw();
-                GUILayout.EndVertical();
+                HierarchyUtil.BeginVertical(() =>
+                {
+                    data.Draw();
+                }, "");
             });
         }
 
