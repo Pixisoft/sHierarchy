@@ -8,6 +8,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### 0.1.4
 
 * Update package manual.
+* Separate options, `Text` and `Item` for section `Tag`.
+* Separate options, `Text` and `Item` for section `Layer`.
 
 ### 0.1.3
 
