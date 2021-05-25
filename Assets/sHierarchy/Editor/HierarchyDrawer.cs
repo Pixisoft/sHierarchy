@@ -525,6 +525,7 @@ namespace sHierarchy
             string tag = currentGO.tag;
 
             /* Draw text */
+            if (data.tag.enabledText)
             {
                 float offset = GUI.skin.label.CalcSize(new GUIContent(tag)).x;
 
@@ -538,6 +539,7 @@ namespace sHierarchy
             }
 
             /* Draw item ovelay */
+            if (data.tag.enabledItem)
             {
                 Color color = data.tag.GetColorByTag(tag);
                 bool invertDirection = data.tag.invertDirection;
@@ -554,8 +556,9 @@ namespace sHierarchy
                 return;
 
             string layer = LayerMask.LayerToName(currentGO.layer);
-            
+
             /* Draw text */
+            if (data.layer.enabledText)
             {
                 float offset = GUI.skin.label.CalcSize(new GUIContent(layer)).x;
 
@@ -569,6 +572,7 @@ namespace sHierarchy
             }
 
             /* Draw item ovelay */
+            if (data.layer.enabledItem)
             {
                 Color color = data.layer.GetColorByLayer(layer);
                 bool invertDirection = data.layer.invertDirection;
