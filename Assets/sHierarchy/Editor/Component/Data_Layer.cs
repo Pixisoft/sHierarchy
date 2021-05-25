@@ -36,12 +36,16 @@ namespace sHierarchy
         private const string FOLD_NAME = "Layer";
         public bool foldout = false;
 
+        // --- Text ----
+
+        public bool enabledText = true;
         public Color textColorDefault = Color.gray;
         public Color textColor = new Color(0.71f, 0.71f, 0.71f);
 
         // --- Item ----
 
-        public Dictionary<int, Color> itemColors = new Dictionary<int, Color>();  // tag -> color
+        public bool enabledItem = true;
+        public Dictionary<string, Color> itemColors = new Dictionary<string, Color>();  // tag -> color
         public float gradientLength = 0.6f;
         public bool invertDirection = true;
 
@@ -60,15 +64,18 @@ namespace sHierarchy
 
         public override void Init()
         {
+            // Here emphasize we want this to be disabled by default!
             {
                 this.enabled = false;
             }
 
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
 
+            this.enabledText = EditorPrefs.GetBool(FormKey("enabledText"), this.enabledText);
             this.textColorDefault = HierarchyUtil.GetColor(FormKey("textColorDefault"), this.textColorDefault);
             this.textColor = HierarchyUtil.GetColor(FormKey("textColor"), this.textColor);
 
+            this.enabledItem = EditorPrefs.GetBool(FormKey("enabledItem"), this.enabledItem);
             this.itemColors = HierarchyUtil.GetDictionary(FormKey("itemColors"), this.itemColors);
             this.gradientLength = HierarchyUtil.GetData(FormKey("gradientLength"), this.gradientLength);
             this.invertDirection = HierarchyUtil.GetData(FormKey("invertDirection"), this.invertDirection);
@@ -92,6 +99,9 @@ namespace sHierarchy
 
                 HierarchyUtil.CreateGroup(() =>
                 {
+                    this.enabledText = HierarchyUtil.Toggle("Enabeld", this.enabledText,
+                        @"Display text on the side");
+
                     HierarchyUtil.BeginHorizontal(() =>
                     {
                         this.textColorDefault = EditorGUILayout.ColorField("Default Color", this.textColorDefault);
@@ -109,6 +119,9 @@ namespace sHierarchy
 
                 HierarchyUtil.CreateGroup(() =>
                 {
+                    this.enabledItem = HierarchyUtil.Toggle("Enabeld", this.enabledItem,
+                        @"Colorized items in hierarchy");
+
                     HierarchyUtil.BeginHorizontal(() =>
                     {
                         EditorGUILayout.LabelField("Colors");
@@ -119,28 +132,35 @@ namespace sHierarchy
                     {
                         string[] layers = Layers();
 
-                        if (itemColors.Count == 0)
-                            EditorGUILayout.LabelField("No specification");
+                        int drawn = 0;
 
                         for (int count = 0; count < itemColors.Count; ++count)
                         {
+                            string oldName = itemColors.Keys.ElementAt(count);
+                            int oldSelection = LayerMask.NameToLayer(oldName);
+
                             HierarchyUtil.BeginHorizontal(() =>
                             {
-                                int oldSelection = itemColors.Keys.ElementAt(count);
                                 int currentSelection = HierarchyUtil.Popup(oldSelection, layers);
+                                string currentName = LayerMask.LayerToName(currentSelection);
 
-                                Color col = HierarchyUtil.ColorField("", itemColors[oldSelection]);
+                                Color col = HierarchyUtil.ColorField("", itemColors[oldName]);
 
-                                RemoveLayerColor(oldSelection);
-                                if (itemColors.ContainsKey(currentSelection))
-                                    itemColors[currentSelection] = col;
+                                RemoveLayerColor(oldName);
+                                if (itemColors.ContainsKey(currentName))
+                                    itemColors[currentName] = col;
                                 else
-                                    itemColors.Add(currentSelection, col);
+                                    itemColors.Add(currentName, col);
 
                                 if (HierarchyUtil.Button("Remove"))
-                                    RemoveLayerColor(currentSelection);
+                                    RemoveLayerColor(currentName);
+
+                                ++drawn;
                             });
                         }
+
+                        if (drawn == 0)
+                            EditorGUILayout.LabelField("No specification");
                     });
 
                     HierarchyUtil.BeginHorizontal(() =>
@@ -160,9 +180,11 @@ namespace sHierarchy
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
 
+            EditorPrefs.SetBool(FormKey("enabledText"), this.enabledText);
             HierarchyUtil.SetColor(FormKey("colorDefault"), this.textColorDefault);
             HierarchyUtil.SetColor(FormKey("textColor"), this.textColor);
 
+            EditorPrefs.SetBool(FormKey("enabledItem"), this.enabledItem);
             HierarchyUtil.SetDictionary(FormKey("itemColors"), this.itemColors);
             HierarchyUtil.SetData(FormKey("gradientLength"), this.gradientLength);
             HierarchyUtil.SetData(FormKey("invertDirection"), this.invertDirection);
@@ -175,15 +197,18 @@ namespace sHierarchy
             Color defaultColor = Color.gray;
             defaultColor.a = 0.12f;
 
-            if (!itemColors.ContainsKey(0))
-                itemColors.Add(0, defaultColor);
+            string name = LayerMask.LayerToName(0);
+
+            if (!itemColors.ContainsKey(name))
+                itemColors.Add(name, defaultColor);
         }
-        private void RemoveLayerColor(int selection) { itemColors.Remove(selection); }
+        private void RemoveLayerColor(string selection) { itemColors.Remove(selection); }
         private void ResetGradientLength() { this.gradientLength = 0.6f; }
 
         private Color SafeGetColor(int id)
         {
-            if (itemColors.ContainsKey(id)) return this.itemColors[id];
+            string name = LayerMask.LayerToName(id);
+            if (itemColors.ContainsKey(name)) return this.itemColors[name];
             return Color.clear;
         }
 

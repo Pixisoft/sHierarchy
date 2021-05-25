@@ -39,12 +39,14 @@ namespace sHierarchy
 
         // --- Text ----
 
+        public bool enabledText = true;
         public Color textColorUntagged = Color.gray;
         public Color textColor = new Color(0.71f, 0.71f, 0.71f);
 
         // --- Item ----
 
-        public Dictionary<int, Color> itemColors = new Dictionary<int, Color>();  // tag -> color
+        public bool enabledItem = true;
+        public Dictionary<string, Color> itemColors = new Dictionary<string, Color>();  // tag -> color
         public float gradientLength = 0.6f;
         public bool invertDirection = false;
 
@@ -65,9 +67,11 @@ namespace sHierarchy
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), this.enabled);
 
+            this.enabledText = EditorPrefs.GetBool(FormKey("enabledText"), this.enabledText);
             this.textColorUntagged = HierarchyUtil.GetColor(FormKey("textColorUntagged"), this.textColorUntagged);
             this.textColor = HierarchyUtil.GetColor(FormKey("textColor"), this.textColor);
 
+            this.enabledItem = EditorPrefs.GetBool(FormKey("enabledItem"), this.enabledItem);
             this.itemColors = HierarchyUtil.GetDictionary(FormKey("itemColors"), this.itemColors);
             this.gradientLength = HierarchyUtil.GetData(FormKey("gradientLength"), this.gradientLength);
             this.invertDirection = HierarchyUtil.GetData(FormKey("invertDirection"), this.invertDirection);
@@ -91,6 +95,9 @@ namespace sHierarchy
 
                 HierarchyUtil.CreateGroup(() =>
                 {
+                    this.enabledText = HierarchyUtil.Toggle("Enabeld", this.enabledText,
+                        @"Display text on the side");
+
                     HierarchyUtil.BeginHorizontal(() =>
                     {
                         this.textColorUntagged = EditorGUILayout.ColorField("Untagged Color", this.textColorUntagged);
@@ -108,6 +115,9 @@ namespace sHierarchy
 
                 HierarchyUtil.CreateGroup(() =>
                 {
+                    this.enabledItem = HierarchyUtil.Toggle("Enabeld", this.enabledItem,
+                        @"Colorized items in hierarchy");
+
                     HierarchyUtil.BeginHorizontal(() =>
                     {
                         EditorGUILayout.LabelField("Colors");
@@ -118,28 +128,35 @@ namespace sHierarchy
                     {
                         string[] tags = InternalEditorUtility.tags;
 
-                        if (itemColors.Count == 0)
-                            EditorGUILayout.LabelField("No specification");
+                        int drawn = 0;
 
                         for (int count = 0; count < itemColors.Count; ++count)
                         {
+                            string oldName = itemColors.Keys.ElementAt(count);
+                            int oldSelection = TagToIndex(oldName);
+
                             HierarchyUtil.BeginHorizontal(() =>
                             {
-                                int oldSelection = itemColors.Keys.ElementAt(count);
                                 int currentSelection = HierarchyUtil.Popup(oldSelection, tags);
+                                string currentName = IndexToTag(currentSelection);
 
-                                Color col = HierarchyUtil.ColorField("", itemColors[oldSelection]);
+                                Color col = HierarchyUtil.ColorField("", itemColors[oldName]);
 
-                                RemoveTagColor(oldSelection);
-                                if (itemColors.ContainsKey(currentSelection))
-                                    itemColors[currentSelection] = col;
+                                RemoveTagColor(oldName);
+                                if (itemColors.ContainsKey(currentName))
+                                    itemColors[currentName] = col;
                                 else
-                                    itemColors.Add(currentSelection, col);
+                                    itemColors.Add(currentName, col);
 
                                 if (HierarchyUtil.Button("Remove"))
-                                    RemoveTagColor(currentSelection);
+                                    RemoveTagColor(currentName);
+
+                                ++drawn;
                             });
                         }
+
+                        if (drawn == 0)
+                            EditorGUILayout.LabelField("No specification");
                     });
 
                     HierarchyUtil.BeginHorizontal(() =>
@@ -159,9 +176,11 @@ namespace sHierarchy
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
 
+            EditorPrefs.SetBool(FormKey("enabledText"), this.enabledText);
             HierarchyUtil.SetColor(FormKey("textColorUntagged"), this.textColorUntagged);
             HierarchyUtil.SetColor(FormKey("textColor"), this.textColor);
 
+            EditorPrefs.SetBool(FormKey("enabledItem"), this.enabledItem);
             HierarchyUtil.SetDictionary(FormKey("itemColors"), this.itemColors);
             HierarchyUtil.SetData(FormKey("gradientLength"), this.gradientLength);
             HierarchyUtil.SetData(FormKey("invertDirection"), this.invertDirection);
@@ -174,23 +193,30 @@ namespace sHierarchy
             Color defaultColor = Color.gray;
             defaultColor.a = 0.12f;
 
-            if (!itemColors.ContainsKey(0))
-                itemColors.Add(0, defaultColor);
+            string name = "Untagged";
+
+            if (!itemColors.ContainsKey(name))
+                itemColors.Add(name, defaultColor);
         }
-        private void RemoveTagColor(int selection) { itemColors.Remove(selection); }
+        private void RemoveTagColor(string selection) { itemColors.Remove(selection); }
         private void ResetGradientLength() { this.gradientLength = 0.6f; }
 
-        private Color SafeGetColor(int id)
+        private int TagToIndex(string tag)
         {
-            if (itemColors.ContainsKey(id)) return this.itemColors[id];
-            return Color.clear;
+            List<string> tags = InternalEditorUtility.tags.ToList();
+            int id = tags.IndexOf(tag);
+            return id;
+        }
+
+        private string IndexToTag(int id)
+        {
+            return InternalEditorUtility.tags[id];
         }
 
         public Color GetColorByTag(string tag)
         {
-            List<string> tags = InternalEditorUtility.tags.ToList();
-            int id = tags.IndexOf(tag);
-            return SafeGetColor(id);
+            if (itemColors.ContainsKey(tag)) return this.itemColors[tag];
+            return Color.clear;
         }
     }
 }
