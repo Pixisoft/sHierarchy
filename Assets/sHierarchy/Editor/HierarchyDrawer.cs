@@ -314,8 +314,8 @@ namespace sHierarchy
                 }
 
                 ROW_HEIGHT = GUI.skin.label.lineHeight + 1;  // default is 16 pixels
-                MAX_TAG_LEN = HierarchyUtil.MaxLabelLength(tags.ToArray(), data.tag.GetEnabled());
-                MAX_LAYER_LEN = HierarchyUtil.MaxLabelLength(layers.ToArray(), data.layer.GetEnabled());
+                MAX_TAG_LEN = HierarchyUtil.MaxLabelLength(tags.ToArray(), (data.tag.GetEnabled() && data.tag.enabledText));
+                MAX_LAYER_LEN = HierarchyUtil.MaxLabelLength(layers.ToArray(), (data.layer.GetEnabled() && data.layer.enabledText));
                 MAX_INSTID_LEN = HierarchyUtil.MaxIntLength(instanceIDs.ToArray(), data.instanceID.GetEnabled());
 
                 RIGHT_BOUNDARY = 0.0f;  // reset
