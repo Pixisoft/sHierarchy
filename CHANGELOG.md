@@ -10,6 +10,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 * Update package manual.
 * Separate options, `Text` and `Item` for section `Tag`.
 * Separate options, `Text` and `Item` for section `Layer`.
+* Remove feature, `Preview`.
 
 ### 0.1.3
 
