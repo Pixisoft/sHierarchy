@@ -79,9 +79,6 @@ P.S. You would need to remove this component in order to make the current scene 
             DrawOption(HierarchyData.f_instanceID, ref mTarget.f_instanceID,
                 "Instance ID", @"Enable feature Instance ID");
 
-            DrawOption(HierarchyData.f_preview, ref mTarget.f_preview,
-                "Preview", @"Enable feature Preview");
-
             if (EditorGUI.EndChangeCheck())
             {
                 EditorUtility.SetDirty(mTarget);

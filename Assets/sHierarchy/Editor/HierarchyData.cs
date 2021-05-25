@@ -40,7 +40,6 @@ namespace sHierarchy
         public Data_Tag tag = new Data_Tag();
         public Data_Layer layer = new Data_Layer();
         public Data_InstanceID instanceID = new Data_InstanceID();
-        public Data_Preview preview = new Data_Preview();
 
         public const bool f_alterRowShading = true;
         public const bool f_separator = true;
@@ -51,7 +50,6 @@ namespace sHierarchy
         public const bool f_tag = true;
         public const bool f_layer = true;
         public const bool f_instanceID = true;
-        public const bool f_preview = true;
 
         /* Setter & Getter */
 
@@ -127,8 +125,6 @@ namespace sHierarchy
             Execute(tag, fnc, f_tag);
             Execute(layer, fnc, f_layer);
             Execute(instanceID, fnc, f_instanceID);
-
-            Execute(preview, fnc, f_preview);
         }
     }
 }

@@ -108,7 +108,6 @@ namespace sHierarchy
             data.SavePref();
 
             HierarchyDrawer.Initialize();
-            HierarchyPreview.Draw();
         }
     }
 }
