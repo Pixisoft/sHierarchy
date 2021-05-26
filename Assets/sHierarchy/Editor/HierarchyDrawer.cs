@@ -524,11 +524,12 @@ namespace sHierarchy
             float offsetX_const = 3;
             float offsetX = RIGHT_BOUNDARY + offsetX_const + MAX_TAG_LEN + MAX_LAYER_LEN + MAX_INSTID_LEN;
 
+            bool omitComp = data.icons.omitComp;
             bool guessedComp = (currentItem.guessedComponent != null);
 
             foreach (Component comp in currentItem.components)
             {
-                if (guessedComp && comp == currentItem.guessedComponent)
+                if (omitComp && guessedComp && comp == currentItem.guessedComponent)
                     continue;
 
                 // When component is null, meaning there is broken link

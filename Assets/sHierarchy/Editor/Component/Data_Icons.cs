@@ -36,6 +36,8 @@ namespace sHierarchy
 
         public bool guess = true;
 
+        public bool omitComp = true;
+
         /* Setter & Getters */
 
         /* Functions */
@@ -54,6 +56,7 @@ namespace sHierarchy
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
 
             this.guess = EditorPrefs.GetBool(FormKey("guess"), this.guess);
+            this.omitComp = EditorPrefs.GetBool(FormKey("omitComp"), this.omitComp);
         }
 
         public override void Draw()
@@ -72,6 +75,9 @@ namespace sHierarchy
 
                 this.guess = HierarchyUtil.Toggle("Guess", this.guess,
                     @"Guess the icon by the name of the GameObject");
+
+                this.omitComp = HierarchyUtil.Toggle("Omit Component", this.omitComp,
+                    @"Omit guessed component");
             });
         }
 
@@ -80,6 +86,7 @@ namespace sHierarchy
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
 
             EditorPrefs.SetBool(FormKey("guess"), this.guess);
+            EditorPrefs.SetBool(FormKey("omitComp"), this.omitComp);
         }
     }
 }
