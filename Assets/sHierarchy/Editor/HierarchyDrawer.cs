@@ -461,6 +461,7 @@ namespace sHierarchy
                     {
                         var compImage = HierarchyUtil.TypeTexture(comp, t);
                         HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, compImage);
+                        currentItem.guessedComponent = comp;
                         break;
                     }
                 }
@@ -523,9 +524,15 @@ namespace sHierarchy
             float offsetX_const = 3;
             float offsetX = RIGHT_BOUNDARY + offsetX_const + MAX_TAG_LEN + MAX_LAYER_LEN + MAX_INSTID_LEN;
 
+            bool guessedComp = (currentItem.guessedComponent != null);
+
             foreach (Component comp in currentItem.components)
             {
+                if (guessedComp && comp == currentItem.guessedComponent)
+                    continue;
+
                 // When component is null, meaning there is broken link
+                // so here we accept null value.
                 var t = (comp == null) ? null : comp.GetType();
                 var image = HierarchyUtil.TypeTexture(comp, t);
 

@@ -28,6 +28,7 @@ namespace sHierarchy
     [Serializable]
     public struct InstanceInfo
     {
+        public Component guessedComponent;  // guess component
         public List<Component> components;  // components on GameObject
         public bool isSeparator;
         public string goName;
