@@ -456,8 +456,14 @@ namespace sHierarchy
                         continue;
 
                     var t = comp.GetType();
+                    var typeName = t.ToString();
 
-                    if (t.ToString().Contains(currentItem.goName))
+                    {
+                        var lst = typeName.Split('.');
+                        typeName = lst[lst.Length - 1];
+                    }
+
+                    if (currentItem.goName.Contains(typeName))
                     {
                         var compImage = HierarchyUtil.TypeTexture(comp, t);
                         HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, compImage);
