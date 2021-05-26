@@ -145,7 +145,7 @@ namespace sHierarchy
 
                 HierarchyUtil.CreateGroup(() =>
                 {
-                    this.colorizedItem = HierarchyUtil.Toggle("Coloried Item", this.colorizedItem);
+                    this.colorizedItem = HierarchyUtil.Toggle("Colorized Item", this.colorizedItem);
 
                     this.drawMode = (DrawMode)HierarchyUtil.EnumPopup("Draw Mode", this.drawMode,
                         @"Mode for item to draw");
