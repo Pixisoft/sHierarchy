@@ -429,9 +429,26 @@ namespace sHierarchy
             if (!data.icons.GetEnabled())
                 return;
 
-            bool drawn = false;
+            bool defaultIcon = false;
 
-            if (data.icons.guess)
+            // Draws the gameobject icon, if present
+            var content = EditorGUIUtility.ObjectContent(currentGO, null);
+            var image = content.image;
+
+            bool validImage = (image && !string.IsNullOrEmpty(image.name));
+
+            if (validImage)
+            {
+                defaultIcon = (image.name == "d_GameObject Icon");
+
+                HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, content.image);
+            }
+            else
+            {
+                HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, HierarchyUtil.BrokenIcon());
+            }
+
+            if (defaultIcon && data.icons.guess)
             {
                 foreach (var comp in currentItem.components)
                 {
@@ -442,26 +459,10 @@ namespace sHierarchy
 
                     if (t.ToString().Contains(currentItem.goName))
                     {
-                        var image = HierarchyUtil.TypeTexture(comp, t);
-                        HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, image);
-                        drawn = true;
+                        var compImage = HierarchyUtil.TypeTexture(comp, t);
+                        HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, compImage);
                         break;
                     }
-                }
-            }
-
-            if (!drawn)
-            {
-                // Draws the gameobject icon, if present
-                var content = EditorGUIUtility.ObjectContent(currentGO, null);
-
-                if (content.image && !string.IsNullOrEmpty(content.image.name))
-                {
-                    HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, content.image);
-                }
-                else
-                {
-                    HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, HierarchyUtil.BrokenIcon());
                 }
             }
         }
