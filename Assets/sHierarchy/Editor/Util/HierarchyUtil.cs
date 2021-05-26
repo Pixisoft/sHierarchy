@@ -299,6 +299,11 @@ namespace sHierarchy
             EditorGUILayout.LabelField(text, EditorStyles.boldLabel);
         }
 
+        public static void LabelField(string text, string tooltip)
+        {
+            EditorGUILayout.LabelField(new GUIContent(text, tooltip), EditorStyles.boldLabel);
+        }
+
         #endregion
 
         private static float InstanceIDLength(int instanceID)

@@ -124,19 +124,22 @@ namespace sHierarchy
 
                 HierarchyUtil.CreateGroup(() =>
                 {
-                    HierarchyUtil.CreateInfo("Line indicator on the left");
+                    HierarchyUtil.CreateInfo("Colorized Bar by tree level");
 
-                    this.colorizedLine = HierarchyUtil.Toggle("Colorized Line", this.colorizedLine);
+                    this.colorizedLine = HierarchyUtil.Toggle("Colorized Line", this.colorizedLine,
+                        @"Enabled/Disabled to colorized bar");
 
                     HierarchyUtil.BeginHorizontal(() =>
                     {
-                        this.lineAlpha = HierarchyUtil.Slider("Line Alpha", this.lineAlpha, 0.0f, 1.0f);
+                        this.lineAlpha = HierarchyUtil.Slider("Line Alpha", this.lineAlpha, 0.0f, 1.0f,
+                            @"Alpha level for the bar");
                         HierarchyUtil.Button("Reset", ResetLineAlpha);
                     });
 
                     HierarchyUtil.BeginHorizontal(() =>
                     {
-                        this.lineWidth = HierarchyUtil.Slider("Line Width", this.lineWidth, 0.001f, 3.0f);
+                        this.lineWidth = HierarchyUtil.Slider("Line Width", this.lineWidth, 0.001f, 3.0f,
+                            @"Line width for the bar");
                         HierarchyUtil.Button("Reset", ResetLineWidth);
                     });
                 });
@@ -145,7 +148,10 @@ namespace sHierarchy
 
                 HierarchyUtil.CreateGroup(() =>
                 {
-                    this.colorizedItem = HierarchyUtil.Toggle("Colorized Item", this.colorizedItem);
+                    HierarchyUtil.CreateInfo("Colorized Item by tree level");
+
+                    this.colorizedItem = HierarchyUtil.Toggle("Colorized Item", this.colorizedItem,
+                        @"Enabled/Disabled to colorized item");
 
                     this.drawMode = (DrawMode)HierarchyUtil.EnumPopup("Draw Mode", this.drawMode,
                         @"Mode for item to draw");
@@ -159,13 +165,15 @@ namespace sHierarchy
 
                     HierarchyUtil.BeginHorizontal(() =>
                     {
-                        this.overlayAlpha = HierarchyUtil.Slider("Overlay Alpha", this.overlayAlpha, 0.0f, 0.8f);
+                        this.overlayAlpha = HierarchyUtil.Slider("Overlay Alpha", this.overlayAlpha, 0.0f, 0.8f,
+                            @"Alpha level for the item");
                         HierarchyUtil.Button("Reset", ResetOverlayAlpha);
                     });
 
                     HierarchyUtil.BeginHorizontal(() =>
                     {
-                        this.baseLevelColor = EditorGUILayout.ColorField("Base Level Color", this.baseLevelColor);
+                        this.baseLevelColor = HierarchyUtil.ColorField("Base Level Color", this.baseLevelColor,
+                            @"Base color for colorized item");
                         HierarchyUtil.Button("Reset", ResetBaseLevelColor);
                     });
 
@@ -193,7 +201,8 @@ namespace sHierarchy
 
                     HierarchyUtil.BeginHorizontal(() =>
                     {
-                        this.dividerColor = EditorGUILayout.ColorField("Color", this.dividerColor);
+                        this.dividerColor = HierarchyUtil.ColorField("Color", this.dividerColor,
+                            @"Color for the divider");
                         HierarchyUtil.Button("Reset", ResetDividerColor);
                     });
 

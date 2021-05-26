@@ -72,12 +72,19 @@ namespace sHierarchy
                 this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
                     @"Enable/Disable all features from this section");
 
-                this.hideLog = HierarchyUtil.Toggle("Hide Log", this.hideLog,
-                    @"Hide log");
-                this.hideWarning = HierarchyUtil.Toggle("Hide Warning", this.hideWarning,
-                    @"Hide warning");
-                this.hideError = HierarchyUtil.Toggle("Hide Error", this.hideError,
-                    @"Hide error");
+                HierarchyUtil.LabelField("Hide Flags");
+
+                HierarchyUtil.CreateGroup(() =>
+                {
+                    HierarchyUtil.CreateInfo(@"Hide specific log level");
+
+                    this.hideLog = HierarchyUtil.Toggle("Hide Log", this.hideLog,
+                        @"Hide log");
+                    this.hideWarning = HierarchyUtil.Toggle("Hide Warning", this.hideWarning,
+                        @"Hide warning");
+                    this.hideError = HierarchyUtil.Toggle("Hide Error", this.hideError,
+                        @"Hide error");
+                });
             });
         }
 

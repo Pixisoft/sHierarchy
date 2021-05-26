@@ -32,7 +32,7 @@ namespace sHierarchy
         /* Variables */
 
         private const string INFO =
-            @"Show Tag name";
+            @"";
 
         private const string FOLD_NAME = "Tag";
         public bool foldout = false;
@@ -95,18 +95,22 @@ namespace sHierarchy
 
                 HierarchyUtil.CreateGroup(() =>
                 {
+                    HierarchyUtil.CreateInfo("Show Tag name");
+
                     this.enabledText = HierarchyUtil.Toggle("Enabeld", this.enabledText,
                         @"Display text on the side");
 
                     HierarchyUtil.BeginHorizontal(() =>
                     {
-                        this.textColorUntagged = EditorGUILayout.ColorField("Untagged Color", this.textColorUntagged);
+                        this.textColorUntagged = HierarchyUtil.ColorField("Untagged Color", this.textColorUntagged,
+                            @"");
                         HierarchyUtil.Button("Reset", ResetTextUntaggedColor);
                     });
 
                     HierarchyUtil.BeginHorizontal(() =>
                     {
-                        this.textColor = EditorGUILayout.ColorField("Color", this.textColor);
+                        this.textColor = HierarchyUtil.ColorField("Color", this.textColor,
+                            @"");
                         HierarchyUtil.Button("Reset", ResetTextColor);
                     });
                 });
@@ -115,12 +119,14 @@ namespace sHierarchy
 
                 HierarchyUtil.CreateGroup(() =>
                 {
+                    HierarchyUtil.CreateInfo("Colorized Item");
+
                     this.enabledItem = HierarchyUtil.Toggle("Enabeld", this.enabledItem,
                         @"Colorized items in hierarchy");
 
                     HierarchyUtil.BeginHorizontal(() =>
                     {
-                        EditorGUILayout.LabelField("Colors");
+                        HierarchyUtil.LabelField("Colors", @"Color mapping for each tag");
                         HierarchyUtil.Button("Add", AddTagColor);
                     });
 
@@ -140,7 +146,8 @@ namespace sHierarchy
                                 int currentSelection = HierarchyUtil.Popup(oldSelection, tags);
                                 string currentName = IndexToTag(currentSelection);
 
-                                Color col = HierarchyUtil.ColorField("", itemColors[oldName]);
+                                Color col = HierarchyUtil.ColorField("", itemColors[oldName],
+                                    @"Color for this tag, " + currentName);
 
                                 RemoveTagColor(oldName);
                                 if (itemColors.ContainsKey(currentName))

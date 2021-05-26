@@ -31,7 +31,7 @@ namespace sHierarchy
         /* Variables */
 
         private const string INFO =
-            @"Show Layer name";
+            @"";
 
         private const string FOLD_NAME = "Layer";
         public bool foldout = false;
@@ -99,18 +99,22 @@ namespace sHierarchy
 
                 HierarchyUtil.CreateGroup(() =>
                 {
+                    HierarchyUtil.CreateInfo("Show Layer name");
+
                     this.enabledText = HierarchyUtil.Toggle("Enabeld", this.enabledText,
                         @"Display text on the side");
 
                     HierarchyUtil.BeginHorizontal(() =>
                     {
-                        this.textColorDefault = EditorGUILayout.ColorField("Default Color", this.textColorDefault);
+                        this.textColorDefault = HierarchyUtil.ColorField("Default Color", this.textColorDefault,
+                            @"");
                         HierarchyUtil.Button("Reset", ResetDefaultColor);
                     });
 
                     HierarchyUtil.BeginHorizontal(() =>
                     {
-                        this.textColor = EditorGUILayout.ColorField("Color", this.textColor);
+                        this.textColor = HierarchyUtil.ColorField("Color", this.textColor,
+                            @"");
                         HierarchyUtil.Button("Reset", ResetColor);
                     });
                 });
@@ -119,12 +123,14 @@ namespace sHierarchy
 
                 HierarchyUtil.CreateGroup(() =>
                 {
+                    HierarchyUtil.CreateInfo("Colorized Item");
+
                     this.enabledItem = HierarchyUtil.Toggle("Enabeld", this.enabledItem,
                         @"Colorized items in hierarchy");
 
                     HierarchyUtil.BeginHorizontal(() =>
                     {
-                        EditorGUILayout.LabelField("Colors");
+                        HierarchyUtil.LabelField("Colors", @"Color mapping for each layer");
                         HierarchyUtil.Button("Add", AddLayerColor);
                     });
 
@@ -144,7 +150,8 @@ namespace sHierarchy
                                 int currentSelection = HierarchyUtil.Popup(oldSelection, layers);
                                 string currentName = LayerMask.LayerToName(currentSelection);
 
-                                Color col = HierarchyUtil.ColorField("", itemColors[oldName]);
+                                Color col = HierarchyUtil.ColorField("", itemColors[oldName],
+                                    @"Color for this layer, " + currentName);
 
                                 RemoveLayerColor(oldName);
                                 if (itemColors.ContainsKey(currentName))
