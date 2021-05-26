@@ -11,6 +11,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 * Separate options, `Text` and `Item` for section `Tag`.
 * Separate options, `Text` and `Item` for section `Layer`.
 * Remove feature, `Preview`.
+* Add `guess` option for GameObject's Icon.
 
 ### 0.1.3
 
