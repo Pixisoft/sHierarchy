@@ -229,7 +229,7 @@ namespace sHierarchy
                                           && go.name.StartsWith(data.separator.prefix));  // and also starts with '>'
                 }
 
-                if (data.components.GetEnabled())
+                if (data.icons.GetEnabled() || data.components.GetEnabled())
                 {
                     #region Components Information (icons)
 
