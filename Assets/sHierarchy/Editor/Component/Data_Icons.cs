@@ -34,6 +34,8 @@ namespace sHierarchy
         private const string FOLD_NAME = "Icons";
         public bool foldout = false;
 
+        public bool guess = true;
+
         /* Setter & Getters */
 
         /* Functions */
@@ -50,6 +52,8 @@ namespace sHierarchy
         public override void Init()
         {
             this.enabled = EditorPrefs.GetBool(FormKey("enabled"), true);
+
+            this.guess = EditorPrefs.GetBool(FormKey("guess"), this.guess);
         }
 
         public override void Draw()
@@ -65,12 +69,17 @@ namespace sHierarchy
 
                 this.enabled = HierarchyUtil.Toggle("Enabeld", this.enabled,
                     @"Enable/Disable all features from this section");
+
+                this.guess = HierarchyUtil.Toggle("Guess", this.guess,
+                    @"Guess the icon by the name of the GameObject");
             });
         }
 
         public override void SavePref()
         {
             EditorPrefs.SetBool(FormKey("enabled"), this.enabled);
+
+            EditorPrefs.SetBool(FormKey("guess"), this.guess);
         }
     }
 }

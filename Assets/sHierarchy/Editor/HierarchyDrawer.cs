@@ -429,16 +429,40 @@ namespace sHierarchy
             if (!data.icons.GetEnabled())
                 return;
 
-            // Draws the gameobject icon, if present
-            var content = EditorGUIUtility.ObjectContent(currentGO, null);
+            bool drawn = false;
 
-            if (content.image && !string.IsNullOrEmpty(content.image.name))
+            if (data.icons.guess)
             {
-                HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, content.image);
+                foreach (var comp in currentItem.components)
+                {
+                    if (comp == null)
+                        continue;
+
+                    var t = comp.GetType();
+
+                    if (t.ToString().Contains(currentItem.goName))
+                    {
+                        var image = HierarchyUtil.TypeTexture(comp, t);
+                        HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, image);
+                        drawn = true;
+                        break;
+                    }
+                }
             }
-            else
+
+            if (!drawn)
             {
-                HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, HierarchyUtil.BrokenIcon());
+                // Draws the gameobject icon, if present
+                var content = EditorGUIUtility.ObjectContent(currentGO, null);
+
+                if (content.image && !string.IsNullOrEmpty(content.image.name))
+                {
+                    HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, content.image);
+                }
+                else
+                {
+                    HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, HierarchyUtil.BrokenIcon());
+                }
             }
         }
 
