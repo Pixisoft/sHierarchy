@@ -107,14 +107,14 @@ namespace sHierarchy
                     HierarchyUtil.BeginHorizontal(() =>
                     {
                         this.textColorDefault = HierarchyUtil.ColorField("Default Color", this.textColorDefault,
-                            @"");
+                            @"Color for layer, Default");
                         HierarchyUtil.Button("Reset", ResetDefaultColor);
                     });
 
                     HierarchyUtil.BeginHorizontal(() =>
                     {
                         this.textColor = HierarchyUtil.ColorField("Color", this.textColor,
-                            @"");
+                            @"Text color for other meaningful layers");
                         HierarchyUtil.Button("Reset", ResetColor);
                     });
                 });

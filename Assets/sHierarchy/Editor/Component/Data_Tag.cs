@@ -103,14 +103,14 @@ namespace sHierarchy
                     HierarchyUtil.BeginHorizontal(() =>
                     {
                         this.textColorUntagged = HierarchyUtil.ColorField("Untagged Color", this.textColorUntagged,
-                            @"");
+                            @"Color for layer, Untagged");
                         HierarchyUtil.Button("Reset", ResetTextUntaggedColor);
                     });
 
                     HierarchyUtil.BeginHorizontal(() =>
                     {
                         this.textColor = HierarchyUtil.ColorField("Color", this.textColor,
-                            @"");
+                            @"Text color for other meaningful tags");
                         HierarchyUtil.Button("Reset", ResetTextColor);
                     });
                 });
