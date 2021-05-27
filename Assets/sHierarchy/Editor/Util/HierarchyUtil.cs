@@ -20,6 +20,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -481,6 +482,14 @@ namespace sHierarchy
                 list.Add(go.transform.GetChild(index).gameObject);
             }
             return list.ToArray();
+        }
+
+        public static bool ContainString(string typeName, string goName)
+        {
+            if (goName.Contains(typeName))
+                return true;
+            string trimmedGoName = Regex.Replace(goName, @"\s+", "");
+            return trimmedGoName.Contains(typeName);
         }
     }
 }

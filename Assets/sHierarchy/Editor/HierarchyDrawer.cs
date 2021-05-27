@@ -463,7 +463,7 @@ namespace sHierarchy
                         typeName = lst[lst.Length - 1];
                     }
 
-                    if (currentItem.goName.Contains(typeName))
+                    if (HierarchyUtil.ContainString(typeName, currentItem.goName))
                     {
                         var compImage = HierarchyUtil.TypeTexture(comp, t);
                         HierarchyWindowAdapter.ApplyIconByInstanceId(instanceID, compImage);
