@@ -7,11 +7,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### 0.1.4
 
-* Update package manual.
 * Separate options, `Text` and `Item` for section `Tag`.
 * Separate options, `Text` and `Item` for section `Layer`.
 * Remove feature, `Preview`.
 * Add `guess` option for GameObject's Icon.
+* Improve Icons naming rule for GameObjet name.
+* Update package manual.
 
 ### 0.1.3
 
