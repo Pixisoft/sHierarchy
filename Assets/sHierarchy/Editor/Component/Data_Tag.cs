@@ -61,7 +61,10 @@ namespace sHierarchy
             return this.enabled;
         }
 
-        public override string FormKey(string name) { return HierarchyUtil.FormKey("tag.") + name; }
+        public override string FormKey(string name)
+        {
+            return HierarchyUtil.FormKey("tag." + HierarchyUtil.PROJECT_NAME + ".") + name;
+        }
 
         public override void Init()
         {

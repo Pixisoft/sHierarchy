@@ -33,6 +33,8 @@ namespace sHierarchy
     {
         /* Variables */
 
+        public static string PROJECT_NAME = GetProjectName();
+
         private const string NAME = "sHierarchy";
 
         private const string COMP_ICON_BROKEN = "Warning@2x";
@@ -490,6 +492,13 @@ namespace sHierarchy
                 return true;
             string trimmedGoName = Regex.Replace(goName, @"\s+", "");
             return trimmedGoName.Contains(typeName);
+        }
+
+        public static string GetProjectName()
+        {
+            string[] s = Application.dataPath.Split('/');
+            string projectName = s[s.Length - 2];
+            return projectName;
         }
     }
 }

@@ -75,7 +75,8 @@ namespace sHierarchy
 
                 HierarchyUtil.BeginHorizontal(() =>
                 {
-                    this.prefix = HierarchyUtil.TextField("Prefix", this.prefix);
+                    this.prefix = HierarchyUtil.TextField("Prefix", this.prefix,
+                        @"Prefix string for separator in GameObject's name");
                     HierarchyUtil.Button("Reset", ResetPrefix);
                 });
 

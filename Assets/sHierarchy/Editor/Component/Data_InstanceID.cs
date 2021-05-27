@@ -75,7 +75,8 @@ namespace sHierarchy
 
                 HierarchyUtil.BeginHorizontal(() =>
                 {
-                    this.color = EditorGUILayout.ColorField("Color", this.color);
+                    this.color = HierarchyUtil.ColorField("Color", this.color,
+                        @"Text color for instance ID");
                     HierarchyUtil.Button("Reset", ResetColor);
                 });
             });

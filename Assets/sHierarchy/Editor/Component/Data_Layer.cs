@@ -60,7 +60,10 @@ namespace sHierarchy
             return this.enabled;
         }
 
-        public override string FormKey(string name) { return HierarchyUtil.FormKey("layer.") + name; }
+        public override string FormKey(string name)
+        {
+            return HierarchyUtil.FormKey("layer." + HierarchyUtil.PROJECT_NAME + ".") + name;
+        }
 
         public override void Init()
         {

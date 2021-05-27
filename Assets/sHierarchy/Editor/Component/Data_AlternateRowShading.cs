@@ -73,11 +73,13 @@ namespace sHierarchy
 
                 HierarchyUtil.BeginHorizontal(() =>
                 {
-                    this.color = EditorGUILayout.ColorField("Color", this.color);
+                    this.color = HierarchyUtil.ColorField("Color", this.color,
+                        @"Color for odd row");
                     HierarchyUtil.Button("Reset", ResetColor);
                 });
 
-                this.drawFill = EditorGUILayout.Toggle("Draw Fill", this.drawFill);
+                this.drawFill = HierarchyUtil.Toggle("Draw Fill", this.drawFill,
+                    @"Draw the row entirely to the left");
             });
         }
 
