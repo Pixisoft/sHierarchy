@@ -5,7 +5,8 @@ All notable changes to this project will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 
-### 0.1.4
+## 0.1.4
+> Released May 28, 2021
 
 * Separate options, `Text` and `Item` for section `Tag`.
 * Separate options, `Text` and `Item` for section `Layer`.
@@ -14,7 +15,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 * Improve Icons naming rule for GameObjet name.
 * Update package manual.
 
-### 0.1.3
+## 0.1.3
+> Released May 25, 2021
 
 * Add handler for broken link in component icon.
 * Fix issue, for incorrect script icon.
@@ -28,7 +30,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 * Add control panel for demo scenes.
 * Support sorting type, `Alphabetic Sorting`.
 
-### 0.1.2
+## 0.1.2
+> Released May 15, 2021
 
 * Add gradient color for colorized item.
 * Add render enable/disable component using alpha channel and it's customize option.
@@ -37,14 +40,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 * Add feature render `component` and `script` icons on the right.
 * Add focus ability when clicking on the icon.
 
-### 0.1.1
+## 0.1.1
+> Released Apr 20, 2021
 
 * Fix bug, instance ID overlaps with tags.
 * Fix bug, disable preview gameobject's components.
 * Add new feature `log` options.
 * Add new feature `tag` options.
 
-### 0.1.0
+## 0.1.0
+> Released Apr 20, 2021
 
 * Add light section with `intensity` and `rotation` options.
 * Add `skybox` option.
