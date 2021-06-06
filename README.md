@@ -23,6 +23,4 @@
 
 Copyright (c) Pixisoft Corporations. All rights reserved.
 
-Licensed under the Source EULA. See COPYING in the asset root for license informtaion.
-
-See [COPYING](https://github.com/Pixisoft/sHierarchy/blob/master/COPYING) for details.
+Licensed under the Source EULA. See [COPYING](https://github.com/Pixisoft/sHierarchy/blob/master/COPYING) for details.
