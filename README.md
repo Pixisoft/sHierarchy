@@ -9,6 +9,8 @@
   <img src="./etc/showcase.png" />
 </p>
 
+Minimalistic good looking hierarchy
+
 ## :trophy: Features
 
 * Show enable/disable state of each components
