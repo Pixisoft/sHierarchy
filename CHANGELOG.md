@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 
+## 0.1.5 (Unreleased)
+> Released N/A
+
+* Fix logic bug, log out of range
+
 ## 0.1.4
 > Released May 28, 2021
 
