@@ -69,15 +69,22 @@ namespace sHierarchy
 
         #region Parse Stacktrace
 
-        private static int GetLogIndex(LogType type)
+        private static int GetLogIndex(LogType type, string[] lst)
         {
+            int result;
+
             switch (type)
             {
                 case LogType.Log: 
                 case LogType.Warning: 
-                case LogType.Error: return 1;
-                default: return 0;
+                case LogType.Error: result = 1; break;
+                default: result = 0; break;
             }
+
+            if (result < 0) result = 0;
+            else if (result >= lst.Length) result = lst.Length - 1;
+
+            return result;
         }
 
         private static int GetLogLengthIndex(LogType type, string[] lst)
@@ -96,7 +103,7 @@ namespace sHierarchy
             var str = stackTrace.Replace("(at", "\n(at");
 
             var list = str.Split('\n');
-            var start = list[GetLogIndex(type)];
+            var start = list[GetLogIndex(type, list)];
             list = start.Split(':');
 
             var name = list[0];
