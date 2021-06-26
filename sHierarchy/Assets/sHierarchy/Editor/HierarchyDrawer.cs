@@ -243,7 +243,7 @@ namespace sHierarchy
             GameObject[] childrens = HierarchyUtil.GetAllChilds(go);
 
             if (ALPHA_SORTED)
-                childrens = childrens.OrderBy(go => go.name).ToArray();
+                childrens = childrens.OrderBy(tmpGo => go.name).ToArray();
 
             for (int j = 0; j < childCount; ++j)
             {
