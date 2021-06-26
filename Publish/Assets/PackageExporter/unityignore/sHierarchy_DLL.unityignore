@@ -13,3 +13,9 @@
 
 # Ignore this plugin itself.
 PackageExporter
+
+# Ignore test project
+_Project/
+
+# Ignore asset store plugin
+AssetStoreTools/
