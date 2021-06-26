@@ -17,9 +17,6 @@ PackageExporter/unityignore/Hello World.unityignore
 # Ignore asset store plugin
 AssetStoreTools/
 
-# Ignore the test proejct files.
-Test_Assets
-Test2_Assets
-
-# Ignore files
-Resources
+# Ignore the test proejct files
+_Project/
+_Project2/
