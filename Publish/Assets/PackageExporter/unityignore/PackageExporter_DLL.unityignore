@@ -2,20 +2,21 @@
 # Thank you for using `Package Exporter`. This is the generated 
 # unityignore file.
 # 
-# Package Name: sHierarchy_DLL
-# Version: 0.1.5
-# Creation Date: 2021-06-26 12:02:59 
+# Package Name: PackageExporter
+# Version: 1.0.1
+# Creation Date: 2019-02-04 19:48:05 
 # 
 # Package Link: https://github.com/Pixisoft/PackageExporter
 # Author: Shen, Jen-Chieh
 # Email: pixisoft.tw@gmail.com
 # 
 
-# Ignore this plugin itself.
-PackageExporter
-
-# Ignore test project
-_Project/
+# Ignore the test unityignore files.
+PackageExporter/unityignore/Hello World.unityignore
 
 # Ignore asset store plugin
 AssetStoreTools/
+
+# Ignore the test proejct files
+_Project/
+_Project2/
