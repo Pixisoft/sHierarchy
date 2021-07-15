@@ -10,7 +10,7 @@ the full documentation.**
 
 #### Source
 
-* `sHierarchy` -  Project contains plugin's source code.
+* `Source` -  Project contains plugin's source code.
 
 #### Compiling
 
