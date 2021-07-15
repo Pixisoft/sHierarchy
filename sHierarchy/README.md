@@ -22,6 +22,6 @@
 
 ## License
 
-Copyright (c) Pixisoft Corporations. All rights reserved.
+Copyright (c) Pixisoft. All rights reserved.
 
-Licensed under the Source EULA. See [COPYING](https://github.com/Pixisoft/sHierarchy/blob/master/COPYING) for details.
+pixisoft.tw@gmail.com
