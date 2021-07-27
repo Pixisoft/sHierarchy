@@ -250,19 +250,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 988247574}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0de899740abb82e4fb20680040c924c4, type: 3}
+  m_Script: {fileID: -177705007, guid: 4bbe9461cf822144692768ac7e48d023, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  f_alterRowShading: 0
+  f_alterRowShading: 1
   f_separator: 1
-  f_tree: 0
+  f_tree: 1
   f_log: 1
-  f_icons: 0
-  f_components: 0
-  f_tag: 0
-  f_layer: 0
-  f_instanceID: 0
-  f_preview: 0
+  f_icons: 1
+  f_components: 1
+  f_tag: 1
+  f_layer: 1
+  f_instanceID: 1
+  f_preview: 1
 --- !u!4 &988247576
 Transform:
   m_ObjectHideFlags: 0

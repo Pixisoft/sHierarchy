@@ -1,7 +1,7 @@
 /**
- * Copyright (c) Pixisoft Corporations. All rights reserved.
+ * Copyright (c) Pixisoft. All rights reserved.
  * 
- * Licensed under the Source EULA. See COPYING in the asset root for license informtaion.
+ * pixisoft.tw@gmail.com
  */
 using UnityEngine;
 
