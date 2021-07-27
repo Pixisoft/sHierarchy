@@ -9,6 +9,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 > Released N/A
 
 * Fix logic bug, log out of range
+* Restructure demo scenes to it's folder
 
 ## 0.1.4
 > Released May 28, 2021
