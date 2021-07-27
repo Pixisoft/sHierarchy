@@ -5,7 +5,6 @@
  * pixisoft.tw@gmail.com
  */
 using UnityEditor;
-using UnityEngine.SceneManagement;
 
 namespace sHierarchy
 {
