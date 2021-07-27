@@ -10,34 +10,35 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\Component\Data_AlternateRowShading.cs" Link="Editor\Component\Data_AlternateRowShading.cs" />
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\Component\Data_Components.cs" Link="Editor\Component\Data_Components.cs" />
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\Component\Data_Icons.cs" Link="Editor\Component\Data_Icons.cs" />
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\Component\Data_InstanceID.cs" Link="Editor\Component\Data_InstanceID.cs" />
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\Component\Data_Layer.cs" Link="Editor\Component\Data_Layer.cs" />
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\Component\Data_Log.cs" Link="Editor\Component\Data_Log.cs" />
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\Component\Data_Separator.cs" Link="Editor\Component\Data_Separator.cs" />
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\Component\Data_Tag.cs" Link="Editor\Component\Data_Tag.cs" />
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\Component\Data_Tree.cs" Link="Editor\Component\Data_Tree.cs" />
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\Demo\HierarchyControlPanelEditor.cs" Link="Editor\Demo\HierarchyControlPanelEditor.cs" />
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\Enum\DrawMode.cs" Link="Editor\Enum\DrawMode.cs" />
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\HierarchyComponent.cs" Link="Editor\HierarchyComponent.cs" />
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\HierarchyData.cs" Link="Editor\HierarchyData.cs" />
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\HierarchyDrawer.cs" Link="Editor\HierarchyDrawer.cs" />
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\HierarchyLog.cs" Link="Editor\HierarchyLog.cs" />
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\HierarchyPreferences.cs" Link="Editor\HierarchyPreferences.cs" />
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\HierarchyRenderer.cs" Link="Editor\HierarchyRenderer.cs" />
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\InstanceInfo.cs" Link="Editor\InstanceInfo.cs" />
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\Util\HierarchyUtil.cs" Link="Editor\Util\HierarchyUtil.cs" />
-    <Compile Include="..\..\sHierarchy\Assets\sHierarchy\Editor\Util\HierarchyWindowAdapter.cs" Link="Editor\Util\HierarchyWindowAdapter.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\Component\Data_AlternateRowShading.cs" Link="Editor\Component\Data_AlternateRowShading.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\Component\Data_Components.cs" Link="Editor\Component\Data_Components.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\Component\Data_Icons.cs" Link="Editor\Component\Data_Icons.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\Component\Data_InstanceID.cs" Link="Editor\Component\Data_InstanceID.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\Component\Data_Layer.cs" Link="Editor\Component\Data_Layer.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\Component\Data_Log.cs" Link="Editor\Component\Data_Log.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\Component\Data_Separator.cs" Link="Editor\Component\Data_Separator.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\Component\Data_Tag.cs" Link="Editor\Component\Data_Tag.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\Component\Data_Tree.cs" Link="Editor\Component\Data_Tree.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\Demo\HierarchyControlPanelEditor.cs" Link="Editor\Demo\HierarchyControlPanelEditor.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\Enum\DrawMode.cs" Link="Editor\Enum\DrawMode.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\HierarchyComponent.cs" Link="Editor\HierarchyComponent.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\HierarchyData.cs" Link="Editor\HierarchyData.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\HierarchyDrawer.cs" Link="Editor\HierarchyDrawer.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\HierarchyLog.cs" Link="Editor\HierarchyLog.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\HierarchyPreferences.cs" Link="Editor\HierarchyPreferences.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\HierarchyRenderer.cs" Link="Editor\HierarchyRenderer.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\InstanceInfo.cs" Link="Editor\InstanceInfo.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\Util\HierarchyUtil.cs" Link="Editor\Util\HierarchyUtil.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Editor\Util\HierarchyWindowAdapter.cs" Link="Editor\Util\HierarchyWindowAdapter.cs" />
+    <Compile Include="..\..\Source\Assets\sHierarchy\Scripts\HierarchyControlPanel.cs" Link="Scripts\HierarchyControlPanel.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Editor\Component\" />
-    <Folder Include="Editor\Enum\" />
     <Folder Include="Editor\Demo\" />
-    <Folder Include="Editor\" />
+    <Folder Include="Editor\Enum\" />
     <Folder Include="Editor\Util\" />
+    <Folder Include="Scripts\" />
   </ItemGroup>
 
   <ItemGroup>
