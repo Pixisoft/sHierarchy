@@ -1,4 +1,4 @@
-name: 📦 Source
+name: Source 📦
 
 on:
   pull_request: {}
@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         package-name:
-          - sHierarchy
+          - NovBundle
         targetPlatform:
           - StandaloneWindows64
     steps:

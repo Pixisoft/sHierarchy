@@ -1,4 +1,4 @@
-name: 📦 Publish
+name: Publish 📦
 
 on:
   pull_request: {}
@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         package-name:
-          - sHierarchy_DLL
+          - NovBundle_DLL
         targetPlatform:
           - StandaloneWindows64
     steps:

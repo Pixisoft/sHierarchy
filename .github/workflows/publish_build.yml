@@ -1,14 +1,16 @@
-name: ⚙️ Source
+name: Publish ⚙️
 
 on:
   pull_request: {}
   push: { branches: [main, master, develop] }
 
 env:
+  # License
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-  UNITY_VERSION: 2021.1.1f1
-  PROJECT_PATH: ./Source
   ULF_FILE: Unity_v2021.x.ulf
+  # Project
+  UNITY_VERSION: 2021.1.1f1
+  PROJECT_PATH: ./Publish
 
 jobs:
   request_alf:
