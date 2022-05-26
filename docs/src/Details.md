@@ -1,17 +1,17 @@
 ## Package upload
 
-### :pencil: Additional compatibility information
+### 📝 Additional compatibility information
 
 Any version above 2019.1+ sould work. Please see Technical details section for more information.
 
 ## Description
 
-### :pencil: Summary (10-200 characters)
+### 📝 Summary (10-200 characters)
 
 **sHierarchy** aims to be robust but keep both stability and compatiblity
 high to developers.
 
-### :pencil: Description
+### 📝 Description
 
 **sHierarchy** is meant to design that matches the Unity default settings.
 With that being said, user should find familiars without forcing themselves
@@ -50,7 +50,7 @@ or email to pixisoft.tw@gmail.com.
 
 [More Info>>](https://github.com/Pixisoft/sHierarchy)
 
-### :pencil: Technical details
+### 📝 Technical details
 
 This plugin is base on top of [Custom Hierarchy for Unity](https://github.com/febucci/unitypackage-custom-hierarchy)
 made by author [Federico](https://github.com/febucci). Thankfully, Federico
