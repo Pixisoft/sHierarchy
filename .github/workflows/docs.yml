@@ -1,0 +1,67 @@
+name: Docs
+
+on:
+  pull_request: {}
+  push: { branches: [main, master, develop] }
+
+env:
+  REPO_DOC: 'Pixisoft/Documents'
+  BRANCH: 'gh-pages'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish_doc:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup mdBook
+      uses: peaceiris/actions-mdbook@v1
+      with:
+        mdbook-version: 'latest'
+
+    - name: Build doc
+      working-directory: docs
+      run: mdbook build
+
+    - name: Move book to home
+      working-directory: docs
+      run: mv ./book/ ~/
+
+    - name: Checkout document repository
+      uses: actions/checkout@v3
+      with:
+        repository: ${{ env.REPO_DOC }}
+        persist-credentials: false
+        fetch-depth: 0
+        ref: ${{ env.BRANCH }}
+
+    - name: Move book to repository
+      run: |
+        rm -rf ${{ github.event.repository.name }}
+        mkdir ${{ github.event.repository.name }}
+        mv -f ~/book/* ./${{ github.event.repository.name }}/
+
+    - name: Set git config
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+
+    - name: Commit
+      continue-on-error: true
+      run: |
+        git pull
+        git add .
+        git commit -m "Update doc - ${{ github.event.repository.name }}"
+
+    - name: Push book
+      continue-on-error: true
+      uses: jcs090218/github-push-action@master
+      with:
+        repository: ${{ env.REPO_DOC }}
+        github_token: ${{ secrets.ACCESS_TOKEN }}
+        branch: ${{ env.BRANCH }}
+        retry: 7
